@@ -9,8 +9,7 @@
      <b><a href="https://dajdam.com">Sajt</a></b> | <b><a href="https://t.me/DajDamUpdates">Javni Kanal</a></b> | <b><a href="https://t.me/DajDamChat">Chat</a></b>
      <br/><br/>
    <a href="https://jdk.java.net/archive/"><img src="https://img.shields.io/badge/Java_Version-21-blue?style=for-the-badge&logo=hackthebox&logoColor=fff" alt="JavaVersion"/></a>
-   <a target="_blank" href="https://github.com/ValeriiLindenPy/Daj-Dam"><img src="https://img.shields.io/github/last-commit/ValeriiLindenPy/Daj-Dam/main?style=for-the-badge&logo=github
-" alt="Last commit"/></a>
+   <a target="_blank" href="https://github.com/ValeriiLindenPy/Daj-Dam"><img src="https://img.shields.io/github/last-commit/ValeriiLindenPy/Daj-Dam/main?style=for-the-badge&logo=github" alt="Last commit"/></a>
    <img src="https://img.shields.io/badge/PRs-Welcome-blue?style=for-the-badge&logoColor=fff" alt="PRs"/>   
 
 [//]: # (   <a href="https://github.com/ValeriiLindenPy/Daj-Dam/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licenca-MIT-blue?style=for-the-badge&logo=opensourceinitiative&logoColor=fff" alt="License MIT"/></a>)
