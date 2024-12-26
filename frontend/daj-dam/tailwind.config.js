@@ -4,12 +4,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        vanilla: "#EAE2B7",
-        orange: "#F77F00",
-        fire: "#D62828",
-        prussian: "#003049",
-        xan: "#FCBF49",
-        sea: "#2EC4B6",
+        st0: "#aa91c4",
+        st1: "#F6E9D8",
+        st2: "#E8DFF5",
+        st3: "#F38B4A",
+        st4: "#4B306A",
+        st5: "#342348",
+        st6: "#F3C8A5",
+        st7: "#6B5C5C",
       },
       fontFamily: {
         Inter: ["Inter", "serif"]
