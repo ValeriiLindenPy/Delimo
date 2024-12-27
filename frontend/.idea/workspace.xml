@@ -4,29 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ada29828-9fe2-498e-9c32-fc725a5dd6b5" name="Changes" comment="Add: add navigation">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/assets/home.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/ModalMenu.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/PostList.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/Carousel.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/PostCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/services/api.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/views/ItemDetails.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/views/ItemsView.vue" afterDir="false" />
+    <list default="true" id="ada29828-9fe2-498e-9c32-fc725a5dd6b5" name="Changes" comment="Add: Navigation.vue, ItemView">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/public/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/public/favicon.ico" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/assets/tailwind.css" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/assets/tailwind.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/components/Navigation.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/components/Navigation.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/components/UI/UserModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/UserModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/stores/counter.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/stores/counter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/views/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/views/HomeView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daj-dam/src/views/ItemDetails.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/views/ItemDetails.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/daj-dam/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/tailwind.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +114,8 @@
       <workItem from="1735214849875" duration="761000" />
       <workItem from="1735221448122" duration="1190000" />
       <workItem from="1735241177896" duration="5003000" />
-      <workItem from="1735285555441" duration="14626000" />
+      <workItem from="1735285555441" duration="14784000" />
+      <workItem from="1735302696421" duration="2245000" />
     </task>
     <task id="LOCAL-00001" summary="Add: basic files">
       <option name="closed" value="true" />
@@ -167,7 +149,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735214279935</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Add: Navigation.vue, ItemView">
+      <option name="closed" value="true" />
+      <created>1735301585084</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1735301585084</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -189,6 +179,7 @@
     <MESSAGE value="Add: remove template" />
     <MESSAGE value="Add: add basics" />
     <MESSAGE value="Add: add navigation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add: add navigation" />
+    <MESSAGE value="Add: Navigation.vue, ItemView" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add: Navigation.vue, ItemView" />
   </component>
 </project>
