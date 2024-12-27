@@ -12,6 +12,7 @@ export default {
         st5: "#342348",
         st6: "#F3C8A5",
         st7: "#6B5C5C",
+        st9: "#daceb3"
       },
       fontFamily: {
         Inter: ["Inter", "serif"]
