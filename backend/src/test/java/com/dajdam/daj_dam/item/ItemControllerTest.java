@@ -1,5 +1,6 @@
 package com.dajdam.daj_dam.item;
 
+import com.dajdam.daj_dam.error.ValidationMarker;
 import com.dajdam.daj_dam.item.dto.ItemDto;
 import com.dajdam.daj_dam.item.model.Item;
 import com.dajdam.daj_dam.user.UserMapper;
