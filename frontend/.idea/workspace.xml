@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ada29828-9fe2-498e-9c32-fc725a5dd6b5" name="Changes" comment="Add: Navigation.vue, ItemView">
+    <list default="true" id="ada29828-9fe2-498e-9c32-fc725a5dd6b5" name="Changes" comment="Edit: ItemDetails.vue">
+      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/AddressUI.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/AvailableUI.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/ContactsUI.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/DescriptionUI.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/MaxPeriodUI.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/ModalContacts.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/NameUI.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/daj-dam/src/views/ItemDetails.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/views/ItemDetails.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/tailwind.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +121,8 @@
       <workItem from="1735221448122" duration="1190000" />
       <workItem from="1735241177896" duration="5003000" />
       <workItem from="1735285555441" duration="14784000" />
-      <workItem from="1735302696421" duration="2245000" />
+      <workItem from="1735302696421" duration="2276000" />
+      <workItem from="1735376646940" duration="3785000" />
     </task>
     <task id="LOCAL-00001" summary="Add: basic files">
       <option name="closed" value="true" />
@@ -157,7 +164,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735301585084</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Edit: ItemDetails.vue">
+      <option name="closed" value="true" />
+      <created>1735305080416</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1735305080416</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -180,6 +195,7 @@
     <MESSAGE value="Add: add basics" />
     <MESSAGE value="Add: add navigation" />
     <MESSAGE value="Add: Navigation.vue, ItemView" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add: Navigation.vue, ItemView" />
+    <MESSAGE value="Edit: ItemDetails.vue" />
+    <option name="LAST_COMMIT_MESSAGE" value="Edit: ItemDetails.vue" />
   </component>
 </project>
