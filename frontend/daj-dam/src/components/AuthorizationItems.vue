@@ -1,6 +1,6 @@
 <template>
   <div v-if="authorized" class="flex-1 h-10 flex items-center justify-center gap-4 lg:text-xl md:text-sm">
-    <button
+    <button @click="goUser"
         class="hover:bg-st3 hover:text-st5 flex items-center justify-center border-solid h-full p-5 text-white rounded-lg border-st3 border-2 transition-all duration-300">
       Moj nalog
     </button>
@@ -22,13 +22,25 @@
   </div>
 </template>
 <script>
+import {useUserStore} from "@/stores/counter.js";
+
 export default {
   name: 'AuthorizationItems',
+  data() {
+    return {
+      useUserStoreId: useUserStore().userId,
+    }
+  },
   props: {
     authorized: {
       type: Boolean,
       required: true,
     },
+  },
+  methods: {
+    goUser() {
+      this.$router.push("/users/"+ this.useUserStoreId);
+    }
   }
 }
 </script>
