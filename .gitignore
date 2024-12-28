@@ -7,6 +7,14 @@
 # BlueJ files
 *.ctxt
 
+# Editor-specific files
+.vscode/
+.idea/
+*.xml
+
+frontend/.gitignore
+backend/.gitignore
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
