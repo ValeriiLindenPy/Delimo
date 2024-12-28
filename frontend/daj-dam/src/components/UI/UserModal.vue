@@ -6,9 +6,11 @@
   >
     <ul v-if="authorized">
       <li>
+        <router-link :to="`/users/${useUserStore.userId}`">
         <button class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
           Moj nalog
         </button>
+        </router-link>
       </li>
       <li>
         <button class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
@@ -32,8 +34,18 @@
 </template>
 
 <script>
+import {useUserStore} from "@/stores/counter.js";
+
 export default {
   name: "UserModal",
+  data() {
+    return {
+      useUserStore: false,
+    }
+  },
+  created() {
+    this.useUserStore = useUserStore();
+  },
   props: {
     isModalOpen: {
       type: Boolean,

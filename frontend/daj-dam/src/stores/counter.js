@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', {
     userId: 1,
     profile: null,
     posts: [],
-    authorized: false,
+    authorized: true,
   }),
   actions: {
     async getProfile() {
@@ -44,8 +44,6 @@ export const useUserStore = defineStore('user', {
       } else {
         this.posts = (await apiClient.get(basePostURL, {params})).data;
       }
-
-
     }
   }
 })

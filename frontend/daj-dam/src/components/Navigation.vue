@@ -12,20 +12,7 @@
       </router-link>
 
       <!-- Search -->
-      <div class="grow bg-white rounded-lg h-10">
-        <div class="flex h-full">
-          <input
-              placeholder="Traži ..."
-              class="p-2 grow rounded-l-lg h-full"
-          />
-          <button
-              @click="goItems"
-              class="w-10 bg-st3 rounded-r-lg hover:text-st3 hover:bg-st5 transition-all duration-300"
-          >
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </div>
-      </div>
+      <DesctopSearch :go-items="goItems"/>
 
       <!-- Authorization Items -->
       <AuthorizationItems :authorized="authorized" />
@@ -67,22 +54,7 @@
   </header>
 
   <!-- Mobile Search (sticky) -->
-  <div class="block md:hidden sticky top-[68px] w-full py-2 bg-st2 z-20">
-    <div class="mx-3 rounded-lg bg-white h-10">
-      <div class="flex h-full">
-        <input
-            placeholder="Traži ..."
-            class="p-2 grow h-full rounded-l-lg"
-        />
-        <button
-            @click="goItems"
-            class="w-1/6 bg-st3 rounded-r-lg hover:text-st3 hover:bg-st5 transition-all duration-300"
-        >
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </div>
-    </div>
-  </div>
+  <MobileSearch :go-items="goItems"/>
 
   <!-- User Modal (moved outside the header, higher z-index) -->
   <transition>
@@ -100,10 +72,14 @@
 import UserModal from "@/components/UI/UserModal.vue";
 import ModalMenu from "@/components/ModalMenu.vue";
 import AuthorizationItems from "@/components/AuthorizationItems.vue";
+import DesctopSearch from "@/components/UI/DesctopSearch.vue";
+import MobileSearch from "@/components/UI/MobileSearch.vue";
 
 export default {
   name: "Navigation",
   components: {
+    MobileSearch,
+    DesctopSearch,
     ModalMenu,
     AuthorizationItems,
     UserModal,
@@ -134,6 +110,3 @@ export default {
 };
 </script>
 
-<style scoped>
-/* You can further adjust your z-index values if needed. */
-</style>

@@ -72,7 +72,6 @@ export default {
   setup() {
     const route = useRoute();
     const itemId = route.params.id;
-
     return {itemId};
   },
 };
