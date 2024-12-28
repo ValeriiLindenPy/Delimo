@@ -56,7 +56,7 @@ export default {
           "Električna bušilica sa ergonomskim dizajnom — idealan alat za bušenje drveta, metala i " +
           "drugih materijala. Pogodna za kućne poslove i lakše profesionalne zadatke. " +
           "Radi na struju, opremljena je podesivom brzinom okretanja i funkcijom reverza.",
-      available: false,
+      available: true,
       maxPeriodDays: 3,
       image: [
         "https://i.ibb.co/zHNgfhB/44819-750x0.jpg",
