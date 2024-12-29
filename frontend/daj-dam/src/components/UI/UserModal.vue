@@ -6,11 +6,14 @@
   >
     <ul v-if="authorized">
       <li>
-        <router-link :to="`/users/${useUserStore.userId}`">
-        <button class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
+        <button @click="goProfile" class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
           Moj nalog
         </button>
-        </router-link>
+      </li>
+      <li>
+        <button @click="goOglasi" class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
+          Moji oglasi
+        </button>
       </li>
       <li>
         <button class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
@@ -60,6 +63,14 @@ export default {
     closeModal() {
       this.$emit("close");
     },
+    goProfile() {
+      this.$router.push("/users/" + this.useUserStore.userId);
+      this.$emit("close");
+    },
+    goOglasi() {
+      this.$router.push("/users/" + this.useUserStore.userId + "/oglasi");
+      this.$emit("close");
+    }
   },
 };
 </script>

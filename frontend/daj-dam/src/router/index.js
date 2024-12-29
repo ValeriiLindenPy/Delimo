@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import ItemsView from '../views/ItemsView.vue'
 import ItemDetails from '../views/ItemDetails.vue';
 import UserDetails from '../views/UserDetails.vue';
+import UserOglasi from '../views/UserOglasi.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/users/:id',
       name: 'UserDetails',
       component: UserDetails
+    },
+    {
+      path: '/users/:id/oglasi',
+      name: 'UserOglasi',
+      component: UserOglasi
     },
   ],
 })
