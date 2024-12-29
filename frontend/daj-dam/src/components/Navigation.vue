@@ -5,9 +5,9 @@
       <!-- Logo -->
       <router-link to="/">
         <div class="flex-none items-center gap-2">
-          <b class="text-3xl font-extrabold text-white">Daj</b>
+          <b class="text-3xl font-extrabold text-white">Del</b>
           <i class="fa-solid fa-arrows-spin text-3xl text-st3"></i>
-          <b class="text-3xl font-extrabold text-white">Dam</b>
+          <b class="text-3xl font-extrabold text-white">imo</b>
         </div>
       </router-link>
 
