@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', {
     userId: 1,
     profile: null,
     posts: [],
-    authorized: true,
+    authorized: false,
   }),
   actions: {
     async getProfile() {

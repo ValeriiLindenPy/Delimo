@@ -4,35 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ada29828-9fe2-498e-9c32-fc725a5dd6b5" name="Changes" comment="Edit: ItemDetails.vue Fixes #6">
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/assets/cities.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/assets/default-image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/assets/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/assets/items.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/assets/users.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/UserDetailsUI.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/daj-dam/src/views/UserOglasi.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/_metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/axios.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/axios.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/chunk-U3LI7FBV.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/chunk-U3LI7FBV.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/chunk-YFT6OQ5R.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/chunk-YFT6OQ5R.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/pinia.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/pinia.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/pinia.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/pinia.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/vue-router.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/vue-router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/vue-router.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/vue-router.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/vue.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/node_modules/.vite/deps/vue.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/components/UI/MaxPeriodUI.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/MaxPeriodUI.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/components/UI/PostCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/PostCard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/components/UI/UserModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/components/UI/UserModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/views/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/views/HomeView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/views/ItemDetails.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/views/ItemDetails.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/views/ItemsView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/views/ItemsView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daj-dam/src/views/UserDetails.vue" beforeDir="false" afterPath="$PROJECT_DIR$/daj-dam/src/views/UserDetails.vue" afterDir="false" />
-    </list>
+    <list default="true" id="ada29828-9fe2-498e-9c32-fc725a5dd6b5" name="Changes" comment="Edit: Login page" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,8 +13,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="Vue Composition API Component" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -82,7 +54,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "frontend/add-userprofile",
-    "last_opened_file_path": "D:/PersonalProjects/Daj-Dam/frontend/daj-dam/src/assets",
+    "last_opened_file_path": "D:/PersonalProjects/Daj-Dam",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -149,7 +121,8 @@
       <workItem from="1735302696421" duration="2276000" />
       <workItem from="1735376646940" duration="5427000" />
       <workItem from="1735390800527" duration="569000" />
-      <workItem from="1735462792588" duration="10310000" />
+      <workItem from="1735462792588" duration="10823000" />
+      <workItem from="1735484684261" duration="9234000" />
     </task>
     <task id="LOCAL-00001" summary="Add: basic files">
       <option name="closed" value="true" />
@@ -207,7 +180,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735380695338</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Edit: User profile, my items">
+      <option name="closed" value="true" />
+      <created>1735473311615</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1735473311615</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,6 +225,7 @@
     <MESSAGE value="Add: Navigation.vue, ItemView" />
     <MESSAGE value="Edit: ItemDetails.vue" />
     <MESSAGE value="Edit: ItemDetails.vue Fixes #6" />
-    <option name="LAST_COMMIT_MESSAGE" value="Edit: ItemDetails.vue Fixes #6" />
+    <MESSAGE value="Edit: User profile, my items" />
+    <option name="LAST_COMMIT_MESSAGE" value="Edit: User profile, my items" />
   </component>
 </project>

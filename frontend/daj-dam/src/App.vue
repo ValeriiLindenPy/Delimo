@@ -1,30 +1,40 @@
 <template>
   <div class="flex flex-col min-h-screen font-Inter bg-st0">
-    <Navigation :authorized="userStore.authorized" />
-    <RouterView/>
+    <Navigation v-if="navigation" :authorized="userStore.authorized" />
+    <RouterView />
   </div>
 </template>
 
 <script>
-import {RouterView} from "vue-router";
+import { RouterView } from "vue-router";
 import Navigation from "@/components/Navigation.vue";
-import {useUserStore} from "@/stores/counter.js";
+import { useUserStore } from "@/stores/counter.js";
+import { onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+
 export default {
   components: {
     Navigation,
     RouterView,
-    useUserStore,
   },
+  setup() {
+    const userStore = useUserStore();
+    const navigation = ref(true);
+    const route = useRoute();
 
-  data() {
+    watch(
+        () => route.name,
+        (newRoute) => {
+          navigation.value = newRoute !== "LoginView" && newRoute !== "RegistrationView";
+        },
+        {immediate: true}
+    );
+
     return {
-      userStore: useUserStore(),
-    }
-  }
-
-}
+      userStore,
+      navigation,
+    };
+  },
+};
 </script>
 
-<style scoped>
-
-</style>

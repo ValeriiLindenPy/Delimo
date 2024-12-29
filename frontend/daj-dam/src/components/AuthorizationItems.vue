@@ -11,11 +11,12 @@
   </div>
 
   <div v-else class="flex-1 h-10 flex items-center justify-center gap-4 lg:text-xl md:text-sm">
-    <button
+    <button @click="goLogin"
         class="hover:bg-st3 hover:text-st5 flex items-center justify-center border-solid h-full p-5 text-white rounded-lg border-st3 border-2 transition-all duration-300">
       Ulogujte se
     </button>
     <button
+        @click="goRegistration"
         class="hover:bg-st3 hover:text-st5 flex items-center justify-center border-solid h-full p-5 text-white rounded-lg border-st3 border-2 transition-all duration-300">
       Registrujte se
     </button>
@@ -40,6 +41,12 @@ export default {
   methods: {
     goUser() {
       this.$router.push("/users/"+ this.useUserStoreId);
+    },
+    goLogin() {
+      this.$router.push("/login");
+    },
+    goRegistration() {
+      this.$router.push("/registration");
     }
   }
 }

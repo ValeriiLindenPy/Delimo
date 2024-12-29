@@ -4,6 +4,8 @@ import ItemsView from '../views/ItemsView.vue'
 import ItemDetails from '../views/ItemDetails.vue';
 import UserDetails from '../views/UserDetails.vue';
 import UserOglasi from '../views/UserOglasi.vue';
+import LoginView from '../views/LoginView.vue';
+import RegistrationView from '../views/RegistrationView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,6 +14,16 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/login',
+      name: 'LoginView',
+      component: LoginView,
+    },
+    {
+      path: '/registration',
+      name: 'RegistrationView',
+      component: RegistrationView,
     },
     {
       path: '/items',
