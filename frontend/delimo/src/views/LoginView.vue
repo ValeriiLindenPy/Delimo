@@ -51,8 +51,6 @@
 </template>
 
 <script>
-import { gapi } from 'gapi-script';
-import {googleConst} from "@/assets/constants.js";
 import {useUserStore} from "@/stores/counter.js";
 
 export default {
@@ -69,29 +67,11 @@ export default {
   },
   methods: {
     initializeGapi() {
-      gapi.load('client:auth2', () => {
-        gapi.client.init({
-          clientId: googleConst.clientId,
-          scope: 'profile email'
-        });
-      });
+
     },
     async handleGoogleOneTap() {
-      const authInstance = gapi.auth2.getAuthInstance();
-      authInstance.signIn().then(googleUser => {
-        const profile = googleUser.getBasicProfile();
-        const idToken = googleUser.getAuthResponse().id_token;
-        // Send idToken to your backend for verification and authentication
-        if (idToken) {
-          this.$router.push("/");
-          useUserStore.authorized = true;
-        }
-      }).catch(error => {
-        console.error('Google sign-in error:', error);
-        //todo
-        useUserStore.authorized = true;
-        this.$router.push("/");
-      });
+
+
     }
   }
 };

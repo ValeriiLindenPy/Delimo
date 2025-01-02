@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer base {
+    html, body {
+        @apply h-full min-h-full overflow-auto;
+    }
+}
+
 .v-enter-active,
 .v-leave-active {
     transition: opacity 0.5s ease;

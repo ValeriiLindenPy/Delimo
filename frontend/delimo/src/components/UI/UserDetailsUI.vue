@@ -1,6 +1,6 @@
 <template>
 
-  <div class="bg-white rounded-md shadow-sm p-3 text-2xl font-sans">
+  <div class="bg-white rounded-md shadow-sm p-3 text-xl font-sans">
     <div class="flex gap-2 items-center mb-4">
       <i class="fa-regular fa-user text-st3 font-extrabold"></i>
       <p class="font-extrabold">Podešavanja naloga</p>

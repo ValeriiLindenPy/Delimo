@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col min-h-screen font-Inter bg-st0">
+  <div class="flex flex-col min-h-screen bg-st0">
     <Navigation v-if="navigation" :authorized="userStore.authorized" />
-    <RouterView />
+    <RouterView class="flex-grow" />
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { RouterView } from "vue-router";
 import Navigation from "@/components/Navigation.vue";
 import { useUserStore } from "@/stores/counter.js";
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
 export default {
@@ -27,7 +27,7 @@ export default {
         (newRoute) => {
           navigation.value = newRoute !== "LoginView" && newRoute !== "RegistrationView";
         },
-        {immediate: true}
+        { immediate: true }
     );
 
     return {
@@ -37,4 +37,3 @@ export default {
   },
 };
 </script>
-

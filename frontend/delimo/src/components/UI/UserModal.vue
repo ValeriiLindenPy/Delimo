@@ -23,12 +23,12 @@
     </ul>
     <ul v-else>
       <li>
-        <button class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
+        <button @click="goLogin" class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
           Ulogujte se
         </button>
       </li>
       <li>
-        <button class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
+        <button @click="goRegistration" class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
           Registrujte se
         </button>
       </li>
@@ -69,6 +69,14 @@ export default {
     },
     goOglasi() {
       this.$router.push("/users/" + this.useUserStore.userId + "/oglasi");
+      this.$emit("close");
+    },
+    goLogin() {
+      this.$router.push("/login");
+      this.$emit("close");
+    },
+    goRegistration() {
+      this.$router.push("/registration");
       this.$emit("close");
     }
   },
