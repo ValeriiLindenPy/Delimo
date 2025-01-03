@@ -4,7 +4,7 @@
       <div class="flex gap-2 justify-center items-center">
         <b class="text-3xl font-extrabold text-st5">Del</b>
         <i class="fa-solid fa-arrows-spin text-3xl text-st3"></i>
-        <b class="text-3xl font-extrabold text-st5">imo</b>
+        <b class="text-3xl font-extra bold text-st5">imo</b>
       </div>
       <label class="pt-3 text-xs">EMAIL:</label>
       <input class="border-b-2 border-st5 bg-st2 transition duration-500
@@ -38,8 +38,8 @@ border-b-2 border-st5 bg-st2 transition duration-500
 border-b-2 border-st5 bg-st2 transition duration-500
       text-st5 focus:outline-none focus:ring-2
       focus:ring-st5 checked:bg-st5 checked:border-st5">
-        <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900
-        dark:text-gray-300">Imam više od 16 godina</label>
+        <label for="default-checkbox" class="ms-2 text-sm font-medium text-st5
+        dark:text-st5">Imam više od 16 godina</label>
       </div>
 
       <div class="flex items-center justify-center pt-2">

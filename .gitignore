@@ -19,6 +19,7 @@ frontend/delimo/src/assets/constants.js
 .idea/**/.name
 
 # Spring/Java specific ignores
+/backend/
 backend/target/
 backend/.settings/
 backend/.classpath

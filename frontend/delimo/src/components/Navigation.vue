@@ -35,9 +35,9 @@
       <!-- Logo -->
       <router-link to="/">
         <div class="flex gap-2">
-          <b class="text-3xl font-extrabold text-st5">Daj</b>
+          <b class="text-3xl font-extrabold text-st5">Del</b>
           <i class="fa-solid fa-arrows-spin text-3xl text-st3" aria-hidden="true"></i>
-          <b class="text-3xl font-extrabold text-st5">Dam</b>
+          <b class="text-3xl font-extrabold text-st5">imo</b>
         </div>
       </router-link>
 
