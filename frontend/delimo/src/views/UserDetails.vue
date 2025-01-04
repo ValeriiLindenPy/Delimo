@@ -28,6 +28,7 @@
 <script>
 import {users} from "@/assets/users.js";
 import UserDetailsUI from "@/components/UI/UserDetailsUI.vue";
+import {useUserStore} from "@/stores/counter.js";
 
 
 export default {
@@ -35,7 +36,7 @@ export default {
   components: {UserDetailsUI},
   data() {
     return {
-      user: null,
+      user: useUserStore().profile,
     }
   },
 

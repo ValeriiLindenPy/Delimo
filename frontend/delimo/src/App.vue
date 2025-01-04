@@ -6,21 +6,21 @@
 </template>
 
 <script>
-import { RouterView } from "vue-router";
+import { ref, watch, onMounted } from "vue";
+import { useRoute, RouterView } from "vue-router";
 import Navigation from "@/components/Navigation.vue";
 import { useUserStore } from "@/stores/counter.js";
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
 
 export default {
+  name: "App",
   components: {
     Navigation,
     RouterView,
   },
   setup() {
     const userStore = useUserStore();
-    const navigation = ref(true);
     const route = useRoute();
+    const navigation = ref(true);
 
     watch(
         () => route.name,
@@ -37,3 +37,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* your styles here */
+</style>
