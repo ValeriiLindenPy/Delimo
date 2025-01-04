@@ -18,6 +18,10 @@ public class User {
      *  имя или логин пользователя
      */
     private String name;
+
+    private String password;
+
+    private String role;
     /**
      * уникальный адрес электронной почты
      */
