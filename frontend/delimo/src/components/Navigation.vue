@@ -1,7 +1,7 @@
 <template>
   <!-- Desktop Header -->
   <header class="hidden md:block sticky top-0 bg-st5 z-10">
-    <nav class="container flex flex-col sm:flex-row items-center gap-4 py-6">
+    <div class="container flex flex-col sm:flex-row items-center gap-4 py-6">
       <!-- Logo -->
       <router-link to="/">
         <div class="flex-none items-center gap-2">
@@ -12,13 +12,15 @@
       </router-link>
 
       <!-- Search -->
-      <DesktopSearch :go-items="goItems"/>
+      <DesktopSearch :go-items="goItems" />
 
       <!-- Authorization Items -->
       <AuthorizationItems :authorized="authorized" />
-    </nav>
+    </div>
+
+    <!-- DesktopBar (included in sticky header) -->
+    <DesktopBar class="bg-st5 border-t border-st4" />
   </header>
-  <DesktopBar class="hidden md:block"/>
 
   <!-- Mobile Header -->
   <header class="block md:hidden sticky top-0 bg-st1 z-10">
@@ -55,7 +57,7 @@
   </header>
 
   <!-- Mobile Search (sticky) -->
-  <MobileSearch :go-items="goItems"/>
+  <MobileSearch :go-items="goItems" />
 
   <!-- User Modal (moved outside the header, higher z-index) -->
   <transition>
@@ -67,8 +69,8 @@
         @close="isModalOpen = false"
     />
   </transition>
-
 </template>
+
 
 <script>
 import UserModal from "@/components/UI/UserModal.vue";
