@@ -2,7 +2,7 @@
   <div class="container mx-auto">
     <h1 class="text-white pt-6 text-2xl font-bold text-center">Moj Nalog</h1>
     <div class="flex pt-6 gap-3 items-start justify-center">
-      <UserDetailsUI class="grow mt-2" :user="user" />
+      <UserDetailsUI v-if="user" class="grow mt-2" :user="user" />
 
       <div class="hidden bg-white rounded-lg mt-2 flex-col w-1/3 md:flex">
         <div @click="goOglasi" class="flex p-5 hover:bg-st4 cursor-pointer hover:text-white rounded-t-lg items-center">
@@ -36,8 +36,14 @@ export default {
   components: {UserDetailsUI},
   data() {
     return {
-      user: useUserStore().profile,
+      user: null,
     }
+  },
+  mounted() {
+    console.log("Component mounted.");
+    console.log(useUserStore().profile);
+    this.user = useUserStore().profile
+    console.log(this.user)
   },
 
   created() {

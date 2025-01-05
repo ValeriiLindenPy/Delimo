@@ -24,7 +24,7 @@ import PostList from "@/components/PostList.vue";
 import {items} from "@/assets/items.js";
 import {useUserStore} from "@/stores/counter.js";
 import apiClient from "@/services/api.js";
-import loginView from "@/views/LoginView.vue";
+
 
 
 export default {
@@ -39,10 +39,12 @@ export default {
   },
   async mounted() {
     if (!this.store.authorized) {
-      const response = await apiClient.get("/user-data", {withCredentials: true})
+      await apiClient.get("/user-data", {withCredentials: true})
           .then((res) => {
             this.store.authorized = true;
             this.store.setUserInfo(res.data);
+          }).catch((err) => {
+            this.store.authorized = false;
           })
 
     }

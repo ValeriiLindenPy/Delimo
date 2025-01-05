@@ -16,7 +16,7 @@
         </button>
       </li>
       <li>
-        <button class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
+        <button @click="goLogout" class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
           Odjavite se
         </button>
       </li>
@@ -78,7 +78,10 @@ export default {
     goRegistration() {
       this.$router.push("/registration");
       this.$emit("close");
-    }
+    },
+  goLogout() {
+    window.location.href = "http://localhost:8080/logout";
+  }
   },
 };
 </script>

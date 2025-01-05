@@ -16,7 +16,7 @@
 </template>
 <script>
 export default {
-  name: 'DesctopSearch',
+  name: 'DesktopSearch',
   props: {
     goItems: {}
   }

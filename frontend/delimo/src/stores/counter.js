@@ -9,6 +9,7 @@ export const useUserStore = defineStore("user", {
       id: null,
       name: "",
       email: "",
+      phone: "+381 621110623",
     },
     authorized: false,
   }),

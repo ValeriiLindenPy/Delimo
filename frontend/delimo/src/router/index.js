@@ -6,6 +6,7 @@ import UserDetails from '../views/UserDetails.vue';
 import UserOglasi from '../views/UserOglasi.vue';
 import LoginView from '../views/LoginView.vue';
 import RegistrationView from '../views/RegistrationView.vue';
+import AddItem from '../views/AddItem.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,11 @@ const router = createRouter({
       path: '/items',
       name: 'items',
       component: ItemsView,
+    },
+    {
+      path: '/items/adding-item',
+      name: 'AddItem',
+      component: AddItem,
     },
     {
       path: '/items/:id',

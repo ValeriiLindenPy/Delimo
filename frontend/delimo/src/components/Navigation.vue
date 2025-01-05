@@ -12,12 +12,13 @@
       </router-link>
 
       <!-- Search -->
-      <DesctopSearch :go-items="goItems"/>
+      <DesktopSearch :go-items="goItems"/>
 
       <!-- Authorization Items -->
       <AuthorizationItems :authorized="authorized" />
     </nav>
   </header>
+  <DesktopBar class="hidden md:block"/>
 
   <!-- Mobile Header -->
   <header class="block md:hidden sticky top-0 bg-st1 z-10">
@@ -66,20 +67,23 @@
         @close="isModalOpen = false"
     />
   </transition>
+
 </template>
 
 <script>
 import UserModal from "@/components/UI/UserModal.vue";
 import ModalMenu from "@/components/ModalMenu.vue";
 import AuthorizationItems from "@/components/AuthorizationItems.vue";
-import DesctopSearch from "@/components/UI/DesctopSearch.vue";
 import MobileSearch from "@/components/UI/MobileSearch.vue";
+import DesktopBar from "@/components/DesktopBar.vue";
+import DesktopSearch from "@/components/UI/DesktopSearch.vue";
 
 export default {
   name: "Navigation",
   components: {
+    DesktopBar,
     MobileSearch,
-    DesctopSearch,
+    DesktopSearch,
     ModalMenu,
     AuthorizationItems,
     UserModal,
@@ -99,6 +103,11 @@ export default {
   methods: {
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
+      if (this.menuOpen) {
+        document.body.classList.add("overflow-hidden");
+      } else {
+        document.body.classList.remove("overflow-hidden");
+      }
     },
     toggleModal() {
       this.isModalOpen = !this.isModalOpen;

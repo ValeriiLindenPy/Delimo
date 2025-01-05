@@ -4,7 +4,7 @@
         class="hover:bg-st3 hover:text-st5 flex items-center justify-center border-solid h-full p-5 text-white rounded-lg border-st3 border-2 transition-all duration-300">
       Moj nalog
     </button>
-    <button
+    <button @click="goLogout"
         class="hover:bg-st3 hover:text-st5 flex items-center justify-center border-solid h-full p-5 text-white rounded-lg border-st3 border-2 transition-all duration-300">
       Odjavite se
     </button>
@@ -27,11 +27,6 @@ import {useUserStore} from "@/stores/counter.js";
 
 export default {
   name: 'AuthorizationItems',
-  data() {
-    return {
-      useUserStoreId: useUserStore().userId,
-    }
-  },
   props: {
     authorized: {
       type: Boolean,
@@ -40,13 +35,17 @@ export default {
   },
   methods: {
     goUser() {
-      this.$router.push("/users/"+ this.useUserStoreId);
+      const userId = Number(useUserStore().userId);
+      this.$router.push("/users/"+ userId);
     },
     goLogin() {
       this.$router.push("/login");
     },
     goRegistration() {
       this.$router.push("/registration");
+    },
+    goLogout() {
+      window.location.href = "http://localhost:8080/logout";
     }
   }
 }

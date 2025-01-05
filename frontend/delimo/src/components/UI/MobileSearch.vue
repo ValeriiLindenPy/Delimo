@@ -1,5 +1,5 @@
 <template>
-  <div class="block md:hidden sticky top-[68px] w-full py-2 bg-st2 z-20">
+  <div class="block md:hidden sticky top-[68px] w-full py-2 bg-st2">
     <div class="mx-3 rounded-lg bg-white h-10">
       <div class="flex h-full">
         <input
