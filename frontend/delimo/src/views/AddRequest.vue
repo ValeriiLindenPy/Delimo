@@ -3,7 +3,7 @@
 <template>
   <div class="flex justify-center mt-2 items-center md:container">
     <div class="bg-st2 rounded-lg w-full md:w-1/2 p-4 text-center">
-      <h1 class="text-2xl mb-4">Dodaj stvar</h1>
+      <h1 class="text-2xl mb-4">Kreiraj zahtev</h1>
       <form @submit.prevent="submitForm" class="flex flex-col text-start space-y-4">
         <!-- Name -->
         <div>
@@ -108,41 +108,13 @@
           />
         </div>
 
-        <!-- Upload photos -->
-        <div>
-          <label class="text-sm font-medium text-st5">Fotografije (maks. 5)</label>
-          <div
-              class="cursor-pointer bg-gray-400 p-3 rounded-lg mt-2 text-center hover:bg-st5 hover:text-white flex items-center justify-center"
-          >
-            <label for="custom-file-input" class="w-full">
-              Kliknite da dodate fotografije
-              <input
-                  id="custom-file-input"
-                  type="file"
-                  @change="handleFileUpload"
-                  class="hidden"
-                  accept="image/*"
-                  multiple
-              />
-            </label>
-          </div>
-          <ul class="mt-2">
-            <li
-                v-for="(file, index) in uploadedFiles"
-                :key="index"
-                class="text-sm text-st5"
-            >
-              {{ file.name }}
-            </li>
-          </ul>
-        </div>
 
         <!-- Submit button -->
         <button
             type="submit"
             class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
         >
-          Dodaj stvar
+          Kreiraj zahtev
         </button>
       </form>
     </div>
@@ -154,7 +126,7 @@
 import { useUserStore } from "@/stores/counter.js";
 
 export default {
-  name:"AddItem",
+  name: "AddRequest",
   data() {
     return {
       uploadedFiles: [],
