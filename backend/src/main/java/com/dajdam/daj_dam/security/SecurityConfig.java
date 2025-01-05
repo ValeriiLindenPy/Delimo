@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 ((request, response, authentication) ->
                                 response.sendRedirect("http://localhost:5173/")))
                 )
+                .logout(logout -> logout.logoutSuccessUrl("http://localhost:5173/"))
                 .formLogin(Customizer.withDefaults());
 //                .sessionManagement(session ->
 //                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -45,23 +46,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService () {
-//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-//
-//        if (!manager.userExists("user1")) {
-//            CustomUserDetails user = new CustomUserDetails(
-//                userRepository.save(
-//                        User.builder()
-//                                .password("{noop}password")
-//                                .role("USER").name("user1").build()
-//                )
-//            );
-//            manager.createUser(user);
-//        }
-//
-//        return manager;
-//    }
 
 }
 
