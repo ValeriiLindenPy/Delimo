@@ -8,6 +8,7 @@ import LoginView from '../views/LoginView.vue';
 import RegistrationView from '../views/RegistrationView.vue';
 import AddItem from '../views/AddItem.vue';
 import AddRequest from '../views/AddRequest.vue';
+import EditUserDetails from '../views/EditUserDetails.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +57,11 @@ const router = createRouter({
       path: '/users/:id/oglasi',
       name: 'UserOglasi',
       component: UserOglasi
+    },
+    {
+      path: '/users/:id/edit',
+      name: 'EditUserDetails',
+      component: EditUserDetails
     },
   ],
 })

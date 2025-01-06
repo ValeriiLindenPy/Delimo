@@ -7,13 +7,13 @@
     </div>
     <p class="mb-2 border-b-2 border-solid pb-1">Ime: <b>{{ user.name }}</b></p>
     <p class="mb-2 border-b-2 border-solid pb-1">Email: <b>{{ user.email }}</b></p>
-    <p v-if="user.telephone" class="mb-2 border-b-2 border-solid pb-1">Telefon: <b>{{ user.telephone }}</b></p>
+    <p v-if="user.phone" class="mb-2 border-b-2 border-solid pb-1">Telefon: <b>{{ user.phone }}</b></p>
     <p v-if="user.viber" class="mb-2 border-b-2 border-solid pb-1">Viber: <b>{{ user.viber }}</b></p>
-    <p v-if="user.cityID" class="mb-2 border-b-2 border-solid pb-1">Grad: <b>{{ city }}</b></p>
-    <p v-if="user.address" class="mb-2 border-b-2 border-solid pb-1">Adresa: <b>{{ user.address }}</b></p>
+    <p v-if="user.grad" class="mb-2 border-b-2 border-solid pb-1">Grad: <b>{{ user.grad }}</b></p>
+    <p v-if="user.street" class="mb-2 border-b-2 border-solid pb-1">Ulica: <b>{{ user.street }}</b></p>
 
     <div class="flex justify-center">
-      <button class="p-3 mt-5 bg-st4 text-white rounded-lg">
+      <button @click="goEdit" class="p-3 mt-5 bg-st4 text-white rounded-lg">
         Izmena ličnih podataka
       </button>
     </div>
@@ -25,6 +25,7 @@
 
 <script>
 import {cities} from "@/assets/cities.js";
+import {useUserStore} from "@/stores/counter.js";
 
 export default {
   name: 'UserDetailsUI',
@@ -34,12 +35,11 @@ export default {
       required: true
     }
   },
-  computed: {
-    city() {
-      const cityID = this.user.cityID;
-      return cities.find(c => c.id === cityID)?.name;
+  methods: {
+     async goEdit() {
+      await this.$router.push("/users/" + useUserStore().userId + "/edit");
     }
-  }
+  },
 }
 
 
