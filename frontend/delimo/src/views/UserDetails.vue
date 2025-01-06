@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import {users} from "@/assets/users.js";
 import UserDetailsUI from "@/components/UI/UserDetailsUI.vue";
 import {useUserStore} from "@/stores/counter.js";
 
@@ -39,19 +38,15 @@ export default {
       user: null,
     }
   },
-  mounted() {
-    console.log("Component mounted.");
-    console.log(useUserStore().profile);
-    this.user = useUserStore().profile
-    console.log(this.user)
+
+  computed: {
+    userProfile() {
+      return useUserStore().profile;
+    }
   },
-
-  created() {
-    const userId = Number(this.$route.params.id);
-    this.user = users.find(user => user.id === userId);
-
-    if (this.user === null) {
-      console.warn('No users found with id -' + userId);
+  mounted() {
+    if (this.userProfile) {
+      this.user = this.userProfile
     }
   },
   methods: {

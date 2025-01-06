@@ -1,5 +1,4 @@
 import {defineStore} from "pinia";
-import apiClient from "@/services/api.js";
 
 
 export const useUserStore = defineStore("user", {
@@ -10,6 +9,9 @@ export const useUserStore = defineStore("user", {
       name: "",
       email: "",
       phone: "+381 621110623",
+      grad: "Novi Sad",
+      street: "Omladinskog pokreta 2",
+      viber: ""
     },
     authorized: false,
   }),

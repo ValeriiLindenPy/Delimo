@@ -1,0 +1,155 @@
+
+
+<template>
+  <div class="flex justify-center mt-2 items-center md:container">
+    <div class="bg-st2 rounded-lg w-full md:w-1/2 p-4 text-center">
+      <h1 class="text-2xl mb-4">Izmena ličnih podataka</h1>
+      <form @submit.prevent="submitForm" class="flex flex-col text-start space-y-4">
+
+        <!-- Name -->
+        <div>
+          <label for="name" class="text-sm font-medium text-st5">Ime</label>
+          <input
+              id="name"
+              type="text"
+              v-model="formData.name"
+              class="w-full mt-1 p-2 border rounded-md text-st5"
+              placeholder="Unesite ime"
+              required
+          />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="text-sm font-medium text-st5">Email</label>
+          <input
+              id="email"
+              type="email"
+              v-model="formData.email"
+              class="w-full mt-1 p-2 border rounded-md text-st5"
+              placeholder="Unesite email"
+              required
+          />
+        </div>
+
+
+
+        <!-- Phone -->
+        <div>
+          <label for="phone" class="text-sm font-medium text-st5">Telefon</label>
+          <input
+              id="phone"
+              type="text"
+              v-model="formData.phone"
+              class="w-full mt-1 p-2 border rounded-md text-st5"
+              placeholder="+381 ..."
+          />
+        </div>
+
+        <!-- Viber -->
+        <div>
+          <label for="viber" class="text-sm font-medium text-st5">Viber</label>
+          <input
+              id="viber"
+              type="text"
+              v-model="formData.viber"
+              class="w-full mt-1 p-2 border rounded-md text-st5"
+              placeholder="+381 ..."
+          />
+        </div>
+
+        <!-- Location -->
+        <div>
+          <label for="city" class="text-sm font-medium text-st5">Grad</label>
+          <select
+              id="city"
+              v-model="formData.grad"
+              class="w-full mt-1 p-2 border rounded-md text-st5"
+          >
+            <option value="" disabled>Izaberite grad</option>
+            <option v-for="city in cities" :key="city.id" :value="city.name">
+              {{ city.name }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label for="street" class="text-sm font-medium text-st5">Ulica</label>
+          <input
+              id="street"
+              type="text"
+              v-model="formData.street"
+              class="w-full mt-1 p-2 border rounded-md text-st5"
+              placeholder="Unesite ulicu"
+          />
+        </div>
+
+
+        <!-- Submit button -->
+        <button
+            type="submit"
+            class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
+        >
+          Izmeni
+        </button>
+      </form>
+    </div>
+  </div>
+</template>
+
+
+<script>
+import { useUserStore } from "@/stores/counter.js";
+import {cities} from "@/assets/cities.js";
+
+export default {
+  name: "EditUserDetails",
+  data() {
+    return {
+      cities,
+      formData: {
+        name: "",
+        email: "",
+        grad: "",
+        street: "",
+        phone: "", // Added phone
+        viber: "", // Added viber
+      },
+    };
+  },
+  computed: {
+    userProfile() {
+      return useUserStore().profile;
+    },
+  },
+  methods: {
+
+    submitForm() {
+      console.log("Podaci poslati:", this.formData);
+      alert("Stvar je uspešno dodata!" + this.formData.toString());
+      // Reset the form
+      this.formData = {
+        name: this.userProfile.name,
+        email: this.userProfile.email,
+        grad: this.userProfile.grad || "",
+        street: this.userProfile.street || "",
+        phone: this.userProfile.phone || "",
+        viber: this.userProfile.viber || "",
+
+      };
+      this.isFree = false;
+    },
+  },
+  mounted() {
+    // Auto-fill phone, viber, and location if available in the user profile
+    if (this.userProfile) {
+      this.formData.name = this.userProfile.name || "";
+      this.formData.email = this.userProfile.email || "";
+      this.formData.phone = this.userProfile.phone || "";
+      this.formData.viber = this.userProfile.viber || "";
+      this.formData.grad = this.userProfile.grad || "";
+      this.formData.street = this.userProfile.street || "";
+    }
+  },
+};
+</script>
