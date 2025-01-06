@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import {cities} from "@/assets/cities.js";
+
 import {useUserStore} from "@/stores/counter.js";
 
 export default {

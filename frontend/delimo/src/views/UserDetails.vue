@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import {users} from "@/assets/users.js";
 import UserDetailsUI from "@/components/UI/UserDetailsUI.vue";
 import {useUserStore} from "@/stores/counter.js";
 
