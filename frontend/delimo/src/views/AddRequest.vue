@@ -33,7 +33,10 @@
 
         <!-- Max rent period -->
         <div>
-          <label for="maxDays" class="text-sm font-medium text-st5">Maksimalni period (dani)</label>
+          <label for="maxDays" class="text-sm font-medium text-st5 items-center flex gap-1">
+            <p>Maksimalni period (dani)</p>
+            <i class="text-gray-500">(Ovo je period na koji vam je potrebna stvar koju tražite)</i>
+          </label>
           <input
               id="maxDays"
               type="number"
@@ -47,7 +50,10 @@
 
         <!-- Price -->
         <div class="flex flex-col">
-          <label for="price" class="text-sm font-medium text-st5">Cena</label>
+          <label for="maxDays" class="items-center text-sm font-medium text-st5 flex gap-2">
+            <p>Cena</p>
+            <i class="text-gray-500">(Ovo je cena koju možete ponuditi za stvar tokom perioda iznajmljivanja)</i>
+          </label>
           <div class="flex items-center gap-4">
             <input
                 id="price"
