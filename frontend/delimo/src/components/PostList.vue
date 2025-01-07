@@ -1,25 +1,40 @@
 <template>
   <div class="container py-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-    <PostCard
+    <div
         v-for="post in posts"
         :key="post.id"
-        :post="post"
-    />
+    >
+
+      <UserPostCard
+          v-if="isEditable"
+          :post="post"
+      />
+      <PostCard
+          v-else
+          :post="post"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import PostCard from "./UI/PostCard.vue";
+import UserPostCard from "@/components/UI/UserPostCard.vue";
 
 export default {
   name: "PostList",
   components: {
+    UserPostCard,
     PostCard
   },
   props: {
     posts: {
       type: Array,
       required: true
+    },
+    isEditable: {
+      type: Boolean,
+      default: false
     }
   }
 };
