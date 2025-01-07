@@ -1,20 +1,20 @@
 <template>
   <div class="container flex flex-col justify-center items-center">
-    <h1 class="text-white pt-3 text-2xl font-bold">Moji Oglasi</h1>
+    <h1 class="text-white pt-3 text-2xl font-bold">Moji Zahtevi</h1>
 
     <div class="mt-2">
-      <PostList :is-editable="true" :posts="posts" />
+      <RequestList :is-editable="true" :posts="posts" />
     </div>
   </div>
 </template>
 
 <script>
-import PostList from "@/components/PostList.vue";
+import RequestList from "@/components/RequestList.vue";
 import { items } from "@/assets/items.js";
 
 export default {
-  name: "UserOglasi",
-  components: { PostList },
+  name: "UserRequests",
+  components: { RequestList: RequestList },
 
   data() {
     return {

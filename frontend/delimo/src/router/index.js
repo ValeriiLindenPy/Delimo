@@ -3,13 +3,16 @@ import HomeView from '../views/HomeView.vue'
 import ItemsView from '../views/ItemsView.vue'
 import ItemDetails from '../views/ItemDetails.vue';
 import UserDetails from '../views/UserDetails.vue';
-import UserOglasi from '../views/UserOglasi.vue';
+import UserItems from '../views/UserItems.vue';
 import LoginView from '../views/LoginView.vue';
 import RegistrationView from '../views/RegistrationView.vue';
 import AddItem from '../views/AddItem.vue';
 import AddRequest from '../views/AddRequest.vue';
 import EditUserDetails from '../views/EditUserDetails.vue';
 import EditItem from '../views/EditItem.vue';
+import RequestDetails from "@/views/RequestDetails.vue";
+import UserRequests from "@/views/UserRequests.vue";
+import EditRequest from "@/views/EditRequest.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,14 +53,24 @@ const router = createRouter({
       component: ItemDetails
     },
     {
+      path: '/requests/:id',
+      name: 'RequestDetails',
+      component: RequestDetails
+    },
+    {
       path: '/users/:id',
       name: 'UserDetails',
       component: UserDetails
     },
     {
-      path: '/users/:id/oglasi',
-      name: 'UserOglasi',
-      component: UserOglasi
+      path: '/users/:id/items',
+      name: 'UserItems',
+      component: UserItems
+    },
+    {
+      path: '/users/:id/requests',
+      name: 'UserRequests',
+      component: UserRequests
     },
     {
       path: '/users/:id/edit',
@@ -68,6 +81,11 @@ const router = createRouter({
       path: '/items/:id/edit',
       name: 'EditItem',
       component: EditItem
+    },
+    {
+      path: '/requests/:id/edit',
+      name: 'EditRequest',
+      component: EditRequest
     },
   ],
 })

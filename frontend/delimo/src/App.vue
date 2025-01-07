@@ -2,7 +2,7 @@
   <div class="flex flex-col min-h-screen bg-st0">
     <Navigation v-if="navigation" :authorized="userStore.authorized" />
     <RouterView class="flex-grow" />
-    <Footer />
+    <Footer v-if="navigation" />
   </div>
 </template>
 

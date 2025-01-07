@@ -1,20 +1,15 @@
 <template>
-  <div class="container">
-    <div class="grid grid-cols-1 pt-6 md:grid-cols-2 gap-1">
+  <div class="container flex justify-center">
+    <div class="pt-6 flex flex-col w-full md:w-2/3">
       <!--Images and contacts-->
       <div class="flex flex-col justify-center">
-        <div class="images-carousel mb-2">
-          <Carousel v-if="item" :images="item.image" />
-        </div>
-        <ContactsUI v-if="item && item.available" :name="item.name" :telephone="item.owner.telephone" :viber="item.owner.viber" />
+        <ContactsUI v-if="item" :name="item.name" :telephone="item.owner.telephone" :viber="item.owner.viber" />
       </div>
 
       <!--INFO-->
       <div>
         <NameUI v-if="item" :name="item.name" />
-        <DescriptionUI v-if="item" :description="item.description" />
-        <AvailableUI v-if="item" :available="item.available" />
-        <MaxPeriodUI v-if="item" :max-period-days="item.maxPeriodDays" />
+        <MaxPeriodUI v-if="item" :is-request="true" :max-period-days="item.maxPeriodDays" />
         <AddressUI v-if="item" :address="address" />
       </div>
     </div>
@@ -24,30 +19,24 @@
 <script>
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
-import Carousel from "@/components/UI/Carousel.vue";
 import NameUI from "@/components/UI/NameUI.vue";
-import DescriptionUI from "@/components/UI/DescriptionUI.vue";
-import AvailableUI from "@/components/UI/AvailableUI.vue";
 import MaxPeriodUI from "@/components/UI/MaxPeriodUI.vue";
 import AddressUI from "@/components/UI/AddressUI.vue";
 import ContactsUI from "@/components/UI/ContactsUI.vue";
-import { items } from "@/assets/items.js";
+import {requests} from "@/assets/requests.js";
 
 export default {
-  name: "ItemDetails",
+  name: "RequestDetails",
   components: {
     ContactsUI,
     AddressUI,
     MaxPeriodUI,
-    AvailableUI,
-    DescriptionUI,
     NameUI,
-    Carousel,
   },
   setup() {
     const route = useRoute();
     const itemId = parseInt(route.params.id, 10); // Ensure ID is a number
-    const item = ref(items.find((item) => item.id === itemId));
+    const item = ref(requests.find((item) => item.id === itemId));
 
     const address = computed(() => {
       if (item.value && item.value.owner) {
