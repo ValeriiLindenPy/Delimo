@@ -13,7 +13,7 @@ export const items = [
             "https://i.ibb.co/DL5VbSY/27504-750x0.jpg",
             "https://i.ibb.co/zHNgfhB/44819-750x0.jpg",
         ],
-        pricePerDay: 100,
+        pricePerDay: null,
         owner: {
             id: 1,
             city: cities.find(c => c.id === users.find(user => user.id === 1).cityID).name,

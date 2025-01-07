@@ -9,6 +9,7 @@ import RegistrationView from '../views/RegistrationView.vue';
 import AddItem from '../views/AddItem.vue';
 import AddRequest from '../views/AddRequest.vue';
 import EditUserDetails from '../views/EditUserDetails.vue';
+import EditItem from '../views/EditItem.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +63,11 @@ const router = createRouter({
       path: '/users/:id/edit',
       name: 'EditUserDetails',
       component: EditUserDetails
+    },
+    {
+      path: '/items/:id/edit',
+      name: 'EditItem',
+      component: EditItem
     },
   ],
 })

@@ -2,9 +2,8 @@
   <div class="container flex flex-col justify-center items-center">
     <h1 class="text-white pt-3 text-2xl font-bold">Moji Oglasi</h1>
 
-    <!-- Pass the actual array `posts` to PostList using :posts="posts" -->
     <div class="mt-2">
-      <PostList :posts="posts" />
+      <PostList :is-editable="true" :posts="posts" />
     </div>
   </div>
 </template>
