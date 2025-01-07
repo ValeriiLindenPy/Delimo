@@ -2,6 +2,7 @@
   <div class="flex flex-col min-h-screen bg-st0">
     <Navigation v-if="navigation" :authorized="userStore.authorized" />
     <RouterView class="flex-grow" />
+    <Footer />
   </div>
 </template>
 
@@ -10,10 +11,12 @@ import { ref, watch, onMounted } from "vue";
 import { useRoute, RouterView } from "vue-router";
 import Navigation from "@/components/Navigation.vue";
 import { useUserStore } from "@/stores/counter.js";
+import Footer from "@/views/Footer.vue";
 
 export default {
   name: "App",
   components: {
+    Footer,
     Navigation,
     RouterView,
   },
