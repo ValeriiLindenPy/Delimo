@@ -5,7 +5,10 @@
             >
           {{ maxPeriodDays }} dan(a)
         </span>
-    <p class="flex items-center justify-center pl-2 text-sm text-gray-500">
+    <p v-if="isRequest" class="flex items-center justify-center pl-2 text-sm text-gray-500">
+      (Ovo je period na koji autor zahteva želi da iznajmi stvar)
+    </p>
+    <p v-else class="flex items-center justify-center pl-2 text-sm text-gray-500">
       (Ovo je maksimalni period na koji vam vlasnik može pozajmiti ovu stvar)
     </p>
   </div>
@@ -14,7 +17,11 @@
 export default {
   name: 'MaxPeriodUI',
   props: {
-    maxPeriodDays: {}
+    maxPeriodDays: {},
+    isRequest: {
+      type: Boolean,
+      required: false
+    }
   }
 }
 </script>

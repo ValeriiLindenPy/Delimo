@@ -18,14 +18,14 @@
 </template>
 
 <script>
-import PostCard from "./UI/PostCard.vue";
-import UserPostCard from "@/components/UI/UserPostCard.vue";
+import ItemCard from "./UI/ItemCard.vue";
+import UserItemCard from "@/components/UI/UserItemCard.vue";
 
 export default {
   name: "PostList",
   components: {
-    UserPostCard,
-    PostCard
+    UserPostCard: UserItemCard,
+    PostCard: ItemCard
   },
   props: {
     posts: {

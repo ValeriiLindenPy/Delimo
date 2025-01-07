@@ -15,25 +15,38 @@
 
   <PostList class="mt-3" :posts="items" />
 
+  <div class="flex justify-center items-center mt-4">
+    <hr class="flex-grow border-white">
+    <p class="mx-4 text-white font-bold">Svi Zahtevi</p>
+    <hr class="flex-grow border-white">
+  </div>
+
+  <RequestList :posts="requests"/>
+
+
 
 </template>
 
 <script>
 
-import PostList from "@/components/PostList.vue";
+import ItemList from "@/components/ItemList.vue";
 import {items} from "@/assets/items.js";
 import {useUserStore} from "@/stores/counter.js";
 import apiClient from "@/services/api.js";
+import RequestList from "@/components/RequestList.vue";
+import {requests} from "@/assets/requests.js";
 
 
 
 export default {
   components: {
-    PostList
+    PostList: ItemList,
+    RequestList: RequestList,
   },
   data() {
     return {
-      items: items,
+      items: items.slice(0,6),
+      requests: requests.slice(0,6),
       store: useUserStore()
     }
   },

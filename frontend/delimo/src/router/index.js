@@ -10,6 +10,7 @@ import AddItem from '../views/AddItem.vue';
 import AddRequest from '../views/AddRequest.vue';
 import EditUserDetails from '../views/EditUserDetails.vue';
 import EditItem from '../views/EditItem.vue';
+import RequestDetails from "@/views/RequestDetails.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,6 +49,11 @@ const router = createRouter({
       path: '/items/:id',
       name: 'ItemDetails',
       component: ItemDetails
+    },
+    {
+      path: '/requests/:id',
+      name: 'RequestDetails',
+      component: RequestDetails
     },
     {
       path: '/users/:id',

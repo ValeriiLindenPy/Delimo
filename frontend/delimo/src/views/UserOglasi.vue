@@ -9,12 +9,12 @@
 </template>
 
 <script>
-import PostList from "@/components/PostList.vue";
+import ItemList from "@/components/ItemList.vue";
 import { items } from "@/assets/items.js";
 
 export default {
   name: "UserOglasi",
-  components: { PostList },
+  components: { PostList: ItemList },
 
   data() {
     return {
