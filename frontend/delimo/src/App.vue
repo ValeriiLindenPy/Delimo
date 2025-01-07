@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch } from "vue";
 import { useRoute, RouterView } from "vue-router";
 import Navigation from "@/components/Navigation.vue";
 import { useUserStore } from "@/stores/counter.js";
