@@ -5,18 +5,13 @@
            hover:shadow-xl transition-shadow"
   >
     <!-- 1) Оборачиваем контент, который должен вести на детальную страницу, в router-link -->
-    <router-link :to="`/items/${post.id}`" class="block">
+    <router-link :to="`/requests/${post.id}`" class="block">
       <div>
-        <!-- Изображение -->
-        <img
-            :src="post?.image?.[0] || 'default-image.jpg'"
-            :alt="post?.name || 'Default alt text'"
-            class="w-full h-48 object-cover"
-        />
+
 
         <!-- Контент -->
         <div class="p-4">
-          <div class="flex justify-between items-center mb-2">
+          <div class="flex justify-between gap-1 items-center mb-2">
             <h3 class="font-bold text-lg truncate">{{ post.name }}</h3>
             <span
                 class="bg-st2 text-st3 text-sm font-bold px-3 py-1 rounded
@@ -25,9 +20,6 @@
               {{ post.maxPeriodDays }} dan(a)
             </span>
           </div>
-          <p class="text-gray-600 text-sm truncate">
-            {{ post.description }}
-          </p>
         </div>
       </div>
     </router-link>
@@ -40,18 +32,6 @@
         <span v-else>besplatno</span>
       </div>
 
-      <div v-if="post.available" class="flex items-center gap-3 text-sm text-gray-500">
-        <span class="flex items-center">
-          <i class="fa-solid fa-hand text-green-500"></i>
-          <span class="ml-1">Dostupno</span>
-        </span>
-      </div>
-      <div v-else class="flex items-center gap-3 text-sm text-gray-500">
-        <span class="flex items-center">
-          <i class="fa-solid fa-hand text-red-500"></i>
-          <span class="ml-1">Rezervacija</span>
-        </span>
-      </div>
     </div>
 
     <!-- 3) Кнопка "Edit" - вынесена за пределы router-link -->
@@ -68,7 +48,7 @@
 
 <script>
 export default {
-  name: "UserPostCard",
+  name: "UserRequestCard",
   props: {
     post: {
       type: Object,
@@ -79,7 +59,7 @@ export default {
     onEdit() {
       // Либо открыть модалку, либо перейти на страницу редактирования
       // Пример с роутером:
-      this.$router.push(`/items/${this.post.id}/edit`);
+      this.$router.push(`/requests/${this.post.id}/edit`);
     }
   }
 };

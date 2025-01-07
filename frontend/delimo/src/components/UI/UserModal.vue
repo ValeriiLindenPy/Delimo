@@ -11,8 +11,13 @@
         </button>
       </li>
       <li>
-        <button @click="goOglasi" class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
-          Moji oglasi
+        <button @click="goItems" class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
+          Moji stvari
+        </button>
+      </li>
+      <li>
+        <button @click="goRequests" class="block w-full text-left py-2 px-4 hover:bg-st2 rounded-md">
+          Moji zahtevi
         </button>
       </li>
       <li>
@@ -67,8 +72,12 @@ export default {
       this.$router.push("/users/" + this.useUserStore.userId);
       this.$emit("close");
     },
-    goOglasi() {
-      this.$router.push("/users/" + this.useUserStore.userId + "/oglasi");
+    goItems() {
+      this.$router.push("/users/" + this.useUserStore.userId + "/items");
+      this.$emit("close");
+    },
+    goRequests() {
+      this.$router.push("/users/" + this.useUserStore.userId + "/requests");
       this.$emit("close");
     },
     goLogin() {

@@ -1,7 +1,7 @@
 
 
 <template>
-<div class="h-20 sticky bottom-0 mt-5 bg-st5 flex flex-col justify-center items-center text-white">
+<div class="h-20 mt-5 bg-st5 flex flex-col justify-center items-center text-white">
   <div class="flex gap-1">
     <b class="text-3xl font-extrabold text-white">Del</b>
     <i class="fa-solid fa-arrows-spin text-3xl text-st3" aria-hidden="true"></i>
