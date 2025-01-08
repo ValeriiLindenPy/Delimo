@@ -2,8 +2,8 @@
   <div class="container bg-st2 hidden md:block">
     <nav class="flex">
       <ul class="flex items-center justify-center text-center font-bold w-full gap-7">
-        <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Početna</li>
-        <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Sve Stvari</li>
+        <li @click="goHome" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Početna</li>
+        <li @click="goItems" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Sve Stvari</li>
         <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Svi Zahtevi</li>
         <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Kako koristiti</li>
         <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">O nama</li>
@@ -11,7 +11,7 @@
           <i class="fa-solid fa-headset"></i>
           <p>Podršка</p>
         </li>
-        <li v-if="store.authorized" @click="toggleModal('request')" class="py-2 px-4 ml-3 transition-colors duration-500 hover:bg-st4 cursor-pointer flex items-center gap-1 bg-st3 text-white shadow-inner">
+        <li @click="toggleModal('request')" class="py-2 px-4 ml-3 transition-colors duration-500 hover:bg-st4 cursor-pointer flex items-center gap-1 bg-st3 text-white shadow-inner">
           <i class="fa-solid fa-plus"></i>
           <p>Kreiraj oglas</p>
         </li>
@@ -21,7 +21,24 @@
 
   <!-- Модальное окно "Поддержка" -->
   <PopUpModal v-if="activeModal === 'support'" @close="toggleModal(null)" :is-active="true">
-    <h1>Podrška</h1>
+    <div class="flex flex-col justify-center">
+      <h1 class="text-center font-bold text-2xl mb-2">Podrška</h1>
+      <ul class="flex-col">
+        <li class="flex gap-2 items-center mb-2">
+          <i class="fa-regular fa-paper-plane text-st3"></i>
+          <span>@delimoservice</span>
+        </li>
+        <li class="flex gap-2 items-center mb-2">
+          <i class="fa-solid fa-at text-st3"></i>
+          <span>delimoservice@gmail.com</span>
+        </li>
+        <li class="flex gap-2 items-center mb-2">
+          <i class="fa-solid fa-phone text-st3"></i>
+          <span>+381621110623</span>
+        </li>
+      </ul>
+      <button @click="goFeedback" class="p-4 rounded-lg mt-4 bg-st4 text-white hover:bg-st3 hover:text-black transition-colors duration-500">Pomoć i kontakt</button>
+    </div>
   </PopUpModal>
 
   <!-- Модальное окно "Создать объявление" -->
@@ -59,6 +76,16 @@ export default {
     goAddRequest() {
       this.toggleModal('request')
       this.$router.push("/items/adding-request");
+    },
+    goHome() {
+      this.$router.push("/");
+    },
+    goFeedback() {
+      this.toggleModal('support')
+      this.$router.push("/feedback");
+    },
+    goItems() {
+      this.$router.push("/items");
     }
   },
   components: { PopUpModal },
