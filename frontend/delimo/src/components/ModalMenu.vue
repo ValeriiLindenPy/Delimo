@@ -2,8 +2,8 @@
   <div v-if="openMenu" class="flex items-center justify-center bg-white">
     <ul class="flex flex-col w-full">
 
-      <li class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Početna</li>
-      <li class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Sve Stvari</li>
+      <li @click="goHome" class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Početna</li>
+      <li @click="goItems" class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Sve Stvari</li>
       <li class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Svi Zahtevi</li>
       <li class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Kako koristiti</li>
       <li class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">O nama</li>
@@ -21,7 +21,24 @@
   </div>
 
   <PopUpModal @close="toggleOpenSupport" :is-active="isOpenSupport">
-    <h1>Podrška</h1>
+    <div class="flex flex-col justify-center">
+      <h1 class="text-center font-bold text-2xl mb-2">Podrška</h1>
+      <ul class="flex-col">
+        <li class="flex gap-2 items-center mb-2">
+          <i class="fa-regular fa-paper-plane text-st3"></i>
+          <span>@delimoservice</span>
+        </li>
+        <li class="flex gap-2 items-center mb-2">
+          <i class="fa-solid fa-at text-st3"></i>
+          <span>delimoservice@gmail.com</span>
+        </li>
+        <li class="flex gap-2 items-center mb-2">
+          <i class="fa-solid fa-phone text-st3"></i>
+          <span>+381621110623</span>
+        </li>
+      </ul>
+      <button @click="goFeedback" class="p-4 rounded-lg mt-4 bg-st4 text-white hover:bg-st3 hover:text-black transition-colors duration-500">Pomoć i kontakt</button>
+    </div>
   </PopUpModal>
 
   <PopUpModal @close="toggleOpenRequest" :is-active="isOpenRequest">
@@ -58,8 +75,22 @@ export default {
     },
     toggleOpenRequest() {
       this.isOpenRequest = !this.isOpenRequest;
+    },
+    goFeedback() {
+      this.toggleOpenSupport()
+      this.$emit('close')
+      this.$router.push("/feedback");
+    },
+    goHome() {
+      this.$emit('close')
+      this.$router.push("/");
+    },
+    goItems() {
+      this.$emit('close')
+      this.$router.push("/items");
     }
   },
+
 
 }
 </script>

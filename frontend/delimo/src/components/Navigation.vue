@@ -52,7 +52,7 @@
 
     <!-- Slide-out mobile menu -->
     <transition>
-      <ModalMenu v-if="menuOpen" :open-menu="menuOpen" />
+      <ModalMenu v-if="menuOpen" :open-menu="menuOpen" @close="close" />
     </transition>
   </header>
 
@@ -116,6 +116,10 @@ export default {
     },
     goItems() {
       this.$router.push("/items");
+    },
+    close() {
+      this.menuOpen = false;
+      document.body.classList.remove("overflow-hidden");
     },
   },
 };
