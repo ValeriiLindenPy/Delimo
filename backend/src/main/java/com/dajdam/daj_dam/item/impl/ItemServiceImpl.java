@@ -25,13 +25,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getAll(Long userId) {
         isUserExist(userId);
-        return itemRepository.findAllByUser(userId).stream()
+        return itemRepository.findByUserId(userId).stream()
                 .map(ItemMapper::toItemDto).toList();
     }
 
     @Override
     public ItemDto getById(Long itemId) {
-        return itemRepository.findOne(itemId)
+        return itemRepository.findById(itemId)
                 .map(ItemMapper::toItemDto)
                 .orElseThrow(
                         () -> new NotFoundException("Item with id - %d not found"
@@ -42,12 +42,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto editOne(Long id, ItemDto item, Long userId) {
-        User user = userRepository.findOne(userId).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User with id - %d not found"
                         .formatted(userId))
         );
 
-        Item oldItem = itemRepository.findOne(id).orElseThrow(
+        Item oldItem = itemRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Item with id - %d not found"
                         .formatted(id))
         );
@@ -67,7 +67,7 @@ public class ItemServiceImpl implements ItemService {
             oldItem.setAvailable(item.getAvailable());
         }
 
-        return ItemMapper.toItemDto(itemRepository.update(oldItem));
+        return ItemMapper.toItemDto(itemRepository.save(oldItem));
     }
 
     @Override
@@ -88,21 +88,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto create(ItemDto item, Long userId) {
         Item newItem = ItemMapper.toItem(item);
-        newItem.setOwner(userRepository.findOne(userId).map(UserMapper::toUserDto)
-                .orElseThrow(() -> new NotFoundException("User with id - %d not found"
-                        .formatted(userId))
-                )
-        );
         return ItemMapper.toItemDto(itemRepository.save(newItem));
     }
 
-    @Override
-    public void clear() {
-        itemRepository.clear();
-    }
+
 
     private void isUserExist(Long userId) {
-        userRepository.findOne(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id - %d not found"
                         .formatted(userId))
                 );

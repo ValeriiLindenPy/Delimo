@@ -16,5 +16,4 @@ public interface ItemService {
 
     ItemDto create(ItemDto item, Long userId);
 
-    void clear();
 }

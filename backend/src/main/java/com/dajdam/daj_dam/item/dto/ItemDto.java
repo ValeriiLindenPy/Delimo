@@ -1,25 +1,28 @@
 package com.dajdam.daj_dam.item.dto;
 
-import com.dajdam.daj_dam.error.ValidationMarker;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
+import com.dajdam.daj_dam.user.dto.UserDto;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 
 @Data
 @Builder
 public class ItemDto {
-    @Null(groups = ValidationMarker.OnCreate.class, message = "Id should be null")
     private Long id;
 
-    @NotBlank(groups = ValidationMarker.OnCreate.class, message = "Name can't be blank")
     private String name;
 
-    @NotBlank(groups = ValidationMarker.OnCreate.class, message = "Description can't be blank")
     private String description;
 
-    @NotNull(groups = ValidationMarker.OnCreate.class, message = "available shouldn't be null")
     private Boolean available;
+
+    private Integer maxPeriodDays;
+
+    private Integer pricePerDay;
+
+    private List<String> image;
+
+    private UserDto owner;
 }

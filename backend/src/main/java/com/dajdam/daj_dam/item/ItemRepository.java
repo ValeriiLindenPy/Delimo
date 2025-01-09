@@ -2,20 +2,12 @@ package com.dajdam.daj_dam.item;
 
 import com.dajdam.daj_dam.item.model.Item;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
-import java.util.Optional;
 
-public interface ItemRepository {
 
-    List<Item> findAllByUser(Long userId);
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Optional<Item> findOne(Long itemId);
-
-    Item save(Item newItem);
-
-    List<Item> findAll();
-
-    void clear();
-
-    Item update(Item newItem);
+    List<Item> findByUserId(Long userId);
 }
