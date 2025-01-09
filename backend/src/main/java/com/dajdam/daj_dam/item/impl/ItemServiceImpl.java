@@ -10,7 +10,6 @@ import com.dajdam.daj_dam.item.ItemService;
 import com.dajdam.daj_dam.item.dto.ItemDto;
 import com.dajdam.daj_dam.item.model.Item;
 import com.dajdam.daj_dam.user.User;
-import com.dajdam.daj_dam.user.UserMapper;
 import com.dajdam.daj_dam.user.UserRepository;
 
 import java.util.List;
