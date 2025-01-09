@@ -10,6 +10,4 @@ public interface UserService {
     UserDto create(UserDto userDto);
 
     void deleteById(Long id);
-
-    void clear();
 }

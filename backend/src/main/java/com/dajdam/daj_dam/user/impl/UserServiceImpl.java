@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(Long id) {
-        return userRepository.findOne(id).map(UserMapper::toUserDto)
+        return userRepository.findById(id).map(UserMapper::toUserDto)
                 .orElseThrow(
                         () -> new NotFoundException("User with id - %d not found".formatted(id))
                 );
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto editById(Long id, UserDto userDto) {
 
-        User oldUser = userRepository.findOne(id).orElseThrow(
+        User oldUser = userRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("User with id - %d not found".formatted(id))
         );
 
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        return UserMapper.toUserDto(userRepository.update(oldUser));
+        return UserMapper.toUserDto(userRepository.save(oldUser));
     }
 
     @Override
@@ -58,13 +58,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Long id) {
         getById(id);
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 
-    @Override
-    public void clear() {
-        userRepository.clear();
-    }
 
     private boolean isDistinctEmail(String email) {
         return userRepository.findAll().stream()

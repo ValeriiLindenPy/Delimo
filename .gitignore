@@ -29,6 +29,9 @@ backend/.gradle/
 backend/build/
 backend/logs/
 backend/.env
+backend/.mvn
+backend/mvnw
+backend/mvnw.cmd
 
 # OS-specific files
 .DS_Store
