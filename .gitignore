@@ -19,7 +19,6 @@ frontend/delimo/src/assets/constants.js
 .idea/**/.name
 
 # Spring/Java specific ignores
-/backend/
 backend/target/
 backend/.settings/
 backend/.classpath
@@ -32,7 +31,7 @@ backend/.env
 backend/.mvn
 backend/mvnw
 backend/mvnw.cmd
-
+backend/volumes
 # OS-specific files
 .DS_Store
 Thumbs.db
