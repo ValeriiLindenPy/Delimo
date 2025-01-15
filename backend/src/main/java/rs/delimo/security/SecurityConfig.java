@@ -1,5 +1,12 @@
 package rs.delimo.security;
 
+import org.springframework.http.HttpMethod;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import rs.delimo.user.CustomOAuth2UserService;
 import rs.delimo.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,14 +28,20 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(
                         auth -> {
+                            auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll(); // Allow OPTIONS requests
                             auth.requestMatchers("/").permitAll();
                             auth.requestMatchers("/public/**").permitAll();
+                            auth.requestMatchers("/users/user-data").permitAll();
                             auth.anyRequest().authenticated();
                         }
                 )
                 .oauth2Login(
                         auth ->
-                        auth.successHandler(
+                        auth.
+                                userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.oidcUserService(
+                                         CustomOAuth2UserService()
+                                ))
+                                .successHandler(
                                 ((request, response, authentication) ->
                                 response.sendRedirect("http://localhost:5173/")))
                 )
@@ -36,6 +49,11 @@ public class SecurityConfig {
                 .formLogin(Customizer.withDefaults());
 
         return http.build();
+    }
+
+    @Bean
+    public OAuth2UserService<OidcUserRequest, OidcUser> CustomOAuth2UserService() {
+        return new CustomOAuth2UserService(userRepository);
     }
 
 

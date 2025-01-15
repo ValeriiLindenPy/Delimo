@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/user-data")
-    public ResponseEntity<Map<String, Object>> getUserData(@AuthenticationPrincipal OAuth2User user) {
-        return ResponseEntity.ok(user.getAttributes());
+    public UserDto getUserData(@AuthenticationPrincipal OidcUser user) {
+        return userService.getByOidc(user);
     }
 
     @GetMapping("/{id}")
@@ -30,8 +31,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto editById(@PathVariable Long id,@Validated(ValidationMarker.OnUpdate.class)
-    @RequestBody UserDto userDto) {
+    public UserDto editById(@PathVariable Long id, @RequestBody UserDto userDto) {
         return userService.editById(id, userDto);
     }
 
