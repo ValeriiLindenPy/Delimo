@@ -50,16 +50,18 @@ export default {
     }
   },
   async mounted() {
-    if (!this.store.authorized) {
+
+
+    this.store.checkLogginStatus()
+
+    if (this.store.loggingStatus === "logging" ) {
       await apiClient.get("/users/user-data", {withCredentials: true})
           .then((res) => {
             this.store.authorized = true;
             this.store.setUserInfo(res.data);
-            console.log(res.data);
           }).catch((err) => {
             this.store.authorized = false;
           })
-
     }
     console.log(this.store.authorized);
   }

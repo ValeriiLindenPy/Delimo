@@ -77,8 +77,9 @@ export default {
     const userStore = useUserStore();
     const router = useRouter();
 
-    const handleGoogleLogin = () => {
+    const handleGoogleLogin = async () => {
       // Redirect to the Spring OAuth2 login endpoint
+      await userStore.loggingIn()
       window.location.href = "http://localhost:8080/oauth2/authorization/google";
     };
 

@@ -134,11 +134,6 @@ export default {
         const userStore = useUserStore();
         const userId = userStore.userId;
 
-        if (!userId) {
-          alert("User not logged in!");
-          return;
-        }
-
         const response = await apiClient.patch(
             `/users/${userId}`,
             {

@@ -13,10 +13,13 @@ export const useUserStore = defineStore("user", {
       street: "",
       viber: ""
     },
+    loggingStatus: "not logging",
     authorized: false,
   }),
   actions: {
     setUserInfo(userInfo) {
+      this.loggingStatus = "logged in";
+      localStorage.removeItem("loggingStatus")
       this.profile.id = userInfo.id;
       this.userId = this.profile.id;
       this.profile.phone = userInfo.telephone;
@@ -26,6 +29,12 @@ export const useUserStore = defineStore("user", {
       this.profile.street = userInfo.address;
       this.profile.viber = userInfo.viber;
       this.authorized = true;
+    },
+    loggingIn() {
+      localStorage.setItem("loggingStatus", "logging")
+    },
+    checkLogginStatus() {
+      this.loggingStatus = localStorage.getItem("loggingStatus");
     },
     logout() {
       this.userId = null;
