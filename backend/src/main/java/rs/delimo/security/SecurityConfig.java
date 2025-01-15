@@ -2,10 +2,8 @@ package rs.delimo.security;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import rs.delimo.user.CustomOAuth2UserService;
 import rs.delimo.user.UserRepository;
 import lombok.RequiredArgsConstructor;
