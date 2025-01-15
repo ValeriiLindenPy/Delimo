@@ -31,7 +31,7 @@ import AvailableUI from "@/components/UI/AvailableUI.vue";
 import MaxPeriodUI from "@/components/UI/MaxPeriodUI.vue";
 import AddressUI from "@/components/UI/AddressUI.vue";
 import ContactsUI from "@/components/UI/ContactsUI.vue";
-import { items } from "@/assets/items.js";
+
 
 export default {
   name: "ItemDetails",
@@ -47,7 +47,7 @@ export default {
   setup() {
     const route = useRoute();
     const itemId = parseInt(route.params.id, 10); // Ensure ID is a number
-    const item = ref(items.find((item) => item.id === itemId));
+    const item = null; //todo
 
     const address = computed(() => {
       if (item.value && item.value.owner) {

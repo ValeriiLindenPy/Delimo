@@ -10,7 +10,6 @@
 
 <script>
 import ItemList from "@/components/ItemList.vue";
-import { items } from "@/assets/items.js";
 
 export default {
   name: "UserOglasi",
@@ -27,7 +26,7 @@ export default {
     // e.g. const ownerId = Number(this.$route.params.id);
     // Then filter by that:
     const ownerId = Number(this.$route.params.id);
-    this.posts = items.filter(item => item.owner.id === ownerId);
+    this.posts = null; //todo
 
     if (!this.posts.length) {
       console.warn('No posts found for this owner id -' + ownerId);

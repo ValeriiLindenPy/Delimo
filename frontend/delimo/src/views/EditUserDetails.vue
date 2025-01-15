@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="flex justify-center mt-2 items-center md:container">
     <div class="bg-st2 rounded-lg w-full md:w-1/2 p-4 text-center">
@@ -31,7 +29,6 @@
               required
           />
         </div>
-
 
 
         <!-- Phone -->
@@ -84,6 +81,12 @@
           />
         </div>
 
+        <!--        error  -->
+
+        <div v-if="error" class="mt-2 flex items-center justify-center text-red-600">
+          <h2>{{error}}</h2>
+        </div>
+
 
         <!-- Submit button -->
         <button
@@ -99,14 +102,16 @@
 
 
 <script>
-import { useUserStore } from "@/stores/counter.js";
+import {useUserStore} from "@/stores/counter.js";
 import {cities} from "@/assets/cities.js";
+import apiClient from "@/services/api.js";
 
 export default {
   name: "EditUserDetails",
   data() {
     return {
       cities,
+      error: null,
       formData: {
         name: "",
         email: "",
@@ -124,21 +129,44 @@ export default {
   },
   methods: {
 
-    submitForm() {
-      console.log("Podaci poslati:", this.formData);
-      alert("Stvar je uspešno dodata!" + this.formData.toString());
-      // Reset the form
-      this.formData = {
-        name: this.userProfile.name,
-        email: this.userProfile.email,
-        grad: this.userProfile.grad || "",
-        street: this.userProfile.street || "",
-        phone: this.userProfile.phone || "",
-        viber: this.userProfile.viber || "",
+    async submitForm() {
+      try {
+        const userStore = useUserStore();
+        const userId = userStore.userId;
 
-      };
-      this.isFree = false;
+        if (!userId) {
+          alert("User not logged in!");
+          return;
+        }
+
+        const response = await apiClient.patch(
+            `/users/${userId}`,
+            {
+              name: this.formData.name,
+              email: this.formData.email,
+              address: this.formData.street,
+              city: this.formData.grad,
+              telephone: this.formData.phone,
+              viber: this.formData.viber,
+            },
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+        );
+
+        const updatedUser = response.data;
+        userStore.setUserInfo(updatedUser);
+        this.$router.push("/users/" + userId);
+
+      } catch (error) {
+        console.error("Error updating user:", error.message);
+        this.error = error.message;
+      }
     },
+
   },
   mounted() {
     // Auto-fill phone, viber, and location if available in the user profile

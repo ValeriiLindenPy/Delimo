@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import {requests} from "@/assets/requests.js";
+
 
 export default {
   name: "EditRequest",
@@ -92,7 +92,7 @@ export default {
   },
   created() {
     const numericId = Number(this.$route.params.id);
-    this.post = requests.find((item) => item.id === numericId);
+    this.post = null; //todo
 
     if (this.post) {
       this.formData = {

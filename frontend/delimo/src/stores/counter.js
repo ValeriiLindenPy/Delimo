@@ -8,18 +8,23 @@ export const useUserStore = defineStore("user", {
       id: null,
       name: "",
       email: "",
-      phone: "+381 621110623",
-      grad: "Novi Sad",
-      street: "Omladinskog pokreta 2",
+      phone: "",
+      grad: "",
+      street: "",
       viber: ""
     },
     authorized: false,
   }),
   actions: {
     setUserInfo(userInfo) {
-      this.userId = 1; //todo
+      this.profile.id = userInfo.id;
+      this.userId = this.profile.id;
+      this.profile.phone = userInfo.telephone;
       this.profile.name = userInfo.name;
       this.profile.email = userInfo.email;
+      this.profile.grad = userInfo.city;
+      this.profile.street = userInfo.address;
+      this.profile.viber = userInfo.viber;
       this.authorized = true;
     },
     logout() {

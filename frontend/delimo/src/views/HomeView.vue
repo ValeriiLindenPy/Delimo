@@ -30,11 +30,10 @@
 <script>
 
 import ItemList from "@/components/ItemList.vue";
-import {items} from "@/assets/items.js";
 import {useUserStore} from "@/stores/counter.js";
 import apiClient from "@/services/api.js";
 import RequestList from "@/components/RequestList.vue";
-import {requests} from "@/assets/requests.js";
+
 
 
 
@@ -45,17 +44,18 @@ export default {
   },
   data() {
     return {
-      items: items.slice(0,6),
-      requests: requests.slice(0,6),
+      items: null,
+      requests: null,
       store: useUserStore()
     }
   },
   async mounted() {
     if (!this.store.authorized) {
-      await apiClient.get("/user-data", {withCredentials: true})
+      await apiClient.get("/users/user-data", {withCredentials: true})
           .then((res) => {
             this.store.authorized = true;
             this.store.setUserInfo(res.data);
+            console.log(res.data);
           }).catch((err) => {
             this.store.authorized = false;
           })

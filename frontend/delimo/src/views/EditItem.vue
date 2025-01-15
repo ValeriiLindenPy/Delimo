@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { items } from "@/assets/items";
+
 
 export default {
   name: "EditItem",
@@ -156,7 +156,7 @@ export default {
   },
   created() {
     const numericId = Number(this.$route.params.id);
-    this.post = items.find((item) => item.id === numericId);
+    this.post = null; //todo
 
     if (this.post) {
       this.formData = {
