@@ -19,13 +19,13 @@ public class CustomOAuth2UserService extends OidcUserService {
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
-        log.info("start log");
+        log.trace("start log");
         OidcUser oAuth2User = super.loadUser(userRequest);
 
         String email = oAuth2User.getAttribute("email");
-        log.info("email {}", email);
+        log.trace("email {}", email);
         String name = oAuth2User.getAttribute("name");
-        log.info("name {}", email);
+        log.trace("name {}", email);
 
         User user = userRepository.findByEmail(email).orElseGet(() -> {
                     User newUser = User.builder()
@@ -36,8 +36,8 @@ public class CustomOAuth2UserService extends OidcUserService {
                 }
         );
 
-        log.info("useriD: {}", user.getId());
-        log.info("user created");
+        log.trace("useriD: {}", user.getId());
+        log.trace("user created");
 
 
         return new DefaultOidcUser(
