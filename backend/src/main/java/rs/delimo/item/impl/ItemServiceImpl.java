@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,10 +40,14 @@ public class ItemServiceImpl implements ItemService {
     private final int MAX_IMAGES_COUNT =  5;
 
     @Override
-    public List<ItemDto> getAll(Long userId) {
-        isUserExist(userId);
-        return itemRepository.findByUserId(userId).stream()
-                .map(ItemMapper::toItemDto).toList();
+    public Page<ItemDto> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        // The custom query that fetches images
+        Page<Item> itemsPage = itemRepository.findAllWithImages(pageable);
+
+        // Convert to DTO
+        return itemsPage.map(ItemMapper::toItemDto);
     }
 
     @Override

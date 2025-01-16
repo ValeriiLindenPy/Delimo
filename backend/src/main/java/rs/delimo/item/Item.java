@@ -1,5 +1,7 @@
 package rs.delimo.item;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import rs.delimo.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -9,6 +11,8 @@ import java.util.List;
 @Data
 @Builder
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

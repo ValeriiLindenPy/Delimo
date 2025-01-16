@@ -1,5 +1,6 @@
 package rs.delimo.item;
 
+import org.springframework.data.domain.Page;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.multipart.MultipartFile;
 import rs.delimo.item.dto.ItemDto;
@@ -9,7 +10,7 @@ import java.util.List;
 
 
 public interface ItemService {
-    List<ItemDto> getAll(Long userId);
+    Page<ItemDto> getAll(int page, int size);
 
     ItemDto getById(Long itemId);
 
