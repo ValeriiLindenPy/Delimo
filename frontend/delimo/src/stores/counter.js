@@ -9,7 +9,7 @@ export const useUserStore = defineStore("user", {
       name: "",
       email: "",
       phone: "",
-      grad: "",
+      city: "",
       street: "",
       viber: ""
     },
@@ -22,11 +22,11 @@ export const useUserStore = defineStore("user", {
       localStorage.removeItem("loggingStatus")
       this.profile.id = userInfo.id;
       this.userId = this.profile.id;
-      this.profile.phone = userInfo.telephone;
+      this.profile.phone = userInfo.phone;
       this.profile.name = userInfo.name;
       this.profile.email = userInfo.email;
-      this.profile.grad = userInfo.city;
-      this.profile.street = userInfo.address;
+      this.profile.city = userInfo.city;
+      this.profile.street = userInfo.street;
       this.profile.viber = userInfo.viber;
       this.authorized = true;
     },

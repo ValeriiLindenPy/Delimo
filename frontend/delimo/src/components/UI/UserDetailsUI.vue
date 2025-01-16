@@ -9,7 +9,7 @@
     <p class="mb-2 border-b-2 border-solid pb-1">Email: <b>{{ user.email }}</b></p>
     <p v-if="user.phone" class="mb-2 border-b-2 border-solid pb-1">Telefon: <b>{{ user.phone }}</b></p>
     <p v-if="user.viber" class="mb-2 border-b-2 border-solid pb-1">Viber: <b>{{ user.viber }}</b></p>
-    <p v-if="user.grad" class="mb-2 border-b-2 border-solid pb-1">Grad: <b>{{ user.grad }}</b></p>
+    <p v-if="user.city" class="mb-2 border-b-2 border-solid pb-1">Grad: <b>{{ user.city }}</b></p>
     <p v-if="user.street" class="mb-2 border-b-2 border-solid pb-1">Ulica: <b>{{ user.street }}</b></p>
 
     <div class="flex justify-center">
