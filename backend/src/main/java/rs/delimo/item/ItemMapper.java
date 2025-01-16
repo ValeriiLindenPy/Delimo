@@ -35,7 +35,6 @@ public class ItemMapper {
 
     public static Item toItem(ItemRequestDto dto) {
         return Item.builder()
-                .id(dto.getId())
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .maxPeriodDays(dto.getMaxPeriodDays())

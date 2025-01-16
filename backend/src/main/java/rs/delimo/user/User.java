@@ -33,6 +33,7 @@ public class User implements UserDetails {
     private String street;
     private String phone;
     private String viber;
+    @Enumerated(EnumType.STRING)
     private Role role;
     private Boolean enabled;
 

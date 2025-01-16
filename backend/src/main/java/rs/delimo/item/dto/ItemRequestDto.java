@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @Builder
 public class ItemRequestDto {
-    private Long id;
 
     private String title;
 
