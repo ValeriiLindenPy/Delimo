@@ -31,6 +31,8 @@ public class CustomOAuth2UserService extends OidcUserService {
                     User newUser = User.builder()
                             .name(name)
                             .email(email)
+                            .enabled(true)
+                            .role(Role.USER)
                             .build();
                     return userRepository.save(newUser);
                 }

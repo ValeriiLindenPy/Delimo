@@ -30,17 +30,25 @@ public class User implements UserDetails {
     private String name;
     private String password;
     private String city;
-    private String address;
-    private String telephone;
+    private String street;
+    private String phone;
     private String viber;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+    private Boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("USER"));
+        return List.of(new SimpleGrantedAuthority(this.role.toString()));
     }
 
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
     }
 }
