@@ -1,28 +1,31 @@
 package rs.delimo.item.dto;
 
-import rs.delimo.user.dto.UserDto;
 import lombok.Builder;
 import lombok.Data;
+import rs.delimo.user.dto.UserDto;
 
 import java.util.List;
 
 
 @Data
 @Builder
-public class ItemDto {
+public class ItemRequestDto {
     private Long id;
 
     private String title;
 
     private String description;
 
-    private Boolean available;
-
     private Integer maxPeriodDays;
 
     private Integer pricePerDay;
 
-    private List<String> image;
+    private String street;
 
-    private UserDto owner;
+    private String city;
+
+    private String phone;
+
+    private String viber;
+
 }

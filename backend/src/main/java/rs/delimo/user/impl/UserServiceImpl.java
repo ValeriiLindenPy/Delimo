@@ -55,16 +55,16 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        if (userDto.getAddress() != null) {
-            oldUser.setAddress(userDto.getAddress());
+        if (userDto.getStreet() != null) {
+            oldUser.setStreet(userDto.getStreet());
         }
 
         if (userDto.getCity() != null) {
             oldUser.setCity(userDto.getCity());
         }
 
-        if (userDto.getTelephone() != null) {
-            oldUser.setTelephone(userDto.getTelephone());
+        if (userDto.getPhone() != null) {
+            oldUser.setPhone(userDto.getPhone());
         }
 
         if (userDto.getViber() != null) {

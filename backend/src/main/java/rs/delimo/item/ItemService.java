@@ -1,6 +1,9 @@
 package rs.delimo.item;
 
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.web.multipart.MultipartFile;
 import rs.delimo.item.dto.ItemDto;
+import rs.delimo.item.dto.ItemRequestDto;
 
 import java.util.List;
 
@@ -14,6 +17,6 @@ public interface ItemService {
 
     List<ItemDto> searchByText(String text);
 
-    ItemDto create(ItemDto item, Long userId);
+    ItemDto create(ItemRequestDto item, OidcUser userId, List<MultipartFile> images);
 
 }

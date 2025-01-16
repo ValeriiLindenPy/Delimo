@@ -10,15 +10,23 @@ public class UserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
-                .telephone(user.getTelephone())
+                .phone(user.getPhone())
                 .viber(user.getViber())
                 .city(user.getCity())
-                .address(user.getAddress())
+                .street(user.getStreet())
                 .build();
     }
 
     public static User toUser(UserDto dto) {
-        return User.builder().id(dto.getId()).name(dto.getName())
-                .email(dto.getEmail()).build();
+        return User.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .city(dto.getCity())
+                .street(dto.getStreet())
+                .enabled(dto.getEnabled())
+                .viber(dto.getViber())
+                .phone(dto.getPhone())
+                .build();
     }
 }

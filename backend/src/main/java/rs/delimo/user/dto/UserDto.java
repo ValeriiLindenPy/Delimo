@@ -17,9 +17,11 @@ public class UserDto {
 
     private String city;
 
-    private String address;
+    private String street;
 
-    private String telephone;
+    private String phone;
+
+    private Boolean enabled;
 
     private String viber;
 }
