@@ -1,6 +1,13 @@
 
 
 <template>
+  <PopUpModal :is-active="isPopUp" @close="tooglePopUp">
+    <div class="flex flex-col items-center justify-center gap-2">
+      <h1>Strvar je kreirana uspesno!</h1>
+      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="tooglePopUp">Hvala!</button>
+    </div>
+  </PopUpModal>
+
   <div class="flex justify-center mt-2 items-center md:container">
     <div class="bg-st2 rounded-lg w-full md:w-1/2 p-4 text-center">
       <h1 class="text-2xl mb-4">Dodaj stvar</h1>
@@ -52,7 +59,7 @@
             <input
                 id="price"
                 type="text"
-                v-model="formData.price"
+                v-model="formData.pricePerDay"
                 :disabled="isFree"
                 class="w-full mt-1 p-2 border rounded-md text-st5"
                 placeholder="100.00 RSD"
@@ -96,12 +103,28 @@
         </div>
 
         <!-- Location -->
+
         <div>
-          <label for="location" class="text-sm font-medium text-st5">Lokacija</label>
+          <label for="city" class="text-sm font-medium text-st5">Grad</label>
+          <select
+              id="city"
+              v-model="formData.city"
+              class="w-full mt-1 p-2 border rounded-md text-st5"
+          >
+            <option value="" disabled>Izaberite grad</option>
+            <option v-for="city in cities" :key="city.id" :value="city.name">
+              {{ city.name }}
+            </option>
+          </select>
+        </div>
+
+
+        <div>
+          <label for="street" class="text-sm font-medium text-st5">Ulica</label>
           <input
-              id="location"
+              id="street"
               type="text"
-              v-model="formData.location"
+              v-model="formData.street"
               class="w-full mt-1 p-2 border rounded-md text-st5"
               placeholder="Unesite lokaciju (grad, adresa)"
               required
@@ -152,68 +175,91 @@
 
 <script>
 import { useUserStore } from "@/stores/counter.js";
+import apiClient from "@/services/api.js";
+import PopUpModal from "@/components/UI/PopUpModal.vue";
+import { cities } from "@/assets/cities.js";
 
 export default {
-  name:"AddItem",
+  name: "AddItem",
+  components: { PopUpModal },
   data() {
     return {
+      store: null,
+      cities,
+      isPopUp: false,
       uploadedFiles: [],
       formData: {
         title: "",
         description: "",
-        status: "novo",
-        maxDays: 1,
-        location: "",
-        price: null,
-        images: [],
-        phone: "", // Added phone
-        viber: "", // Added viber
+        maxPeriodDays: 1,
+        street: "",
+        city: "",
+        pricePerDay: null,
+        phone: "",
+        viber: "",
       },
       isFree: false,
     };
   },
-  computed: {
-    userProfile() {
-      return useUserStore().profile;
-    },
+  created() {
+    this.store = useUserStore()
+  },
+  mounted() {
+    // Auto-fill phone, viber, and location if available in the user profile
+    if (this.store.profile) {
+      this.formData.phone = this.store.profile.phone || "";
+      this.formData.viber = this.store.profile.viber || "";
+      this.formData.street = this.store.profile.street || "";
+      this.formData.city = this.store.profile.city || "";
+    }
   },
   methods: {
+    tooglePopUp() {
+      this.isPopUp = !this.isPopUp;
+    },
     handleFileUpload(event) {
       const files = Array.from(event.target.files);
-      // Limit to 5 files
       if (this.uploadedFiles.length + files.length > 5) {
         alert("Možete dodati najviše 5 fotografija.");
         return;
       }
       this.uploadedFiles = [...this.uploadedFiles, ...files];
-      this.formData.images = [...this.uploadedFiles];
     },
-    submitForm() {
-      console.log("Podaci poslati:", this.formData);
-      alert("Stvar je uspešno dodata!");
-      // Reset the form
-      this.uploadedFiles = [];
-      this.formData = {
-        title: "",
-        description: "",
-        status: "novo",
-        maxDays: 1,
-        location: this.userProfile.location || "",
-        phone: this.userProfile.phone || "",
-        viber: this.userProfile.viber || "",
-        price: null,
-        images: [],
-      };
-      this.isFree = false;
+    async submitForm() {
+      const formData = new FormData();
+      formData.append("title", this.formData.title);
+      formData.append("description", this.formData.description);
+      formData.append("maxPeriodDays", this.formData.maxPeriodDays);
+      formData.append("street", this.formData.street);
+      formData.append("city", this.formData.city);
+      formData.append("pricePerDay", this.isFree ? 0 : this.formData.pricePerDay);
+      formData.append("phone", this.formData.phone);
+      formData.append("viber", this.formData.viber);
+      this.uploadedFiles.forEach(file => formData.append("image", file));
+
+      try {
+        const response = await apiClient.post("/items", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        this.tooglePopUp();
+        this.uploadedFiles = [];
+        this.formData = {
+          title: "",
+          description: "",
+          maxPeriodDays: 1,
+          street: this.store.profile.street || "",
+          city: this.store.profile.city || "",
+          pricePerDay: null,
+          phone: this.store.profile.phone || "",
+          viber: this.store.profile.viber || "",
+        };
+        this.isFree = false;
+      } catch (error) {
+        console.error("Error:", error);
+      }
     },
-  },
-  mounted() {
-    // Auto-fill phone, viber, and location if available in the user profile
-    if (this.userProfile) {
-      this.formData.phone = this.userProfile.phone || "";
-      this.formData.viber = this.userProfile.viber || "";
-      this.formData.location = this.userProfile.location || "";
-    }
   },
 };
 </script>
+

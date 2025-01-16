@@ -60,7 +60,7 @@
           <label for="city" class="text-sm font-medium text-st5">Grad</label>
           <select
               id="city"
-              v-model="formData.grad"
+              v-model="formData.city"
               class="w-full mt-1 p-2 border rounded-md text-st5"
           >
             <option value="" disabled>Izaberite grad</option>
@@ -115,10 +115,10 @@ export default {
       formData: {
         name: "",
         email: "",
-        grad: "",
+        city: "",
         street: "",
-        phone: "", // Added phone
-        viber: "", // Added viber
+        phone: "",
+        viber: "",
       },
     };
   },
@@ -139,9 +139,9 @@ export default {
             {
               name: this.formData.name,
               email: this.formData.email,
-              address: this.formData.street,
-              city: this.formData.grad,
-              telephone: this.formData.phone,
+              street: this.formData.street,
+              city: this.formData.city,
+              phone: this.formData.phone,
               viber: this.formData.viber,
             },
             {
@@ -170,7 +170,7 @@ export default {
       this.formData.email = this.userProfile.email || "";
       this.formData.phone = this.userProfile.phone || "";
       this.formData.viber = this.userProfile.viber || "";
-      this.formData.grad = this.userProfile.grad || "";
+      this.formData.city = this.userProfile.city || "";
       this.formData.street = this.userProfile.street || "";
     }
   },
