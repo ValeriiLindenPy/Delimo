@@ -235,7 +235,7 @@ export default {
       formData.append("pricePerDay", this.isFree ? 0 : this.formData.pricePerDay);
       formData.append("phone", this.formData.phone);
       formData.append("viber", this.formData.viber);
-      this.uploadedFiles.forEach(file => formData.append("image", file));
+      this.uploadedFiles.forEach(file => formData.append("images", file));
 
       try {
         const response = await apiClient.post("/items", formData, {

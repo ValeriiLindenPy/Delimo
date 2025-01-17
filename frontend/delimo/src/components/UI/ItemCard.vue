@@ -6,7 +6,7 @@
   <div class="max-w-sm rounded-lg overflow-hidden shadow-lg border bg-white">
     <!-- Изображение -->
     <img
-        :src="post?.image?.[0] || 'default-image.jpg'"
+        :src="post?.images?.[0] || defaultImage"
         :alt="post?.title || 'Default alt text'"
         class="w-full h-48 object-cover"
     />
@@ -59,8 +59,16 @@
 </template>
 
 <script>
+import defaultImage from '@/assets/default-image.jpg';
 export default {
+
   name: "PostCard",
+  data() {
+    return {
+      defaultImage,
+    }
+
+  },
   props: {
     post: {
       type: Object,

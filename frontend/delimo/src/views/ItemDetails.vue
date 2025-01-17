@@ -1,40 +1,45 @@
 <template>
   <div class="container">
     <div class="grid grid-cols-1 pt-6 md:grid-cols-2 gap-1">
-      <!--Images and contacts-->
+      <!-- Images and contacts -->
       <div class="flex flex-col justify-center">
         <div class="images-carousel mb-2">
-          <Carousel v-if="item" :images="item.image" />
+          <Carousel v-if="item" :images="item.images" :defaultImage="defaultImage" />
         </div>
-        <ContactsUI v-if="item && item.available" :name="item.name" :telephone="item.owner.telephone" :viber="item.owner.viber" />
+        <ContactsUI
+            v-if="item && item.available"
+            :name="item.title"
+            :telephone="item.owner?.phone"
+            :viber="item.owner?.viber"
+        />
       </div>
 
-      <!--INFO-->
+      <!-- Info -->
       <div>
-        <NameUI v-if="item" :name="item.name" />
+        <NameUI v-if="item" :name="item.title" />
         <DescriptionUI v-if="item" :description="item.description" />
         <AvailableUI v-if="item" :available="item.available" />
         <MaxPeriodUI v-if="item" :max-period-days="item.maxPeriodDays" />
-        <AddressUI v-if="item" :address="address" />
+        <AddressUI v-if="item" :address="getAddress" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
-import Carousel from "@/components/UI/Carousel.vue";
-import NameUI from "@/components/UI/NameUI.vue";
-import DescriptionUI from "@/components/UI/DescriptionUI.vue";
-import AvailableUI from "@/components/UI/AvailableUI.vue";
-import MaxPeriodUI from "@/components/UI/MaxPeriodUI.vue";
-import AddressUI from "@/components/UI/AddressUI.vue";
-import ContactsUI from "@/components/UI/ContactsUI.vue";
-
+import { useRoute } from 'vue-router'
+import Carousel from '@/components/UI/Carousel.vue'
+import NameUI from '@/components/UI/NameUI.vue'
+import DescriptionUI from '@/components/UI/DescriptionUI.vue'
+import AvailableUI from '@/components/UI/AvailableUI.vue'
+import MaxPeriodUI from '@/components/UI/MaxPeriodUI.vue'
+import AddressUI from '@/components/UI/AddressUI.vue'
+import ContactsUI from '@/components/UI/ContactsUI.vue'
+import apiClient from '@/services/api.js'
+import defaultImage from '@/assets/default-image.jpg'
 
 export default {
-  name: "ItemDetails",
+  name: 'ItemDetails',
   components: {
     ContactsUI,
     AddressUI,
@@ -44,19 +49,29 @@ export default {
     NameUI,
     Carousel,
   },
-  setup() {
-    const route = useRoute();
-    const itemId = parseInt(route.params.id, 10); // Ensure ID is a number
-    const item = null; //todo
-
-    const address = computed(() => {
-      if (item.value && item.value.owner) {
-        return `${item.value.owner.city}, ${item.value.owner.address}`;
-      }
-      return "";
-    });
-
-    return { item, address };
+  data() {
+    return {
+      defaultImage, // Path to the default image
+      item: null, // Item details
+    }
   },
-};
+  computed: {
+    getAddress() {
+      if (this.item && this.item.owner) {
+        return `${this.item.owner.city + ', ' || ''} ${this.item.owner.street || ''}`.trim()
+      }
+      return null
+    },
+  },
+  created() {
+    const route = useRoute()
+    const itemId = Number(route.params.id)
+
+    // Fetch item details from API
+    apiClient(`/items/${itemId}`).then((response) => {
+      this.item = response.data
+      console.log(response.data)
+    })
+  },
+}
 </script>
