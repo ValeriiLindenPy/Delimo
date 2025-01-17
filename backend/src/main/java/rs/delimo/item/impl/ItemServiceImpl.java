@@ -51,8 +51,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto getById(Long itemId) {
-        return itemRepository.findById(itemId)
+        return itemRepository.findByIdWithImages(itemId)
                 .map(ItemMapper::toItemDto)
                 .orElseThrow(
                         () -> new NotFoundException("Item with id - %d not found"
@@ -151,7 +152,7 @@ public class ItemServiceImpl implements ItemService {
         Item newItem = ItemMapper.toItem(item);
 
         log.trace("adjust item");
-        newItem.setImage(imageUrls);
+        newItem.setImages(imageUrls);
         newItem.setAvailable(true);
         newItem.setOwner(owner);
 

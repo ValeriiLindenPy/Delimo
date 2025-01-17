@@ -22,7 +22,7 @@ public class ItemDto {
 
     private Integer pricePerDay;
 
-    private List<String> image;
+    private List<String> images;
 
     private UserDto owner;
 }
