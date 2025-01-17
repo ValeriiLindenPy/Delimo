@@ -2,9 +2,6 @@ package rs.delimo.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import rs.delimo.user.dto.UserDto;
-
-import java.util.List;
 
 
 @Data
