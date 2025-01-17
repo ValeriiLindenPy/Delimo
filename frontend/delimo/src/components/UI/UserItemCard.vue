@@ -1,23 +1,23 @@
 <template>
-  <!-- Весь контейнер карточки -->
-  <div
-      class="block max-w-sm rounded-lg overflow-hidden shadow-lg border bg-white
-           hover:shadow-xl transition-shadow"
-  >
+
+
     <!-- 1) Оборачиваем контент, который должен вести на детальную страницу, в router-link -->
-    <router-link :to="`/items/${post.id}`" class="block">
+    <router-link :to="`/items/${post.id}`"  class="block max-w-sm rounded-lg overflow-hidden shadow-lg border bg-white hover:shadow-xl transition-shadow">
+      <div
+          class="max-w-sm rounded-lg overflow-hidden shadow-lg border bg-white"
+      >
       <div>
         <!-- Изображение -->
         <img
-            :src="post?.image?.[0] || 'default-image.jpg'"
-            :alt="post?.name || 'Default alt text'"
+            :src="post?.images?.[0] || defaultImage"
+            :alt="post?.title || 'Default alt text'"
             class="w-full h-48 object-cover"
         />
 
         <!-- Контент -->
         <div class="p-4">
           <div class="flex justify-between items-center mb-2">
-            <h3 class="font-bold text-lg truncate">{{ post.name }}</h3>
+            <h3 class="font-bold text-lg truncate">{{ post.title }}</h3>
             <span
                 class="bg-st2 text-st3 text-sm font-bold px-3 py-1 rounded
                      md:text-md whitespace-nowrap"
@@ -30,7 +30,7 @@
           </p>
         </div>
       </div>
-    </router-link>
+
 
     <!-- 2) Футер: доступность, цена... -->
     <div class="flex items-center justify-between px-4 py-2 border-t">
@@ -64,11 +64,18 @@
       </button>
     </div>
   </div>
+    </router-link>
 </template>
 
 <script>
+import defaultImage from "@/assets/default-image.jpg"
 export default {
   name: "UserPostCard",
+  data() {
+    return {
+      defaultImage,
+    }
+  },
   props: {
     post: {
       type: Object,
