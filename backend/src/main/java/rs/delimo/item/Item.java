@@ -24,7 +24,7 @@ public class Item {
     private Integer pricePerDay;
 
     @ElementCollection
-    private List<String> image;
+    private List<String> images;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

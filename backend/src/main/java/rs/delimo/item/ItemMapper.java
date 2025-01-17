@@ -13,7 +13,7 @@ public class ItemMapper {
                 .title(item.getTitle())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .image(item.getImage())
+                .images(item.getImages())
                 .maxPeriodDays(item.getMaxPeriodDays())
                 .pricePerDay(item.getPricePerDay())
                 .owner(UserMapper.toUserDto(item.getOwner()))
@@ -29,7 +29,7 @@ public class ItemMapper {
                 .available(dto.getAvailable())
                 .maxPeriodDays(dto.getMaxPeriodDays())
                 .pricePerDay(dto.getPricePerDay())
-                .image(dto.getImage())
+                .images(dto.getImages())
                 .build();
     }
 
