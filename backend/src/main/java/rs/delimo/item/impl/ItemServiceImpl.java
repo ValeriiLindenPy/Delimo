@@ -51,6 +51,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Page<ItemDto> getAllByOwner(int page, int size, OidcUser user) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        User owner = userRepository.findByEmail(user.getAttribute("email")).orElseThrow(
+                () -> new NotFoundException("User not found")
+        );
+
+        Page<Item> itemsPage = itemRepository.findAllByOwnerWithImages(pageable,owner.getId());
+
+        return itemsPage.map(ItemMapper::toItemDto);
+    }
+
+    @Override
     @Transactional
     public ItemDto getById(Long itemId) {
         return itemRepository.findByIdWithImages(itemId)
@@ -58,6 +71,20 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(
                         () -> new NotFoundException("Item with id - %d not found"
                                 .formatted(itemId))
+                );
+    }
+
+    @Override
+    public ItemDto getByUserAndId(Long id, OidcUser user) {
+        User owner = userRepository.findByEmail(user.getAttribute("email")).orElseThrow(
+                () -> new NotFoundException("User not found")
+        );
+
+        return itemRepository.findOneByUserIdAndItemId(owner.getId(), id)
+                .map(ItemMapper::toItemDto)
+                .orElseThrow(
+                        () -> new NotFoundException("Item with id - %d not found"
+                                .formatted(id))
                 );
     }
 

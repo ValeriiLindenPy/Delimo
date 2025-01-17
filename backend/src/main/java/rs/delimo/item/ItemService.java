@@ -20,4 +20,7 @@ public interface ItemService {
 
     ItemDto create(ItemRequestDto item, OidcUser userId, List<MultipartFile> images);
 
+    ItemDto getByUserAndId(Long id, OidcUser user);
+
+    Page<ItemDto> getAllByOwner(int page, int size, OidcUser user);
 }
