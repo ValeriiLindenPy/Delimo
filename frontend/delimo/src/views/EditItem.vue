@@ -1,4 +1,11 @@
 <template>
+  <PopUpModal :is-active="isPopUp" @close="togglePopUp">
+    <div class="flex flex-col items-center justify-center gap-2">
+      <h1>Stvar je kreirana uspešno!</h1>
+      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="togglePopUp">Hvala!</button>
+    </div>
+  </PopUpModal>
+
   <div class="flex justify-center mt-2 items-center md:container flex-col">
     <div class="flex flex-col w-full bg-st2 p-4 rounded-lg md:w-1/2">
       <h1 class="text-2xl font-bold mb-4">Izmeni stvar</h1>
@@ -11,7 +18,7 @@
             <label class="block font-semibold mb-1" for="name">Naslov</label>
             <input
                 id="name"
-                v-model="formData.name"
+                v-model="formData.title"
                 class="border px-2 py-1 w-full rounded-lg"
                 type="text"
             />
@@ -38,13 +45,12 @@
                   :disabled="formData.isFree"
                   class="w-full mt-1 p-2 border rounded-md text-st5"
                   placeholder="100.00 RSD"
-                  required
               />
               <div class="flex items-center gap-1">
                 <input
                     class="accent-st5 scale-125"
                     type="checkbox"
-                    v-model="formData.isFree"
+                    v-model="isPriceFree"
                     id="besplatno"
                 />
                 <p>besplatno</p>
@@ -78,7 +84,7 @@
                     class="hidden"
                     accept="image/*"
                     multiple
-                    :disabled="formData.image.length >= 5"
+                    :disabled="formData.images.length >= 5"
                 />
               </label>
             </div>
@@ -86,7 +92,7 @@
             <!-- Preview images -->
             <div class="flex flex-wrap gap-4 mt-2">
               <div
-                  v-for="(image, index) in formData.image"
+                  v-for="(image, index) in formData.images"
                   :key="index"
                   class="relative"
               >
@@ -101,7 +107,7 @@
                 ></i>
               </div>
             </div>
-            <p v-if="formData.image.length >= 5" class="text-sm text-red-500 mt-2">
+            <p v-if="formData.images.length >= 5" class="text-sm text-red-500 mt-2">
               Maksimalno 5 fotografija.
             </p>
           </div>
@@ -109,14 +115,11 @@
           <!-- Submit and Cancel buttons -->
           <button
               type="submit"
-              class="bg-st4 mr-2 text-white px-3 py-2 px-4 rounded hover:bg-st3 transition duration-500"
+              class="bg-st4 mr-2 text-white py-2 px-4 rounded hover:bg-st3 transition duration-500"
           >
             Sačuvaj
           </button>
-          <router-link
-              :to="`/items/${id}`"
-              class="bg-gray-300 text-black px-4 py-2 rounded"
-          >
+          <router-link :to="cancelUrl" class="bg-gray-300 text-black px-4 py-2 rounded">
             Odustani
           </router-link>
         </form>
@@ -130,57 +133,85 @@
 </template>
 
 <script>
-
+import { fetchItem, updateItem } from "@/services/itemService";
+import PopUpModal from "@/components/UI/PopUpModal.vue";
 
 export default {
   name: "EditItem",
-  props: {
-    id: {
-      type: String,
-      required: true
-    }
-  },
+  components: { PopUpModal },
+
   data() {
     return {
+      id: Number(this.$route.params.id),
+      isPopUp: false,
       post: null,
       formData: {
-        name: "",
+        title: "",
         description: "",
         pricePerDay: "",
-        isFree: false, // New property to toggle "besplatno"
+        isFree: false,
         available: false,
         maxPeriodDays: 1,
-        image: [] // Array to store uploaded images with previews
-      }
+        images: [],
+      },
     };
   },
-  created() {
-    const numericId = Number(this.$route.params.id);
-    this.post = null; //todo
+  computed: {
+    cancelUrl() {
+      return `/items/${this.id}`;
+    },
+    isPriceFree: {
+      get() {
+        return this.formData.isFree;
+      },
+      set(value) {
+        this.formData.isFree = value;
+        if (value) this.formData.pricePerDay = 0;
+      },
+    },
+  },
+  async created() {
+    try {
 
-    if (this.post) {
-      this.formData = {
-        name: this.post.name,
-        description: this.post.description,
-        pricePerDay: this.post.pricePerDay ?? "", // Handle null pricePerDay
-        isFree: this.post.pricePerDay === 0 || this.post.pricePerDay === null, // Pre-select "besplatno" if price is 0 or null
-        available: this.post.available || false,
-        maxPeriodDays: this.post.maxPeriodDays || 1,
-        image: this.post.image.map((url) => ({preview: url})) // Add existing images as previews
-      };
-    } else {
-      console.warn("No item found with ID:", numericId);
+      const { data } = await fetchItem(this.id);
+      this.post = data;
+      this.formData = this.mapPostToFormData(data);
+    } catch (error) {
+      console.error("Error fetching item:", error);
     }
   },
   methods: {
-    handleFileUpload(event) {
+    togglePopUp() {
+      this.isPopUp = !this.isPopUp;
+    },
+    mapPostToFormData(post) {
+      return {
+        title: post.title || "",
+        description: post.description || "",
+        pricePerDay: post.pricePerDay ?? "",
+        isFree: post.pricePerDay === 0 || post.pricePerDay === null,
+        available: post.available || false,
+        maxPeriodDays: post.maxPeriodDays || 1,
+        images: post.images?.map((url) => ({preview: url})) || [],
+      };
+    },
+    mapFormDataToPayload() {
+      return {
+        title: this.formData.title,
+        description: this.formData.description,
+        pricePerDay: this.formData.isFree ? 0 : this.formData.pricePerDay,
+        maxPeriodDays: this.formData.maxPeriodDays,
+        images: this.formData.images.map((img) => img.preview),
+      };
+    },
+    async handleFileUpload(event) {
       const files = Array.from(event.target.files);
-      const remainingSlots = 5 - this.formData.image.length;
+      const remainingSlots = 5 - this.formData.images.length;
 
       files.slice(0, remainingSlots).forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e) => {
-          this.formData.image.push({preview: e.target.result});
+          this.formData.images.push({preview: e.target.result});
         };
         reader.readAsDataURL(file);
       });
@@ -188,19 +219,20 @@ export default {
       event.target.value = null;
     },
     removeImage(index) {
-      this.formData.image.splice(index, 1);
+      this.formData.images.splice(index, 1);
     },
-    updatePost() {
-      if (!this.post) return;
-
-      this.post.name = this.formData.name;
-      this.post.description = this.formData.description;
-      this.post.pricePerDay = this.formData.isFree ? 0 : this.formData.pricePerDay; // Set price to 0 if "besplatno"
-      this.post.available = this.formData.available;
-      this.post.image = this.formData.image.map((img) => img.preview);
-
-      this.$router.push(`/items/${this.id}`);
-    }
-  }
+    async updatePost() {
+      try {
+        const payload = this.mapFormDataToPayload();
+        const response = await updateItem(this.id, payload);
+        if (response.status === 200) {
+          this.togglePopUp();
+          this.$router.push(`/items/${this.id}`);
+        }
+      } catch (error) {
+        console.error("Error updating item:", error);
+      }
+    },
+  },
 };
 </script>
