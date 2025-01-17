@@ -2,7 +2,9 @@
   <PopUpModal :is-active="isPopUp" @close="togglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1>Stvar je kreirana uspešno!</h1>
-      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="togglePopUp">Hvala!</button>
+      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="togglePopUp">
+        Hvala!
+      </button>
     </div>
   </PopUpModal>
 
@@ -69,6 +71,34 @@
             <label for="available" class="text-sm font-medium text-st5">Dostupno</label>
           </div>
 
+          <!-- Grad -->
+          <div>
+            <label for="city" class="text-sm font-medium text-st5">Grad</label>
+            <select
+                id="city"
+                v-model="formData.city"
+                class="w-full mt-1 p-2 border rounded-md text-st5"
+            >
+              <option value="" disabled>Izaberite grad</option>
+              <option v-for="city in cities" :key="city.id" :value="city.name">
+                {{ city.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Ulica -->
+          <div>
+            <label for="street" class="text-sm font-medium text-st5">Ulica</label>
+            <input
+                id="street"
+                type="text"
+                v-model="formData.street"
+                class="w-full mt-1 p-2 border rounded-md text-st5"
+                placeholder="Unesite lokaciju (grad, adresa)"
+                required
+            />
+          </div>
+
           <!-- Fotografije -->
           <div class="mb-4">
             <label class="text-sm font-medium text-st5">Fotografije (maks. 5)</label>
@@ -89,7 +119,7 @@
               </label>
             </div>
 
-            <!-- Preview images -->
+            <!-- Pregled fotografija -->
             <div class="flex flex-wrap gap-4 mt-2">
               <div
                   v-for="(image, index) in formData.images"
@@ -112,7 +142,7 @@
             </p>
           </div>
 
-          <!-- Submit and Cancel buttons -->
+          <!-- Submit i Odustani dugmad -->
           <button
               type="submit"
               class="bg-st4 mr-2 text-white py-2 px-4 rounded hover:bg-st3 transition duration-500"
@@ -126,22 +156,24 @@
       </div>
 
       <div v-else>
-        <p>Loading...</p>
+        <p>Učitavanje...</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { fetchItem, updateItem } from "@/services/itemService";
+import {fetchItem, updateItem} from "@/services/itemService";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
+import {cities} from "@/assets/cities.js";
 
 export default {
   name: "EditItem",
-  components: { PopUpModal },
+  components: {PopUpModal},
 
   data() {
     return {
+      cities,
       id: Number(this.$route.params.id),
       isPopUp: false,
       post: null,
@@ -153,6 +185,8 @@ export default {
         available: false,
         maxPeriodDays: 1,
         images: [],
+        street: null,
+        city: null,
       },
     };
   },
@@ -172,8 +206,7 @@ export default {
   },
   async created() {
     try {
-
-      const { data } = await fetchItem(this.id);
+      const {data} = await fetchItem(this.id);
       this.post = data;
       this.formData = this.mapPostToFormData(data);
     } catch (error) {
@@ -186,6 +219,8 @@ export default {
     },
     mapPostToFormData(post) {
       return {
+        street: post.owner.street || "",
+        city: post.owner.city || "",
         title: post.title || "",
         description: post.description || "",
         pricePerDay: post.pricePerDay ?? "",
@@ -199,8 +234,10 @@ export default {
       return {
         title: this.formData.title,
         description: this.formData.description,
-        pricePerDay: this.formData.isFree ? 0 : this.formData.pricePerDay,
         maxPeriodDays: this.formData.maxPeriodDays,
+        pricePerDay: this.formData.isFree ? 0 : this.formData.pricePerDay,
+        street: this.formData.street,
+        city: this.formData.city,
         images: this.formData.images.map((img) => img.preview),
       };
     },
