@@ -49,8 +49,17 @@ export default {
       store: useUserStore()
     }
   },
+  methods: {
+    async fetchItems() {
+      await apiClient("/items").then((response) => {
+        this.items = response.data.content;
+        console.log(response.data);
+      })
+    }
+  },
   async mounted() {
 
+    await this.fetchItems()
 
     this.store.checkLogginStatus()
 

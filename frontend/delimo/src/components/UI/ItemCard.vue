@@ -7,14 +7,14 @@
     <!-- Изображение -->
     <img
         :src="post?.image?.[0] || 'default-image.jpg'"
-        :alt="post?.name || 'Default alt text'"
+        :alt="post?.title || 'Default alt text'"
         class="w-full h-48 object-cover"
     />
 
     <!-- Контент -->
     <div class="p-4">
       <div class="flex justify-between items-center mb-2">
-        <h3 class="font-bold text-lg truncate">{{ post.name }}</h3>
+        <h3 class="font-bold text-lg truncate">{{ post.title }}</h3>
         <span
             class="bg-st2 text-st3 text-sm font-bold px-3 py-1 rounded md:text-md whitespace-nowrap"
         >
