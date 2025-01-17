@@ -13,9 +13,7 @@ public interface ItemService {
     Page<ItemDto> getAll(int page, int size);
 
     ItemDto getById(Long itemId);
-
-    ItemDto editOne(Long id, ItemDto item, Long userId);
-
+    
     List<ItemDto> searchByText(String text);
 
     ItemDto create(ItemRequestDto item, OidcUser userId, List<MultipartFile> images);
@@ -23,4 +21,6 @@ public interface ItemService {
     ItemDto getByUserAndId(Long id, OidcUser user);
 
     Page<ItemDto> getAllByOwner(int page, int size, OidcUser user);
+
+    ItemDto editOne(Long itemId, ItemRequestDto item, OidcUser user, List<MultipartFile> images);
 }

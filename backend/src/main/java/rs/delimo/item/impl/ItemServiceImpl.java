@@ -63,6 +63,8 @@ public class ItemServiceImpl implements ItemService {
         return itemsPage.map(ItemMapper::toItemDto);
     }
 
+
+
     @Override
     @Transactional
     public ItemDto getById(Long itemId) {
@@ -90,34 +92,40 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public ItemDto editOne(Long id, ItemDto item, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("User with id - %d not found"
-                        .formatted(userId))
-        );
-
-        Item oldItem = itemRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Item with id - %d not found"
-                        .formatted(id))
-        );
-
-        if (!Objects.equals(oldItem.getOwner().getId(), user.getId())) {
-            throw new OwnerException("Item with id %d does not belong to user with id %d"
-                    .formatted(id, user.getId()));
-        }
-
-        if (item.getTitle() != null) {
-            oldItem.setTitle(item.getTitle());
-        }
-        if (item.getDescription() != null) {
-            oldItem.setDescription(item.getDescription());
-        }
-        if (item.getAvailable() != null) {
-            oldItem.setAvailable(item.getAvailable());
-        }
-
-        return ItemMapper.toItemDto(itemRepository.save(oldItem));
+    public ItemDto editOne(Long itemId, ItemRequestDto item, OidcUser user, List<MultipartFile> images) {
+        return null;
     }
+
+
+//    @Override
+//    public ItemDto editOne(Long id, ItemDto item, Long userId) {
+//        User user = userRepository.findById(userId).orElseThrow(
+//                () -> new NotFoundException("User with id - %d not found"
+//                        .formatted(userId))
+//        );
+//
+//        Item oldItem = itemRepository.findById(id).orElseThrow(
+//                () -> new NotFoundException("Item with id - %d not found"
+//                        .formatted(id))
+//        );
+//
+//        if (!Objects.equals(oldItem.getOwner().getId(), user.getId())) {
+//            throw new OwnerException("Item with id %d does not belong to user with id %d"
+//                    .formatted(id, user.getId()));
+//        }
+//
+//        if (item.getTitle() != null) {
+//            oldItem.setTitle(item.getTitle());
+//        }
+//        if (item.getDescription() != null) {
+//            oldItem.setDescription(item.getDescription());
+//        }
+//        if (item.getAvailable() != null) {
+//            oldItem.setAvailable(item.getAvailable());
+//        }
+//
+//        return ItemMapper.toItemDto(itemRepository.save(oldItem));
+//    }
 
     @Override
     public List<ItemDto> searchByText(String text) {

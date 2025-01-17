@@ -8,10 +8,15 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import rs.delimo.error.ValidationMarker;
 import rs.delimo.item.dto.ItemDto;
+import rs.delimo.item.dto.ItemRequestDto;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,5 +48,21 @@ public class MyItemController {
     @GetMapping("/{id}")
     public ItemDto getOne(@PathVariable Long id, @AuthenticationPrincipal OidcUser user) {
         return itemService.getByUserAndId(id, user);
+    }
+
+    @PatchMapping("/{itemId}")
+    public ItemDto editOne(@ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
+                           @RequestParam(value = "image", required = false) List<MultipartFile> images,
+                           @AuthenticationPrincipal OidcUser user,
+                           @PathVariable Long itemId
+    ) {
+        return itemService.editOne(itemId, item, user, images);
+    }
+
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ItemDto create(@ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
+                          @RequestParam(value = "image", required = false) List<MultipartFile> images,
+                          @AuthenticationPrincipal OidcUser user) {
+        return itemService.create(item, user, images);
     }
 }

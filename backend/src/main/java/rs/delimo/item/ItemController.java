@@ -52,17 +52,6 @@ public class ItemController {
         return itemService.searchByText(text);
     }
 
-    @PatchMapping("/{id}")
-    public ItemDto editOne(@PathVariable Long id,
-                           @RequestBody ItemDto item,
-                           @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.editOne(id, item, userId);
-    }
 
-    @PostMapping(consumes = {"multipart/form-data"})
-    public ItemDto create(@ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
-                          @RequestParam(value = "image", required = false) List<MultipartFile> images,
-                          @AuthenticationPrincipal OidcUser user) {
-        return itemService.create(item, user, images);
-    }
+
 }
