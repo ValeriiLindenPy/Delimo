@@ -71,7 +71,6 @@ export default {
             this.store.authorized = false;
           })
     }
-    console.log(this.store.authorized);
   }
 }
 </script>

@@ -1,11 +1,13 @@
 <template>
 
 
-    <!-- 1) Оборачиваем контент, который должен вести на детальную страницу, в router-link -->
-    <router-link :to="`/items/${post.id}`"  class="block max-w-sm rounded-lg overflow-hidden shadow-lg border bg-white hover:shadow-xl transition-shadow">
-      <div
-          class="max-w-sm rounded-lg overflow-hidden shadow-lg border bg-white"
-      >
+  <!-- 1) Оборачиваем контент, который должен вести на детальную страницу, в router-link -->
+
+  <div
+      :to="`/items/${post.id}`"
+      class="max-w-sm rounded-lg overflow-hidden shadow-lg border bg-white"
+  >
+    <div @click="goItem" class="cursor-pointer">
       <div>
         <!-- Изображение -->
         <img
@@ -32,27 +34,29 @@
       </div>
 
 
-    <!-- 2) Футер: доступность, цена... -->
-    <div class="flex items-center justify-between px-4 py-2 border-t">
-      <div class="flex items-center text-gray-500 text-sm gap-1">
-        <i class="fa-solid fa-wallet text-st4"></i>
-        <span v-if="post.pricePerDay">{{ post.pricePerDay }}.00 RSD</span>
-        <span v-else>besplatno</span>
-      </div>
+      <!-- 2) Футер: доступность, цена... -->
+      <div class="flex items-center justify-between px-4 py-2 border-t">
+        <div class="flex items-center text-gray-500 text-sm gap-1">
+          <i class="fa-solid fa-wallet text-st4"></i>
+          <span v-if="post.pricePerDay">{{ post.pricePerDay }}.00 RSD</span>
+          <span v-else>besplatno</span>
+        </div>
 
-      <div v-if="post.available" class="flex items-center gap-3 text-sm text-gray-500">
+        <div v-if="post.available" class="flex items-center gap-3 text-sm text-gray-500">
         <span class="flex items-center">
           <i class="fa-solid fa-hand text-green-500"></i>
           <span class="ml-1">Dostupno</span>
         </span>
-      </div>
-      <div v-else class="flex items-center gap-3 text-sm text-gray-500">
+        </div>
+        <div v-else class="flex items-center gap-3 text-sm text-gray-500">
         <span class="flex items-center">
           <i class="fa-solid fa-hand text-red-500"></i>
           <span class="ml-1">Rezervacija</span>
         </span>
+        </div>
       </div>
     </div>
+
 
     <!-- 3) Кнопка "Edit" - вынесена за пределы router-link -->
     <div class="flex justify-end p-2 border-t">
@@ -64,11 +68,11 @@
       </button>
     </div>
   </div>
-    </router-link>
 </template>
 
 <script>
 import defaultImage from "@/assets/default-image.jpg"
+
 export default {
   name: "UserPostCard",
   data() {
@@ -87,6 +91,9 @@ export default {
       // Либо открыть модалку, либо перейти на страницу редактирования
       // Пример с роутером:
       this.$router.push(`/items/${this.post.id}/edit`);
+    },
+    goItem() {
+      this.$router.push(`/items/${this.post.id}`);
     }
   }
 };
