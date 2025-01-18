@@ -4,15 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.web.multipart.MultipartFile;
-import rs.delimo.error.ValidationMarker;
 import rs.delimo.item.dto.ItemDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import rs.delimo.item.dto.ItemRequestDto;
 
 import java.util.LinkedHashMap;
 import java.util.List;
