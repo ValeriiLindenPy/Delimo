@@ -71,6 +71,31 @@
             <label for="available" class="text-sm font-medium text-st5">Dostupno</label>
           </div>
 
+          <!-- Phone -->
+          <div>
+            <label for="phone" class="text-sm font-medium text-st5">Telefon</label>
+            <input
+                id="phone"
+                type="text"
+                v-model="formData.phone"
+                class="w-full mt-1 p-2 border rounded-md text-st5"
+                placeholder="+381 ..."
+                required
+            />
+          </div>
+
+          <!-- Viber -->
+          <div>
+            <label for="viber" class="text-sm font-medium text-st5">Viber</label>
+            <input
+                id="viber"
+                type="text"
+                v-model="formData.viber"
+                class="w-full mt-1 p-2 border rounded-md text-st5"
+                placeholder="+381 ..."
+            />
+          </div>
+
           <!-- Grad -->
           <div>
             <label for="city" class="text-sm font-medium text-st5">Grad</label>
@@ -163,13 +188,13 @@
 </template>
 
 <script>
-import {fetchItem, updateItem} from "@/services/itemService";
+import { fetchItem, updateItem } from "@/services/itemService";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
-import {cities} from "@/assets/cities.js";
+import { cities } from "@/assets/cities.js";
 
 export default {
   name: "EditItem",
-  components: {PopUpModal},
+  components: { PopUpModal },
 
   data() {
     return {
@@ -184,6 +209,8 @@ export default {
         isFree: false,
         available: false,
         maxPeriodDays: 1,
+        phone: "",
+        viber: "",
         images: [],
         street: null,
         city: null,
@@ -206,7 +233,7 @@ export default {
   },
   async created() {
     try {
-      const {data} = await fetchItem(this.id);
+      const { data } = await fetchItem(this.id);
       this.post = data;
       this.formData = this.mapPostToFormData(data);
     } catch (error) {
@@ -217,30 +244,6 @@ export default {
     togglePopUp() {
       this.isPopUp = !this.isPopUp;
     },
-    mapPostToFormData(post) {
-      return {
-        street: post.owner.street || "",
-        city: post.owner.city || "",
-        title: post.title || "",
-        description: post.description || "",
-        pricePerDay: post.pricePerDay ?? "",
-        isFree: post.pricePerDay === 0 || post.pricePerDay === null,
-        available: post.available || false,
-        maxPeriodDays: post.maxPeriodDays || 1,
-        images: post.images?.map((url) => ({preview: url})) || [],
-      };
-    },
-    mapFormDataToPayload() {
-      return {
-        title: this.formData.title,
-        description: this.formData.description,
-        maxPeriodDays: this.formData.maxPeriodDays,
-        pricePerDay: this.formData.isFree ? 0 : this.formData.pricePerDay,
-        street: this.formData.street,
-        city: this.formData.city,
-        images: this.formData.images.map((img) => img.preview),
-      };
-    },
     async handleFileUpload(event) {
       const files = Array.from(event.target.files);
       const remainingSlots = 5 - this.formData.images.length;
@@ -248,7 +251,10 @@ export default {
       files.slice(0, remainingSlots).forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e) => {
-          this.formData.images.push({preview: e.target.result});
+          this.formData.images.push({
+            preview: e.target.result,
+            file: file, // Store the actual file object
+          });
         };
         reader.readAsDataURL(file);
       });
@@ -258,10 +264,51 @@ export default {
     removeImage(index) {
       this.formData.images.splice(index, 1);
     },
+    mapPostToFormData(post) {
+      return {
+        street: post.owner.street || "",
+        phone: post.owner.phone || "",
+        viber: post.owner.viber || "",
+        city: post.owner.city || "",
+        title: post.title || "",
+        description: post.description || "",
+        pricePerDay: post.pricePerDay ?? "",
+        isFree: post.pricePerDay === 0 || post.pricePerDay === null,
+        available: post.available || false,
+        maxPeriodDays: post.maxPeriodDays || 1,
+        images: post.images?.map((url) => ({ preview: url })) || [],
+      };
+    },
     async updatePost() {
       try {
-        const payload = this.mapFormDataToPayload();
-        const response = await updateItem(this.id, payload);
+        const formData = new FormData();
+
+        // Добавление других полей формы...
+        formData.append("title", this.formData.title || "");
+        formData.append("description", this.formData.description || "");
+        formData.append("pricePerDay", this.formData.isFree ? "0" : this.formData.pricePerDay || "");
+        formData.append("available", this.formData.available ? "true" : "false");
+        formData.append("maxPeriodDays", this.formData.maxPeriodDays || "1");
+        formData.append("phone", this.formData.phone || "");
+        formData.append("viber", this.formData.viber || "");
+        formData.append("city", this.formData.city || "");
+        formData.append("street", this.formData.street || "");
+
+        // Отправка новых файлов
+        this.formData.images.forEach((image) => {
+          if (image.file) {
+            formData.append("image", image.file);
+          }
+        });
+
+        // Отправка списка существующих изображений, которые пользователь не удалил
+        // Предполагаем, что те элементы, у которых нет поля file, являются URL
+        const existingImages = this.formData.images
+            .filter(img => !img.file)
+            .map(img => img.preview);
+        formData.append("existingImages", JSON.stringify(existingImages));
+
+        const response = await updateItem(this.id, formData);
         if (response.status === 200) {
           this.togglePopUp();
           this.$router.push(`/items/${this.id}`);
@@ -269,7 +316,8 @@ export default {
       } catch (error) {
         console.error("Error updating item:", error);
       }
-    },
+    }
+    ,
   },
 };
 </script>

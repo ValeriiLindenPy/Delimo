@@ -1,8 +1,9 @@
 import apiClient from "@/services/api.js";
 
 export const fetchItem = (id) => apiClient.get(`/my-items/${id}`);
-export const updateItem = (id, data) =>
-    apiClient.patch(`/my-items/${id}`, data, {
+
+export const updateItem = (id, formData) =>
+    apiClient.patch(`/my-items/${id}`, formData, {
         withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "multipart/form-data" },
     });
