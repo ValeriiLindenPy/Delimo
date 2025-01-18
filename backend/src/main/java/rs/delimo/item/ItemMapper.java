@@ -5,6 +5,9 @@ import rs.delimo.user.UserMapper;
 import org.springframework.stereotype.Component;
 import rs.delimo.item.dto.ItemDto;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 @Component
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
@@ -13,7 +16,7 @@ public class ItemMapper {
                 .title(item.getTitle())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .images(item.getImages())
+                .images(item.getImages() != null ? new ArrayList<>(item.getImages()) : Collections.emptyList())
                 .maxPeriodDays(item.getMaxPeriodDays())
                 .pricePerDay(item.getPricePerDay())
                 .owner(UserMapper.toUserDto(item.getOwner()))
@@ -39,6 +42,7 @@ public class ItemMapper {
                 .description(dto.getDescription())
                 .maxPeriodDays(dto.getMaxPeriodDays())
                 .pricePerDay(dto.getPricePerDay())
+                .available(dto.getAvailable())
                 .build();
     }
 }

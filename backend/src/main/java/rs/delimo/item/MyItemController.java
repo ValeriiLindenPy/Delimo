@@ -2,6 +2,7 @@ package rs.delimo.item;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -22,6 +23,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/my-items")
 @RequiredArgsConstructor
+@Slf4j
 public class MyItemController {
     public final ItemService itemService;
     private final PagedResourcesAssembler<ItemDto> assembler;
@@ -50,13 +52,17 @@ public class MyItemController {
         return itemService.getByUserAndId(id, user);
     }
 
-    @PatchMapping("/{itemId}")
-    public ItemDto editOne(@ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
-                           @RequestParam(value = "image", required = false) List<MultipartFile> images,
-                           @AuthenticationPrincipal OidcUser user,
-                           @PathVariable Long itemId
+    @PatchMapping(value = "/{itemId}", consumes = {"multipart/form-data"})
+    public ItemDto editOne(
+            @ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
+            @RequestParam(value = "image", required = false) List<MultipartFile> images,
+            @RequestParam(value = "existingImages", required = false) String existingImagesJson,
+            @AuthenticationPrincipal OidcUser user,
+            @PathVariable Long itemId
     ) {
-        return itemService.editOne(itemId, item, user, images);
+        log.info("Received {} new images", images != null ? images.size() : 0);
+        log.info("Existing images JSON: {}", existingImagesJson);
+        return itemService.editOne(itemId, item, user, images, existingImagesJson);
     }
 
     @PostMapping(consumes = {"multipart/form-data"})

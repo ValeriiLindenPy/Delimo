@@ -18,6 +18,8 @@ public class ItemRequestDto {
 
     private String street;
 
+    private Boolean available;
+
     private String city;
 
     private String phone;
