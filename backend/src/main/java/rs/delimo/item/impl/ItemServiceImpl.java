@@ -128,6 +128,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public void delete(Long itemId, OidcUser user) {
+        User owner = userRepository.findByEmail(user.getAttribute("email"))
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        Item oldItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Item with id - %d not found".formatted(itemId)));
+
+        if (!Objects.equals(oldItem.getOwner().getId(), owner.getId())) {
+            throw new OwnerException("Item with id %d does not belong to user with id %d"
+                    .formatted(itemId, owner.getId()));
+        }
+
+        itemRepository.deleteById(itemId);
+    }
+
+    @Override
     public List<ItemDto> searchByText(String text) {
         if (text == null || text.isBlank()) {
             return List.of();
