@@ -12,3 +12,9 @@ export const deleteItemById = (id) =>
     apiClient.delete(`/my-items/${id}`, {
         withCredentials: true,
     });
+
+export const createItem = (formData) =>
+    apiClient.patch(`/my-items`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+    });
