@@ -5,14 +5,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import rs.delimo.error.ValidationMarker;
-import rs.delimo.item.dto.ItemDto;
-import rs.delimo.item.dto.ItemRequestDto;
 import rs.delimo.request.dto.RequestDto;
 import rs.delimo.request.dto.RequestForResponseDto;
-
-import java.util.List;
 
 
 @RestController
@@ -38,5 +32,4 @@ public class MyItemRequestController {
     public void delete(@PathVariable Long requestID, @AuthenticationPrincipal OidcUser user) {
         requestService.delete(requestID, user);
     }
-
 }

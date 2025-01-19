@@ -39,7 +39,6 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final int MAX_IMAGES_COUNT = 5;
 
-    // Инициализация часто используемых объектов для загрузки изображений
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Dotenv dotenv = Dotenv.load();
@@ -161,7 +160,6 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(ItemRequestDto item, OidcUser oidcUser, List<MultipartFile> images) {
         User owner = userRepository.findByEmail(oidcUser.getAttribute("email"))
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
 
         updateUserContactInfo(item, owner);
 

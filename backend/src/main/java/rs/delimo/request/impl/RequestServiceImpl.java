@@ -102,7 +102,6 @@ public class RequestServiceImpl implements RequestService {
             throw new OwnerException("Request with id %d does not belong to user with id %d"
                     .formatted(requestID, requester.getId()));
         }
-
         requestRepository.deleteById(requestID);
     }
 

@@ -13,7 +13,6 @@ import rs.delimo.request.dto.RequestForResponseDto;
 public class ItemRequestController {
     private final RequestService requestService;
 
-
     @GetMapping
     public Page<RequestForResponseDto> getAll(@RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "6") int pageSize) {
@@ -24,5 +23,4 @@ public class ItemRequestController {
     public RequestForResponseDto getOne(@PathVariable Long requestId) {
         return requestService.getById(requestId);
     }
-
 }
