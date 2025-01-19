@@ -238,7 +238,7 @@ export default {
       this.uploadedFiles.forEach(file => formData.append("images", file));
 
       try {
-        const response = await apiClient.post("/items", formData, {
+        const response = await apiClient.post("/my-items", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 

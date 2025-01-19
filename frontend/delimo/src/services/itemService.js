@@ -7,3 +7,8 @@ export const updateItem = (id, formData) =>
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
     });
+
+export const deleteItemById = (id) =>
+    apiClient.delete(`/my-items/${id}`, {
+        withCredentials: true,
+    });
