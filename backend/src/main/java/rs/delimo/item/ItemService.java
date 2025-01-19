@@ -23,4 +23,6 @@ public interface ItemService {
     Page<ItemDto> getAllByOwner(int page, int size, OidcUser user);
 
     ItemDto editOne(Long itemId, ItemRequestDto item, OidcUser user, List<MultipartFile> images, String existingImagesJson);
+
+    void delete(Long itemId, OidcUser user);
 }

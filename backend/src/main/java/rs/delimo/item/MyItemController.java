@@ -71,4 +71,11 @@ public class MyItemController {
                           @AuthenticationPrincipal OidcUser user) {
         return itemService.create(item, user, images);
     }
+
+    @RequestMapping(value = "/{itemId}", method = RequestMethod.DELETE)
+    public void delete(
+            @PathVariable Long itemId,
+            @AuthenticationPrincipal OidcUser user) {
+         itemService.delete(itemId, user);
+    }
 }

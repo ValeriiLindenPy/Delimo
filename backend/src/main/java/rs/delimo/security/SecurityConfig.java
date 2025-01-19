@@ -36,6 +36,7 @@ public class SecurityConfig {
                         auth -> {
                             auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                             auth.requestMatchers("/items/**").permitAll();
+                            auth.requestMatchers(HttpMethod.DELETE, "/my-items/**").authenticated();
                             auth.anyRequest().authenticated();
                         }
                 )
@@ -72,8 +73,6 @@ public class SecurityConfig {
     public OAuth2UserService<OidcUserRequest, OidcUser> CustomOAuth2UserService() {
         return new CustomOAuth2UserService(userRepository);
     }
-
-
 }
 
 
