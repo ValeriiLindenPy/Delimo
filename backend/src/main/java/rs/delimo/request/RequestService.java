@@ -2,17 +2,17 @@ package rs.delimo.request;
 
 import org.springframework.data.domain.Page;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import rs.delimo.request.dto.RequestDto;
-import rs.delimo.request.dto.RequestForResponseDto;
+import rs.delimo.request.dto.RequestInputDto;
+import rs.delimo.request.dto.RequestOutputDto;
 
 public interface RequestService {
-    Page<RequestForResponseDto> getAll(int page, int pageSize);
+    Page<RequestOutputDto> getAll(int page, int pageSize);
 
-    RequestForResponseDto create(RequestDto request, OidcUser user);
+    RequestOutputDto create(RequestInputDto request, OidcUser user);
 
-    RequestForResponseDto edit(Long requestID, RequestDto request, OidcUser user);
+    RequestOutputDto edit(Long requestID, RequestInputDto request, OidcUser user);
 
-    RequestForResponseDto getById(Long requestId);
+    RequestOutputDto getById(Long requestId);
 
     void delete(Long requestID, OidcUser user);
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RequestDto {
+public class RequestInputDto {
     @NotBlank
     private String title;
     @NotBlank

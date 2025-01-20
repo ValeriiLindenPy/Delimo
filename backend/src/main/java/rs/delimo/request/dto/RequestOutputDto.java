@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class RequestForResponseDto {
+public class RequestOutputDto {
     private Long id;
 
     private String title;

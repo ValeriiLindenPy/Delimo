@@ -13,8 +13,8 @@ import rs.delimo.request.ItemRequest;
 import rs.delimo.request.RequestMapper;
 import rs.delimo.request.RequestRepository;
 import rs.delimo.request.RequestService;
-import rs.delimo.request.dto.RequestDto;
-import rs.delimo.request.dto.RequestForResponseDto;
+import rs.delimo.request.dto.RequestInputDto;
+import rs.delimo.request.dto.RequestOutputDto;
 import rs.delimo.user.User;
 import rs.delimo.user.UserRepository;
 
@@ -29,15 +29,15 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<RequestForResponseDto> getAll(int page, int size) {
+    public Page<RequestOutputDto> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ItemRequest> requests = requestRepository.findAll(pageable);
-        return requests.map(RequestMapper::toResponseDto);
+        return requests.map(RequestMapper::toOutputDto);
     }
 
     @Override
     @Transactional
-    public RequestForResponseDto create(RequestDto request, OidcUser user) {
+    public RequestOutputDto create(RequestInputDto request, OidcUser user) {
         User requester = userRepository.findByEmail(user.getAttribute("email"))
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
@@ -50,12 +50,12 @@ public class RequestServiceImpl implements RequestService {
                 .requester(requester)
                 .build();
 
-        return RequestMapper.toResponseDto(requestRepository.save(itemRequest));
+        return RequestMapper.toOutputDto(requestRepository.save(itemRequest));
     }
 
     @Override
     @Transactional
-    public RequestForResponseDto edit(Long requestID, RequestDto request, OidcUser user) {
+    public RequestOutputDto edit(Long requestID, RequestInputDto request, OidcUser user) {
         User requester = userRepository.findByEmail(user.getAttribute("email"))
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
@@ -79,15 +79,15 @@ public class RequestServiceImpl implements RequestService {
             OldItemRequest.setPricePerDay(request.getPricePerDay());
         }
 
-        return RequestMapper.toResponseDto(requestRepository.save(OldItemRequest));
+        return RequestMapper.toOutputDto(requestRepository.save(OldItemRequest));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public RequestForResponseDto getById(Long requestId) {
+    public RequestOutputDto getById(Long requestId) {
         ItemRequest request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Request with id - %d not found".formatted(requestId)));
-        return RequestMapper.toResponseDto(request);
+        return RequestMapper.toOutputDto(request);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class RequestServiceImpl implements RequestService {
         requestRepository.deleteById(requestID);
     }
 
-    private void updateUserContactInfo(RequestDto request, User requester) {
+    private void updateUserContactInfo(RequestInputDto request, User requester) {
         boolean updated = false;
         if (request.getCity() != null && (requester.getCity() == null || requester.getCity().isBlank())) {
             requester.setCity(request.getCity());
