@@ -34,6 +34,7 @@ import {useUserStore} from "@/stores/counter.js";
 import RequestList from "@/components/RequestList.vue";
 import {getUserData} from "@/services/userService.js";
 import {getItems} from "@/services/itemService.js";
+import {fetchRequests} from "@/services/requestService.js";
 
 export default {
   components: {
@@ -51,11 +52,17 @@ export default {
     async fetchItems() {
       const res = await getItems();
       this.items = res.data.content;
+    },
+    async getRequests() {
+      const res = await fetchRequests();
+      this.requests = res.data.content;
     }
   },
   async mounted() {
 
     await this.fetchItems()
+
+    await this.getRequests()
 
     this.store.checkLogginStatus()
 
