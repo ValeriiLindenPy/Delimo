@@ -36,6 +36,7 @@ public class SecurityConfig {
                         auth -> {
                             auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                             auth.requestMatchers("/items/**").permitAll();
+                            auth.requestMatchers("/requests/**").permitAll();
                             auth.requestMatchers(HttpMethod.DELETE, "/my-items/**").authenticated();
                             auth.anyRequest().authenticated();
                         }
