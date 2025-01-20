@@ -6,7 +6,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import rs.delimo.item.dto.ItemDto;
 import rs.delimo.request.dto.RequestInputDto;
 import rs.delimo.request.dto.RequestOutputDto;
 
