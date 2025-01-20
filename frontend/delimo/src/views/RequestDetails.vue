@@ -16,6 +16,7 @@
       <div>
         <NameUI v-if="item" :name="item.title" />
         <DescriptionUI v-if="item" :description="item.description" />
+        <PriceUI v-if="item" :price="item.pricePerDay" />
         <AddressUI v-if="item" :address="address" />
       </div>
     </div>
@@ -32,7 +33,7 @@ import NameUI from "@/components/UI/NameUI.vue";
 import AddressUI from "@/components/UI/AddressUI.vue";
 import ContactsUI from "@/components/UI/ContactsUI.vue";
 import DescriptionUI from "@/components/UI/DescriptionUI.vue";
-
+import PriceUI from "@/components/UI/PriceUI.vue";
 
 export default {
   name: "RequestDetails",
@@ -41,6 +42,7 @@ export default {
     NameUI,
     AddressUI,
     ContactsUI,
+    PriceUI
   },
   setup() {
     const route = useRoute();

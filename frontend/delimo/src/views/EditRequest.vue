@@ -105,7 +105,7 @@
           <!-- Submit i Odustani dugmad -->
           <button
               type="submit"
-              class="bg-st4 mr-2 text-white py-2 px-4 rounded hover:bg-st3 transition duration-500"
+              class="bg-st4 mr-2 text-white py-2 px-4 rounded hover:bg-st3 mt-3 transition duration-500"
           >
             Sačuvaj
           </button>
@@ -178,9 +178,9 @@ export default {
 
     mapPostToFormData(post) {
       return {
-        phone: post.owner.phone || "",
-        viber: post.owner.viber || "",
-        city: post.owner.city || "",
+        phone: post.requester.phone || "",
+        viber: post.requester.viber || "",
+        city: post.requester.city || "",
         title: post.title || "",
         description: post.description || "",
         pricePerDay: post.pricePerDay ?? "",
