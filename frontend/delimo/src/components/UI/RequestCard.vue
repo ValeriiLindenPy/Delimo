@@ -9,12 +9,8 @@
     <!-- Контент -->
     <div class="p-4">
       <div class="flex justify-between items-center mb-2">
-        <h3 class="font-bold text-lg truncate">{{ post.name }}</h3>
-        <span
-            class="bg-st2 text-st3 text-sm font-bold px-3 py-1 rounded md:text-md whitespace-nowrap"
-        >
-          {{ post.maxPeriodDays }} dan(a)
-        </span>
+        <h3 class="font-bold text-lg truncate">{{ post.title }}</h3>
+
       </div>
       <p class="text-gray-600 text-sm truncate">
         {{ post.description }}

@@ -11,8 +11,8 @@ export const fetchMyRequests = async () =>
         withCredentials: true,
     });
 
-export const createRequest = (formData) =>
-    apiClient.post("/my-requests", formData, {
+export const createRequest = async (formData) =>
+    await apiClient.post("/my-requests", formData, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
     });
