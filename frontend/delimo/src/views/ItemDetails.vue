@@ -35,9 +35,8 @@ import AvailableUI from '@/components/UI/AvailableUI.vue'
 import MaxPeriodUI from '@/components/UI/MaxPeriodUI.vue'
 import AddressUI from '@/components/UI/AddressUI.vue'
 import ContactsUI from '@/components/UI/ContactsUI.vue'
-import apiClient from '@/services/api.js'
 import defaultImage from '@/assets/default-image.jpg'
-
+import {getItem} from "@/services/itemService.js";
 export default {
   name: 'ItemDetails',
   components: {
@@ -63,15 +62,12 @@ export default {
       return null
     },
   },
-  created() {
+  async created() {
     const route = useRoute()
     const itemId = Number(route.params.id)
 
-    // Fetch item details from API
-    apiClient(`/items/${itemId}`).then((response) => {
-      this.item = response.data
-      console.log(response.data)
-    })
+    this.item = (await getItem(itemId)).data
+
   },
 }
 </script>

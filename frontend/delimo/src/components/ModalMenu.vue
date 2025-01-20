@@ -4,7 +4,7 @@
 
       <li @click="goHome" class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Početna</li>
       <li @click="goItems" class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Sve Stvari</li>
-      <li class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Svi Zahtevi</li>
+      <li @click="goRequests" class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Svi Zahtevi</li>
       <li class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">Kako koristiti</li>
       <li class="hover:bg-st2 cursor-pointer px-2 py-3 border-st2 border-t-2 border-solid">O nama</li>
       <li @click="toggleOpenRequest" class="py-2 px-4 transition-colors duration-500 hover:bg-st4 cursor-pointer flex items-center gap-1 bg-st3 text-white shadow-inner">
@@ -88,6 +88,10 @@ export default {
     goItems() {
       this.$emit('close')
       this.$router.push("/items");
+    },
+    goRequests() {
+      this.$emit('close')
+      this.$router.push("/requests");
     }
   },
 

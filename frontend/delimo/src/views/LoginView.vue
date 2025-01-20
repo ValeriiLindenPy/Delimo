@@ -73,18 +73,29 @@ import { useRouter } from "vue-router";
 
 export default {
   name: "LoginView",
+  data() {
+    return {
+      email: "",
+      password: "",
+    }
+  },
   setup() {
     const userStore = useUserStore();
     const router = useRouter();
 
     const handleGoogleLogin = async () => {
-      // Redirect to the Spring OAuth2 login endpoint
+      // Redirect to the OAuth2 login endpoint
       await userStore.loggingIn()
       window.location.href = "http://localhost:8080/oauth2/authorization/google";
     };
 
+    const handleEmailPasswordLogin = async () => {
+      //todo
+    };
+
     return {
       handleGoogleLogin,
+      handleEmailPasswordLogin,
     };
   },
 };
