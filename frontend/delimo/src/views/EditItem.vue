@@ -188,7 +188,7 @@
 </template>
 
 <script>
-import { fetchItem, updateItem } from "@/services/itemService";
+import { fetchMyItem, updateItem } from "@/services/itemService";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
 import { cities } from "@/assets/cities.js";
 
@@ -233,7 +233,7 @@ export default {
   },
   async created() {
     try {
-      const { data } = await fetchItem(this.id);
+      const { data } = await fetchMyItem(this.id);
       this.post = data;
       this.formData = this.mapPostToFormData(data);
     } catch (error) {

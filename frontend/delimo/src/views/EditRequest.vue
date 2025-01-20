@@ -1,7 +1,16 @@
 <template>
+  <PopUpModal :is-active="isPopUp" @close="togglePopUp">
+    <div class="flex flex-col items-center justify-center gap-2">
+      <h1>Stvar je kreirana uspešno!</h1>
+      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="togglePopUp">
+        Hvala!
+      </button>
+    </div>
+  </PopUpModal>
+
   <div class="flex justify-center mt-2 items-center md:container flex-col">
     <div class="flex flex-col w-full bg-st2 p-4 rounded-lg md:w-1/2">
-      <h1 class="text-2xl font-bold mb-4">Izmeni zahtev</h1>
+      <h1 class="text-2xl font-bold mb-4">Izmeni stvar</h1>
 
       <div v-if="post">
         <form @submit.prevent="updatePost">
@@ -11,12 +20,21 @@
             <label class="block font-semibold mb-1" for="name">Naslov</label>
             <input
                 id="name"
-                v-model="formData.name"
+                v-model="formData.title"
                 class="border px-2 py-1 w-full rounded-lg"
                 type="text"
             />
           </div>
 
+          <!-- Opis -->
+          <div class="mb-4">
+            <label class="block font-semibold mb-1" for="description">Opis</label>
+            <textarea
+                id="description"
+                v-model="formData.description"
+                class="border px-2 py-1 w-full rounded-lg"
+            ></textarea>
+          </div>
 
           <!-- Cena -->
           <div class="flex flex-col mb-4">
@@ -29,13 +47,12 @@
                   :disabled="formData.isFree"
                   class="w-full mt-1 p-2 border rounded-md text-st5"
                   placeholder="100.00 RSD"
-                  required
               />
               <div class="flex items-center gap-1">
                 <input
                     class="accent-st5 scale-125"
                     type="checkbox"
-                    v-model="formData.isFree"
+                    v-model="isPriceFree"
                     id="besplatno"
                 />
                 <p>besplatno</p>
@@ -44,77 +61,155 @@
           </div>
 
 
+          <!-- Phone -->
+          <div>
+            <label for="phone" class="text-sm font-medium text-st5">Telefon</label>
+            <input
+                id="phone"
+                type="text"
+                v-model="formData.phone"
+                class="w-full mt-1 p-2 border rounded-md text-st5"
+                placeholder="+381 ..."
+                required
+            />
+          </div>
 
-          <!-- Submit and Cancel buttons -->
+          <!-- Viber -->
+          <div>
+            <label for="viber" class="text-sm font-medium text-st5">Viber</label>
+            <input
+                id="viber"
+                type="text"
+                v-model="formData.viber"
+                class="w-full mt-1 p-2 border rounded-md text-st5"
+                placeholder="+381 ..."
+            />
+          </div>
+
+          <!-- Grad -->
+          <div>
+            <label for="city" class="text-sm font-medium text-st5">Grad</label>
+            <select
+                id="city"
+                v-model="formData.city"
+                class="w-full mt-1 p-2 border rounded-md text-st5"
+            >
+              <option value="" disabled>Izaberite grad</option>
+              <option v-for="city in cities" :key="city.id" :value="city.name">
+                {{ city.name }}
+              </option>
+            </select>
+          </div>
+
+
+          <!-- Submit i Odustani dugmad -->
           <button
               type="submit"
-              class="bg-st4 mr-2 text-white py-2 px-4 rounded hover:bg-st3 transition duration-500"
+              class="bg-st4 mr-2 text-white py-2 px-4 rounded hover:bg-st3 mt-3 transition duration-500"
           >
             Sačuvaj
           </button>
-          <router-link
-              :to="`/items/${id}`"
-              class="bg-gray-300 text-black px-4 py-2 rounded"
-          >
+          <router-link :to="cancelUrl" class="bg-gray-300 text-black px-4 py-2 rounded">
             Odustani
           </router-link>
         </form>
       </div>
 
       <div v-else>
-        <p>Loading...</p>
+        <p>Učitavanje...</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
+import {fetchMyRequest, updateRequest} from "@/services/requestService.js";
+import PopUpModal from "@/components/UI/PopUpModal.vue";
+import { cities } from "@/assets/cities.js";
 
 export default {
-  name: "EditRequest",
-  props: {
-    id: {
-      type: String,
-      required: true
-    }
-  },
+  name: "EditItem",
+  components: { PopUpModal },
+
   data() {
     return {
+      cities,
+      id: Number(this.$route.params.id),
+      isPopUp: false,
       post: null,
       formData: {
-        name: "",
+        title: "",
+        description: "",
         pricePerDay: "",
-        isFree: false, // New property to toggle "besplatno"
-        maxPeriodDays: 1,
-      }
+        isFree: false,
+        phone: "",
+        viber: "",
+        city: null,
+      },
     };
   },
-  created() {
-    const numericId = Number(this.$route.params.id);
-    this.post = null; //todo
-
-    if (this.post) {
-      this.formData = {
-        name: this.post.name,
-        pricePerDay: this.post.pricePerDay ?? "", // Handle null pricePerDay
-        isFree: this.post.pricePerDay === 0 || this.post.pricePerDay === null, // Pre-select "besplatno" if price is 0 or null
-        maxPeriodDays: this.post.maxPeriodDays || 1,
-      };
-    } else {
-      console.warn("No item found with ID:", numericId);
+  computed: {
+    cancelUrl() {
+      return `/requests/${this.id}`;
+    },
+    isPriceFree: {
+      get() {
+        return this.formData.isFree;
+      },
+      set(value) {
+        this.formData.isFree = value;
+        if (value) this.formData.pricePerDay = 0;
+      },
+    },
+  },
+  async created() {
+    try {
+      const { data } = await fetchMyRequest(this.id);
+      this.post = data;
+      this.formData = this.mapPostToFormData(data);
+    } catch (error) {
+      console.error("Error fetching item:", error);
     }
   },
   methods: {
-    updatePost() {
-      if (!this.post) return;
+    togglePopUp() {
+      this.isPopUp = !this.isPopUp;
+    },
 
-      this.post.name = this.formData.name;
-      this.post.description = this.formData.description;
-      this.post.pricePerDay = this.formData.isFree ? 0 : this.formData.pricePerDay; // Set price to 0 if "besplatno"
+    mapPostToFormData(post) {
+      return {
+        phone: post.requester.phone || "",
+        viber: post.requester.viber || "",
+        city: post.requester.city || "",
+        title: post.title || "",
+        description: post.description || "",
+        pricePerDay: post.pricePerDay ?? "",
+        isFree: post.pricePerDay === 0 || post.pricePerDay === null,
+      };
+    },
+    async updatePost() {
+      try {
+        const formData = new FormData();
 
-      this.$router.push(`/requests/${this.id}`);
+        // Добавление других полей формы...
+        formData.append("title", this.formData.title || "");
+        formData.append("description", this.formData.description || "");
+        formData.append("pricePerDay", this.formData.isFree ? "0" : this.formData.pricePerDay || "");
+        formData.append("phone", this.formData.phone || "");
+        formData.append("viber", this.formData.viber || "");
+        formData.append("city", this.formData.city || "");
+
+
+        const response = await updateRequest(this.id, formData);
+        if (response.status === 200) {
+          this.togglePopUp();
+          this.$router.push(`/requests/${this.id}`);
+        }
+      } catch (error) {
+        console.error("Error updating item:", error);
+      }
     }
-  }
+    ,
+  },
 };
 </script>

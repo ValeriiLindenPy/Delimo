@@ -14,6 +14,7 @@ import RequestDetails from "@/views/RequestDetails.vue";
 import UserRequests from "@/views/UserRequests.vue";
 import EditRequest from "@/views/EditRequest.vue";
 import FeedBack from "@/views/FeedBack.vue";
+import RequestsView from "@/views/RequestsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/registration',
       name: 'RegistrationView',
       component: RegistrationView,
+    },
+    {
+      path: '/requests',
+      name: 'requests',
+      component: RequestsView,
     },
     {
       path: '/items',

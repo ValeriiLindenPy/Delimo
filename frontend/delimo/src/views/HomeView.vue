@@ -31,11 +31,10 @@
 
 import ItemList from "@/components/ItemList.vue";
 import {useUserStore} from "@/stores/counter.js";
-import apiClient from "@/services/api.js";
 import RequestList from "@/components/RequestList.vue";
-
-
-
+import {getUserData} from "@/services/userService.js";
+import {getItems} from "@/services/itemService.js";
+import {fetchRequests} from "@/services/requestService.js";
 
 export default {
   components: {
@@ -51,25 +50,24 @@ export default {
   },
   methods: {
     async fetchItems() {
-      await apiClient("/items").then((response) => {
-        this.items = response.data.content;
-      })
+      const res = await getItems();
+      this.items = res.data.content;
+    },
+    async getRequests() {
+      const res = await fetchRequests();
+      this.requests = res.data.content;
     }
   },
   async mounted() {
 
     await this.fetchItems()
 
+    await this.getRequests()
+
     this.store.checkLogginStatus()
 
     if (this.store.loggingStatus === "logging" ) {
-      await apiClient.get("/users/user-data", {withCredentials: true})
-          .then((res) => {
-            this.store.authorized = true;
-            this.store.setUserInfo(res.data);
-          }).catch((err) => {
-            this.store.authorized = false;
-          })
+      await getUserData();
     }
   }
 }

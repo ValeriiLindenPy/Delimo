@@ -13,7 +13,7 @@
 
 <script>
 import ItemList from "@/components/ItemList.vue";
-import apiClient from "@/services/api.js";
+import {fetchMyItems} from "@/services/itemService.js";
 
 export default {
   name: "UserOglasi",
@@ -25,11 +25,9 @@ export default {
     }
   },
 
-  created() {
-    apiClient("/my-items").then(res => {
-      console.log(res.data.content);
-      this.posts = res.data.content;
-    })
+  async created() {
+    await fetchMyItems().then(res => this.posts =  res.data.content)
+        .catch(err => console.error(err));
 
   },
 }

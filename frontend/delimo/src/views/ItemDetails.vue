@@ -19,6 +19,7 @@
         <NameUI v-if="item" :name="item.title" />
         <DescriptionUI v-if="item" :description="item.description" />
         <AvailableUI v-if="item" :available="item.available" />
+        <PriceUI v-if="item" :price="item.pricePerDay" />
         <MaxPeriodUI v-if="item" :max-period-days="item.maxPeriodDays" />
         <AddressUI v-if="item" :address="getAddress" />
       </div>
@@ -35,8 +36,9 @@ import AvailableUI from '@/components/UI/AvailableUI.vue'
 import MaxPeriodUI from '@/components/UI/MaxPeriodUI.vue'
 import AddressUI from '@/components/UI/AddressUI.vue'
 import ContactsUI from '@/components/UI/ContactsUI.vue'
-import apiClient from '@/services/api.js'
 import defaultImage from '@/assets/default-image.jpg'
+import {getItem} from "@/services/itemService.js";
+import PriceUI from "@/components/UI/PriceUI.vue";
 
 export default {
   name: 'ItemDetails',
@@ -48,6 +50,7 @@ export default {
     DescriptionUI,
     NameUI,
     Carousel,
+    PriceUI,
   },
   data() {
     return {
@@ -63,15 +66,12 @@ export default {
       return null
     },
   },
-  created() {
+  async created() {
     const route = useRoute()
     const itemId = Number(route.params.id)
 
-    // Fetch item details from API
-    apiClient(`/items/${itemId}`).then((response) => {
-      this.item = response.data
-      console.log(response.data)
-    })
+    this.item = (await getItem(itemId)).data
+
   },
 }
 </script>

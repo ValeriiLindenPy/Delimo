@@ -4,7 +4,7 @@
       <ul class="flex items-center justify-center text-center font-bold w-full gap-7">
         <li @click="goHome" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Početna</li>
         <li @click="goItems" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Sve Stvari</li>
-        <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Svi Zahtevi</li>
+        <li @click="goRequests" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Svi Zahtevi</li>
         <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Kako koristiti</li>
         <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">O nama</li>
         <li @click="toggleModal('support')" class="p-2 cursor-pointer hover:bg-st4 hover:text-white flex items-center gap-1">
@@ -86,6 +86,9 @@ export default {
     },
     goItems() {
       this.$router.push("/items");
+    },
+    goRequests() {
+      this.$router.push("/requests");
     }
   },
   components: { PopUpModal },

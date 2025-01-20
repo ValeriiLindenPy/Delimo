@@ -102,9 +102,9 @@
 
 
 <script>
-import {useUserStore} from "@/stores/counter.js";
-import {cities} from "@/assets/cities.js";
-import apiClient from "@/services/api.js";
+import { useUserStore } from "@/stores/counter.js";
+import { cities } from "@/assets/cities.js";
+import {updateUserDetails} from "@/services/userService.js";
 
 export default {
   name: "EditUserDetails",
@@ -128,43 +128,29 @@ export default {
     },
   },
   methods: {
-
     async submitForm() {
       try {
         const userStore = useUserStore();
         const userId = userStore.userId;
 
-        const response = await apiClient.patch(
-            `/users/${userId}`,
-            {
-              name: this.formData.name,
-              email: this.formData.email,
-              street: this.formData.street,
-              city: this.formData.city,
-              phone: this.formData.phone,
-              viber: this.formData.viber,
-            },
-            {
-              withCredentials: true,
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-        );
+        const updatedUser = await updateUserDetails(userId, {
+          name: this.formData.name,
+          email: this.formData.email,
+          street: this.formData.street,
+          city: this.formData.city,
+          phone: this.formData.phone,
+          viber: this.formData.viber,
+        });
 
-        const updatedUser = response.data;
         userStore.setUserInfo(updatedUser);
         this.$router.push("/users/" + userId);
-
       } catch (error) {
         console.error("Error updating user:", error.message);
         this.error = error.message;
       }
     },
-
   },
   mounted() {
-    // Auto-fill phone, viber, and location if available in the user profile
     if (this.userProfile) {
       this.formData.name = this.userProfile.name || "";
       this.formData.email = this.userProfile.email || "";
@@ -176,3 +162,4 @@ export default {
   },
 };
 </script>
+

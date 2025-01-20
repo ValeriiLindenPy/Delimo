@@ -3,13 +3,20 @@
     <div class="pt-6 flex flex-col w-full md:w-2/3">
       <!--Images and contacts-->
       <div class="flex flex-col justify-center">
-        <ContactsUI v-if="item" :name="item.name" :telephone="item.owner.telephone" :viber="item.owner.viber" />
+        <!-- Only show if `item` is loaded -->
+        <ContactsUI
+            v-if="item"
+            :name="item.title"
+            :telephone="item.requester.phone"
+            :viber="item.requester.viber"
+        />
       </div>
 
-      <!--INFO-->
+      <!-- INFO -->
       <div>
-        <NameUI v-if="item" :name="item.name" />
-        <MaxPeriodUI v-if="item" :is-request="true" :max-period-days="item.maxPeriodDays" />
+        <NameUI v-if="item" :name="item.title" />
+        <DescriptionUI v-if="item" :description="item.description" />
+        <PriceUI v-if="item" :price="item.pricePerDay" />
         <AddressUI v-if="item" :address="address" />
       </div>
     </div>
@@ -17,35 +24,53 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import {ref, computed, onMounted} from "vue";
+import {useRoute} from "vue-router";
+import {fetchRequest} from "@/services/requestService.js";
+
+// Importing UI components
 import NameUI from "@/components/UI/NameUI.vue";
-import MaxPeriodUI from "@/components/UI/MaxPeriodUI.vue";
 import AddressUI from "@/components/UI/AddressUI.vue";
 import ContactsUI from "@/components/UI/ContactsUI.vue";
-
+import DescriptionUI from "@/components/UI/DescriptionUI.vue";
+import PriceUI from "@/components/UI/PriceUI.vue";
 
 export default {
   name: "RequestDetails",
   components: {
-    ContactsUI,
-    AddressUI,
-    MaxPeriodUI,
+    DescriptionUI,
     NameUI,
+    AddressUI,
+    ContactsUI,
+    PriceUI
   },
   setup() {
     const route = useRoute();
-    const itemId = parseInt(route.params.id, 10); // Ensure ID is a number
-    const item = null; //todo
+    const itemId = parseInt(route.params.id, 10);
+    const item = ref(null);
 
+    onMounted(async () => {
+      try {
+        const res = await fetchRequest(itemId);
+        item.value = res.data;
+      } catch (error) {
+        console.error("Error fetching request data:", error);
+      }
+    });
+
+    // Dynamically build address using `computed`
     const address = computed(() => {
-      if (item.value && item.value.owner) {
-        return `${item.value.owner.city}, ${item.value.owner.address}`;
+      // Make sure `item` and `requester` exist
+      if (item.value && item.value.requester) {
+        return `${item.value.requester.city}, ${item.value.requester.street}`;
       }
       return "";
     });
 
-    return { item, address };
+    return {
+      item,
+      address,
+    };
   },
 };
 </script>

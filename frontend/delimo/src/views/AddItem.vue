@@ -175,9 +175,10 @@
 
 <script>
 import { useUserStore } from "@/stores/counter.js";
-import apiClient from "@/services/api.js";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
 import { cities } from "@/assets/cities.js";
+import {createItem} from "@/services/itemService.js";
+
 
 export default {
   name: "AddItem",
@@ -238,9 +239,7 @@ export default {
       this.uploadedFiles.forEach(file => formData.append("images", file));
 
       try {
-        const response = await apiClient.post("/my-items", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const response = await createItem(formData);
 
         this.tooglePopUp();
         this.uploadedFiles = [];
