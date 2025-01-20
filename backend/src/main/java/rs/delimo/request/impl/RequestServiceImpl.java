@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.delimo.error.exception.NotFoundException;
 import rs.delimo.error.exception.OwnerException;
+import rs.delimo.item.dto.ItemDto;
 import rs.delimo.request.ItemRequest;
 import rs.delimo.request.RequestMapper;
 import rs.delimo.request.RequestRepository;
@@ -33,6 +34,26 @@ public class RequestServiceImpl implements RequestService {
         Pageable pageable = PageRequest.of(page, size);
         Page<ItemRequest> requests = requestRepository.findAll(pageable);
         return requests.map(RequestMapper::toOutputDto);
+    }
+
+    @Override
+    public Page<RequestOutputDto> getAllByOwner(int page, int pageSize, OidcUser user) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        User requester = userRepository.findByEmail(user.getAttribute("email"))
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        Page<ItemRequest> requests = requestRepository.findAllByRequesterId(requester.getId(), pageable);
+
+        return requests.map(RequestMapper::toOutputDto);
+    }
+
+    @Override
+    public RequestOutputDto getByUserAndId(Long id, OidcUser user) {
+        User requester = userRepository.findByEmail(user.getAttribute("email"))
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        ItemRequest request = requestRepository.findByIdAndRequesterId(id, requester.getId()).orElseThrow(
+                () -> new NotFoundException("Request with id - %d not found".formatted(id))
+        );
+        return RequestMapper.toOutputDto(request);
     }
 
     @Override
@@ -104,6 +125,8 @@ public class RequestServiceImpl implements RequestService {
         }
         requestRepository.deleteById(requestID);
     }
+
+
 
     private void updateUserContactInfo(RequestInputDto request, User requester) {
         boolean updated = false;

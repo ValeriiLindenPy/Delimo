@@ -1,10 +1,12 @@
 package rs.delimo.request;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import rs.delimo.item.dto.ItemDto;
 import rs.delimo.request.dto.RequestInputDto;
 import rs.delimo.request.dto.RequestOutputDto;
 
@@ -14,6 +16,18 @@ import rs.delimo.request.dto.RequestOutputDto;
 @RequiredArgsConstructor
 public class MyItemRequestController {
     private final RequestService requestService;
+
+    @GetMapping
+    public Page<RequestOutputDto> getAll(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "6") int pageSize,
+                                         @AuthenticationPrincipal OidcUser user) {
+        return requestService.getAllByOwner(page, pageSize, user);
+    }
+
+    @GetMapping("/{id}")
+    public RequestOutputDto getOne(@PathVariable Long id, @AuthenticationPrincipal OidcUser user) {
+        return requestService.getByUserAndId(id, user);
+    }
 
     @PostMapping
     public RequestOutputDto create(@RequestBody @Validated RequestInputDto request,
