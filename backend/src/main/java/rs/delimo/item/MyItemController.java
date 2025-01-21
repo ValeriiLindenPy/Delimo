@@ -8,13 +8,13 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import rs.delimo.error.ValidationMarker;
 import rs.delimo.item.dto.ItemDto;
 import rs.delimo.item.dto.ItemRequestDto;
+import rs.delimo.user.User;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public class MyItemController {
 
 
     @GetMapping
-    public Map<String, Object> getAll(@AuthenticationPrincipal OidcUser user,
+    public Map<String, Object> getAll(@AuthenticationPrincipal User user,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "6") int size) {
         Page<ItemDto> items = itemService.getAllByOwner(page, size, user);
@@ -48,7 +48,7 @@ public class MyItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto getOne(@PathVariable Long id, @AuthenticationPrincipal OidcUser user) {
+    public ItemDto getOne(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return itemService.getByUserAndId(id, user);
     }
 
@@ -57,7 +57,7 @@ public class MyItemController {
             @ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
             @RequestParam(value = "image", required = false) List<MultipartFile> images,
             @RequestParam(value = "existingImages", required = false) String existingImagesJson,
-            @AuthenticationPrincipal OidcUser user,
+            @AuthenticationPrincipal User user,
             @PathVariable Long itemId
     ) {
         log.info("Received {} new images", images != null ? images.size() : 0);
@@ -68,14 +68,14 @@ public class MyItemController {
     @PostMapping(consumes = {"multipart/form-data"})
     public ItemDto create(@ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
                           @RequestParam(value = "image", required = false) List<MultipartFile> images,
-                          @AuthenticationPrincipal OidcUser user) {
+                          @AuthenticationPrincipal User user) {
         return itemService.create(item, user, images);
     }
 
     @RequestMapping(value = "/{itemId}", method = RequestMethod.DELETE)
     public void delete(
             @PathVariable Long itemId,
-            @AuthenticationPrincipal OidcUser user) {
+            @AuthenticationPrincipal User user) {
          itemService.delete(itemId, user);
     }
 }

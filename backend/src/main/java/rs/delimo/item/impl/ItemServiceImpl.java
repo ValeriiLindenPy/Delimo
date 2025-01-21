@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -52,9 +51,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<ItemDto> getAllByOwner(int page, int size, OidcUser user) {
+    public Page<ItemDto> getAllByOwner(int page, int size, User user) {
         Pageable pageable = PageRequest.of(page, size);
-        User owner = userRepository.findByEmail(user.getAttribute("email"))
+        User owner = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Page<Item> itemsPage = itemRepository.findAllByOwnerWithImages(pageable, owner.getId());
         return itemsPage.map(ItemMapper::toItemDto);
@@ -69,8 +68,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getByUserAndId(Long id, OidcUser user) {
-        User owner = userRepository.findByEmail(user.getAttribute("email"))
+    public ItemDto getByUserAndId(Long id, User user) {
+        User owner = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         return itemRepository.findOneByUserIdAndItemId(owner.getId(), id)
                 .map(ItemMapper::toItemDto)
@@ -79,8 +78,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto editOne(Long itemId, ItemRequestDto item, OidcUser user, List<MultipartFile> images, String existingImagesJson) {
-        User owner = userRepository.findByEmail(user.getAttribute("email"))
+    public ItemDto editOne(Long itemId, ItemRequestDto item, User user, List<MultipartFile> images, String existingImagesJson) {
+        User owner = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Item oldItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item with id - %d not found".formatted(itemId)));
@@ -90,8 +89,6 @@ public class ItemServiceImpl implements ItemService {
                     .formatted(itemId, owner.getId()));
         }
 
-        log.warn("Owner viber: {}", owner.getViber());
-        log.warn("Item viber: {}", item.getViber());
         updateUserContactInfo(item, owner);
 
         List<String> existingImageUrls = new ArrayList<>();
@@ -127,8 +124,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void delete(Long itemId, OidcUser user) {
-        User owner = userRepository.findByEmail(user.getAttribute("email"))
+    public void delete(Long itemId, User user) {
+        User owner = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Item oldItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item with id - %d not found".formatted(itemId)));
@@ -157,8 +154,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto create(ItemRequestDto item, OidcUser oidcUser, List<MultipartFile> images) {
-        User owner = userRepository.findByEmail(oidcUser.getAttribute("email"))
+    public ItemDto create(ItemRequestDto item, User user, List<MultipartFile> images) {
+        User owner = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         updateUserContactInfo(item, owner);
