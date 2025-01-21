@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.delimo.error.exception.NotFoundException;
 import rs.delimo.error.exception.OwnerException;
-import rs.delimo.item.dto.ItemDto;
 import rs.delimo.request.ItemRequest;
 import rs.delimo.request.RequestMapper;
 import rs.delimo.request.RequestRepository;
@@ -37,9 +35,9 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Page<RequestOutputDto> getAllByOwner(int page, int pageSize, OidcUser user) {
+    public Page<RequestOutputDto> getAllByOwner(int page, int pageSize, User user) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        User requester = userRepository.findByEmail(user.getAttribute("email"))
+        User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         Page<ItemRequest> requests = requestRepository.findAllByRequesterId(requester.getId(), pageable);
 
@@ -47,8 +45,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public RequestOutputDto getByUserAndId(Long id, OidcUser user) {
-        User requester = userRepository.findByEmail(user.getAttribute("email"))
+    public RequestOutputDto getByUserAndId(Long id, User user) {
+        User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         ItemRequest request = requestRepository.findByIdAndRequesterId(id, requester.getId()).orElseThrow(
                 () -> new NotFoundException("Request with id - %d not found".formatted(id))
@@ -58,8 +56,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public RequestOutputDto create(RequestInputDto request, OidcUser user) {
-        User requester = userRepository.findByEmail(user.getAttribute("email"))
+    public RequestOutputDto create(RequestInputDto request, User user) {
+        User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         updateUserContactInfo(request, requester);
@@ -76,8 +74,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public RequestOutputDto edit(Long requestID, RequestInputDto request, OidcUser user) {
-        User requester = userRepository.findByEmail(user.getAttribute("email"))
+    public RequestOutputDto edit(Long requestID, RequestInputDto request, User user) {
+        User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         ItemRequest OldItemRequest = requestRepository.findById(requestID)
@@ -112,8 +110,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void delete(Long requestID, OidcUser user) {
-        User requester = userRepository.findByEmail(user.getAttribute("email"))
+    public void delete(Long requestID, User user) {
+        User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         ItemRequest request = requestRepository.findById(requestID)
