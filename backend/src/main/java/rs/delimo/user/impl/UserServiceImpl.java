@@ -3,7 +3,6 @@ package rs.delimo.user.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.delimo.error.exception.DublicatingEmailException;
@@ -93,9 +92,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getByOidc(OidcUser user) {
+    public UserDto getByUserAuth(User user) {
 
-        User userDb = userRepository.findByEmail(user.getAttribute("email")).orElseThrow(
+        User userDb = userRepository.findByEmail(user.getEmail()).orElseThrow(
                 () -> new NotFoundException("User not found")
         );
 

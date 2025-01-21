@@ -1,10 +1,16 @@
 package rs.delimo.security;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,15 +33,21 @@ import java.util.List;
 public class SecurityConfig {
 
     private final UserRepository userRepository;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final JwtService jwtService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(
                         auth -> {
                             auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                             auth.requestMatchers("/items/**").permitAll();
+                            auth.requestMatchers("/auth/**").permitAll();
                             auth.requestMatchers("/requests/**").permitAll();
                             auth.requestMatchers(HttpMethod.DELETE, "/my-items/**").authenticated();
                             auth.anyRequest().authenticated();
@@ -47,9 +59,11 @@ public class SecurityConfig {
                                 userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.oidcUserService(
                                          CustomOAuth2UserService()
                                 ))
-                                .successHandler(
-                                ((request, response, authentication) ->
-                                response.sendRedirect("http://localhost:5173/")))
+                                .successHandler(oAuth2AuthenticationSuccessHandler)
+                )
+                .addFilterBefore(
+                        new JWTAuthenticationFilter(jwtService, userRepository),
+                        UsernamePasswordAuthenticationFilter.class
                 )
                 .logout(logout -> logout.logoutSuccessUrl("http://localhost:5173/"));
 
@@ -73,6 +87,16 @@ public class SecurityConfig {
     @Bean
     public OAuth2UserService<OidcUserRequest, OidcUser> CustomOAuth2UserService() {
         return new CustomOAuth2UserService(userRepository);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
 

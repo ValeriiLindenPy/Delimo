@@ -2,8 +2,7 @@ package rs.delimo.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import rs.delimo.error.ValidationMarker;
@@ -17,8 +16,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/user-data")
-    public UserDto getUserData(@AuthenticationPrincipal OidcUser user) {
-        return userService.getByOidc(user);
+    public UserDto getUserData() {
+        User user = getCurrentUser();
+        return userService.getByUserAuth(user);
     }
 
     @GetMapping("/{id}")
@@ -41,5 +41,9 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
          userService.deleteById(id);
+    }
+
+    private User getCurrentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
