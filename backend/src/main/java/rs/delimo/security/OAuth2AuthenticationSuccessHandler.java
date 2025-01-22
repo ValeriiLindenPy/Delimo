@@ -25,14 +25,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
         String email = oidcUser.getAttribute("email");
 
-        // Получаем или создаём пользователя в БД
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        // Генерируем JWT токен
         String token = jwtService.generateToken(user);
 
-        // Отправляем редирект с токеном
         response.sendRedirect("http://localhost:5173/?token=" + token);
     }
 }

@@ -70,7 +70,7 @@ public class AuthenticationService {
             throw new RuntimeException("Invalid or expired token");
         }
 
-        Claims claims = jwtService.getUsernameFromToken(token);
+        Claims claims = jwtService.getDataFromToken(token);
 
         Boolean isVerificationToken = claims.get("verification", Boolean.class);
         if (isVerificationToken == null || !isVerificationToken) {
@@ -89,5 +89,40 @@ public class AuthenticationService {
         user.setEnabled(true);
 
         userRepository.save(user);
+    }
+
+    public String forgotPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        String resetToken = jwtService.generateResetToken(user);
+
+        emailService.sendResetPasswordEmail(user.getEmail(), resetToken);
+
+        return "Password reset link has been sent to your email.";
+    }
+
+    public String resetPassword(String token, String newPassword) {
+
+        if (!jwtService.validateToken(token)) {
+            throw new RuntimeException("Invalid or expired reset token");
+        }
+
+        Claims claims = jwtService.getDataFromToken(token);
+
+        Boolean isResetToken = claims.get("reset", Boolean.class);
+        if (isResetToken == null || !isResetToken) {
+            throw new RuntimeException("Not a reset token");
+        }
+
+        String email = claims.getSubject();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        return "Password has been reset successfully.";
     }
 }

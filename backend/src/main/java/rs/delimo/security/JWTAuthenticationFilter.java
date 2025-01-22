@@ -31,7 +31,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (jwtToken != null && jwtService.validateToken(jwtToken)) {
-            String email = jwtService.getUsernameFromToken(jwtToken).getSubject();
+            String email = jwtService.getDataFromToken(jwtToken).getSubject();
 
             Optional<User> userOpt = userRepository.findByEmail(email);
             if (userOpt.isPresent()) {

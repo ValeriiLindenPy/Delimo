@@ -18,7 +18,9 @@ import java.util.concurrent.TimeUnit;
 public class JwtService {
     private final long MAX_DAYS_TOKEN_VALID = 30;
     private final long MAX_DAYS_VERIFICATION_TOKEN_VALID = 1;
+    private final long MAX_DAYS_RESET_TOKEN_VALID = 1;
     private final long jwtExpirationMs = TimeUnit.DAYS.toMillis(MAX_DAYS_TOKEN_VALID);
+    private final long resetTokenExpirationMs = TimeUnit.DAYS.toMillis(MAX_DAYS_RESET_TOKEN_VALID);
     private final long verificationTokenExpirationMs = TimeUnit.DAYS.toMillis(MAX_DAYS_VERIFICATION_TOKEN_VALID);
     private final SecretKey secretKey;
 
@@ -58,8 +60,21 @@ public class JwtService {
                 .compact();
     }
 
+    public String generateResetToken(User user) {
+        Date expiryDate = Date.from(Instant.now().plusMillis(resetTokenExpirationMs));
 
-    public Claims getUsernameFromToken(String token) {
+        return Jwts.builder()
+                .subject(user.getEmail())
+                .claim("reset", true)
+                .claim("userId", user.getId())
+                .expiration(expiryDate)
+                .issuedAt(Date.from(Instant.now()))
+                .signWith(secretKey)
+                .compact();
+    }
+
+
+    public Claims getDataFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()

@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import rs.delimo.auth.dto.AuthenticationRequest;
-import rs.delimo.auth.dto.RegisterRequest;
-import rs.delimo.auth.dto.AuthenticationResponse;
+import rs.delimo.auth.dto.*;
 
 import java.util.Map;
 
@@ -30,5 +28,17 @@ public class AuthenticationController {
     public ResponseEntity<String> verifyUser(@RequestParam("token") String token) {
         service.verifyUser(token);
         return ResponseEntity.ok("User verified successfully!");
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        String response = service.forgotPassword(request.getEmail());
+        return ResponseEntity.ok(Map.of("message", response));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody ResetPasswordRequest request) {
+        String response = service.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok(Map.of("message", response));
     }
 }
