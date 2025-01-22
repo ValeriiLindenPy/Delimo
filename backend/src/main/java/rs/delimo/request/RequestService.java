@@ -19,4 +19,6 @@ public interface RequestService {
     Page<RequestOutputDto> getAllByOwner(int page, int pageSize, User user);
 
     RequestOutputDto getByUserAndId(Long id, User user);
+
+    Page<RequestOutputDto> search(String text, int page, int pageSize);
 }

@@ -1,9 +1,11 @@
 package rs.delimo.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import rs.delimo.user.dto.UserDto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -25,4 +27,7 @@ public class ItemDto {
     private List<String> images;
 
     private UserDto owner;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime created;
 }

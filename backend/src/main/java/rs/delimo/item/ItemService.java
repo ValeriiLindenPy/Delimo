@@ -13,8 +13,8 @@ public interface ItemService {
     Page<ItemDto> getAll(int page, int size);
 
     ItemDto getById(Long itemId);
-    
-    List<ItemDto> searchByText(String text);
+
+    Page<ItemDto> searchByText(String text, int page, int pageSize);
 
     ItemDto create(ItemRequestDto item, User userId, List<MultipartFile> images);
 

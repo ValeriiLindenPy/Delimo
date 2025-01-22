@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,10 +23,8 @@ public class ItemController {
                                       @RequestParam(defaultValue = "6") int pageSize) {
         Page<ItemDto> items = itemService.getAll(page, pageSize);
 
-        // Generate PagedModel
         PagedModel<EntityModel<ItemDto>> pagedModel = assembler.toModel(items);
 
-        // Transform the response to replace `_embedded` with `content`
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("page", pagedModel.getMetadata());
         response.put("content", pagedModel.getContent().stream()
@@ -42,7 +39,18 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchAllByText(@RequestParam("text") String text) {
-        return itemService.searchByText(text);
+    public Map<String, Object> searchAllByText(@RequestParam("text") String text,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "6") int pageSize) {
+        Page<ItemDto> items = itemService.searchByText(text, page, pageSize);
+
+        PagedModel<EntityModel<ItemDto>> pagedModel = assembler.toModel(items);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("page", pagedModel.getMetadata());
+        response.put("content", pagedModel.getContent().stream()
+                .map(EntityModel::getContent)
+                .toList());
+        return response;
     }
 }

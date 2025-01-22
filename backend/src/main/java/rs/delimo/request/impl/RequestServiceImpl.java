@@ -35,6 +35,14 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<RequestOutputDto> search(String text, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<ItemRequest> requests = requestRepository.search(pageable, text);
+        return requests.map(RequestMapper::toOutputDto);
+    }
+
+    @Override
     public Page<RequestOutputDto> getAllByOwner(int page, int pageSize, User user) {
         Pageable pageable = PageRequest.of(page, pageSize);
         User requester = userRepository.findByEmail(user.getEmail())

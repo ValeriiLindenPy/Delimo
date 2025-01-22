@@ -138,18 +138,13 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.deleteById(itemId);
     }
 
-    @Override
-    public List<ItemDto> searchByText(String text) {
+    public Page<ItemDto> searchByText(String text, int page, int pageSize) {
         if (text == null || text.isBlank()) {
-            return List.of();
+            return Page.empty();
         }
-        String lowerText = text.toLowerCase();
-        return itemRepository.findAll().stream()
-                .filter(Item::getAvailable)
-                .filter(item -> item.getTitle().toLowerCase().contains(lowerText)
-                        || item.getDescription().toLowerCase().contains(lowerText))
-                .map(ItemMapper::toItemDto)
-                .toList();
+        log.debug("Executing search for text: {}", text);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return itemRepository.search(pageable, text).map(ItemMapper::toItemDto);
     }
 
     @Override

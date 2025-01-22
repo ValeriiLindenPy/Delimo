@@ -34,7 +34,6 @@ public class ItemRequest {
     private User requester;
 
     @Column(nullable = false, updatable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
 
     @PrePersist

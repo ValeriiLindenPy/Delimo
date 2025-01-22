@@ -28,6 +28,7 @@ public class AuthenticationService {
                 .name(request.getFirstName() + " " + request.getLastName())
                 .email(request.getEmail())
                 .enabled(true)
+                .confirmed(false)
                 .city(request.getCity())
                 .street(request.getStreet())
                 .viber(request.getViber())

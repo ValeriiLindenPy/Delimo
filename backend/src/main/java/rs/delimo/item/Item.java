@@ -6,6 +6,8 @@ import rs.delimo.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -29,4 +31,12 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime created;
+
+    @PrePersist
+    private void setCreated() {
+        this.created = LocalDateTime.now();
+    }
 }

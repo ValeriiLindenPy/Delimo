@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import rs.delimo.request.dto.RequestOutputDto;
 
 
-
 @RestController
 @RequestMapping(path = "/requests")
 @AllArgsConstructor
@@ -22,5 +21,12 @@ public class ItemRequestController {
     @GetMapping("/{requestId}")
     public RequestOutputDto getOne(@PathVariable Long requestId) {
         return requestService.getById(requestId);
+    }
+
+    @GetMapping("/search")
+    public Page<RequestOutputDto> search(@RequestParam("text") String text,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "6") int pageSize) {
+        return requestService.search(text, page, pageSize);
     }
 }

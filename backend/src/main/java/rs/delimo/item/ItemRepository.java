@@ -34,4 +34,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             countQuery = "select count(i) from Item i"
     )
     Page<Item> findAllByOwnerWithImages(Pageable pageable,@Param("ownerId") Long ownerId);
+
+    @Query("select i from Item i left join fetch i.images " +
+            "where upper(i.title) like upper(concat('%', :text, '%'))" +
+            " or upper(i.description) like upper(concat('%', :text, '%'))")
+    Page<Item> search(Pageable pageable, @Param("text") String text);
 }
