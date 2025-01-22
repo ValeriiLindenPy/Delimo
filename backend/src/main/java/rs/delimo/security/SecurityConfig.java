@@ -1,9 +1,12 @@
 package rs.delimo.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import rs.delimo.error.CustomAccessDeniedHandler;
+import rs.delimo.error.CustomAuthenticationEntryPoint;
 import rs.delimo.user.CustomOAuth2UserService;
 import rs.delimo.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,53 +40,51 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final JwtService jwtService;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
+    /**
+     * Основной метод конфигурации фильтров безопасности
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+
                 .cors(Customizer.withDefaults())
+
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authorizeHttpRequests(
-                        auth -> {
-                            auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-                            auth.requestMatchers("/items/**").permitAll();
-                            auth.requestMatchers("/auth/**").permitAll();
-                            auth.requestMatchers("/requests/**").permitAll();
-                            auth.requestMatchers(HttpMethod.DELETE, "/my-items/**").authenticated();
-                            auth.anyRequest().authenticated();
-                        }
-                )
-                .oauth2Login(
-                        auth ->
-                        auth.
-                                userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.oidcUserService(
-                                         CustomOAuth2UserService()
-                                ))
+
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+                    auth.requestMatchers("/items/**").permitAll();
+                    auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/requests/**").permitAll();
+                    auth.requestMatchers(HttpMethod.DELETE, "/my-items/**").authenticated();
+                    auth.anyRequest().authenticated();
+                })
+
+                .oauth2Login(oauth2 ->
+                        oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(CustomOAuth2UserService()))
                                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 )
+
+                .exceptionHandling(exceptionHandling -> {
+                    exceptionHandling.authenticationEntryPoint(authenticationEntryPoint);
+                    exceptionHandling.accessDeniedHandler(accessDeniedHandler);
+                })
+
                 .addFilterBefore(
                         new JWTAuthenticationFilter(jwtService, userRepository),
                         UsernamePasswordAuthenticationFilter.class
                 )
+
                 .logout(logout -> logout.logoutSuccessUrl("http://localhost:5173/"));
 
-
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean
