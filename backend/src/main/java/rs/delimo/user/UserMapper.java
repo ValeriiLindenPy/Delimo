@@ -8,7 +8,7 @@ public class UserMapper {
     public static UserDto toUserDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
-                .confirmed(user.getConfirmed())
+                .enabled(user.getEnabled())
                 .name(user.getName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
@@ -25,7 +25,7 @@ public class UserMapper {
                 .email(dto.getEmail())
                 .city(dto.getCity())
                 .street(dto.getStreet())
-                .confirmed(dto.getConfirmed())
+                .enabled(dto.getEnabled())
                 .viber(dto.getViber())
                 .phone(dto.getPhone())
                 .build();

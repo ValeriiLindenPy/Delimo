@@ -33,11 +33,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         if (jwtToken != null && jwtService.validateToken(jwtToken)) {
             String email = jwtService.getUsernameFromToken(jwtToken).getSubject();
 
-            // Находим пользователя в БД
             Optional<User> userOpt = userRepository.findByEmail(email);
             if (userOpt.isPresent()) {
                 User user = userOpt.get();
-                // Создаём Authentication
+
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 user,
@@ -45,7 +44,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                                 user.getAuthorities()
                         );
 
-                // Записываем Authentication в SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }

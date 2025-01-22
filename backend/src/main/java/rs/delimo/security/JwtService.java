@@ -16,7 +16,10 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 public class JwtService {
-    private final long jwtExpirationMs = TimeUnit.DAYS.toMillis(30);
+    private final long MAX_DAYS_TOKEN_VALID = 30;
+    private final long MAX_DAYS_VERIFICATION_TOKEN_VALID = 1;
+    private final long jwtExpirationMs = TimeUnit.DAYS.toMillis(MAX_DAYS_TOKEN_VALID);
+    private final long verificationTokenExpirationMs = TimeUnit.DAYS.toMillis(MAX_DAYS_VERIFICATION_TOKEN_VALID);
     private final SecretKey secretKey;
 
     public JwtService() {
@@ -31,6 +34,23 @@ public class JwtService {
         return Jwts.builder()
                 .subject(user.getEmail())
                 .claim("role", user.getRole().toString())
+                .claim("userId", user.getId())
+                .expiration(expiryDate)
+                .issuedAt(Date.from(Instant.now()))
+                .signWith(secretKey)
+                .compact();
+    }
+
+
+    /**
+     * Generates a short-lived JWT specifically for email verification.
+     */
+    public String generateVerificationToken(User user) {
+        Date expiryDate = Date.from(Instant.now().plusMillis(verificationTokenExpirationMs));
+
+        return Jwts.builder()
+                .subject(user.getEmail())
+                .claim("verification", true)
                 .claim("userId", user.getId())
                 .expiration(expiryDate)
                 .issuedAt(Date.from(Instant.now()))

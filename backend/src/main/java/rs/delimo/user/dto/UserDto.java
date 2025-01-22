@@ -21,7 +21,7 @@ public class UserDto {
 
     private String phone;
 
-    private Boolean confirmed;
+    private Boolean enabled;
 
     private String viber;
 }

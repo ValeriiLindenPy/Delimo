@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div>
+    <h1>Email Verification</h1>
+    <p>Thank you for registering!</p>
+    <p>Please click the button below to verify your email:</p>
+    <a th:href="${verificationUrl}">Verify Email</a>
+    <p>If the button doesn't work, copy this link into your browser: <span th:text="${verificationUrl}"></span></p>
+</div>
+</body>
+</html>

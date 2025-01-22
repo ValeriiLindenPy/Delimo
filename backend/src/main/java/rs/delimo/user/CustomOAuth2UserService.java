@@ -32,7 +32,7 @@ public class CustomOAuth2UserService extends OidcUserService {
                             .name(name)
                             .email(email)
                             .enabled(true)
-                            .confirmed(true)
+                            .enabled(true)
                             .role(Role.USER)
                             .build();
                     return userRepository.save(newUser);
