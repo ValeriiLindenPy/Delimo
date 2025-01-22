@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import rs.delimo.error.exception.ConfirmationException;
 import rs.delimo.error.exception.NotFoundException;
 import rs.delimo.error.exception.OwnerException;
 import rs.delimo.item.Item;
@@ -154,6 +155,11 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         updateUserContactInfo(item, owner);
+
+        //todo
+//        if (!owner.getConfirmed()) {
+//            throw new ConfirmationException("Please confirm email");
+//        }
 
         List<String> imageUrls = processImages(images);
 

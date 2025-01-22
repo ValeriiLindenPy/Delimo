@@ -70,6 +70,11 @@ public class RequestServiceImpl implements RequestService {
 
         updateUserContactInfo(request, requester);
 
+        //todo
+//        if (!requester.getConfirmed()) {
+//            throw new ConfirmationException("Please confirm email");
+//        }
+
         ItemRequest itemRequest = ItemRequest.builder()
                 .description(request.getDescription())
                 .title(request.getTitle())
