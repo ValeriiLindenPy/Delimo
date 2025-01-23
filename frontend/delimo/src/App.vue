@@ -1,7 +1,8 @@
 <template>
   <div class="flex flex-col min-h-screen bg-st0">
     <Navigation v-if="navigation" :authorized="authStore.isAuthenticated" />
-    <RouterView class="flex-grow" />
+    <div class="flex-grow">  <RouterView />
+    </div>
     <Footer v-if="navigation" />
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container bg-st2 hidden md:block">
+  <div class="bg-st2 hidden md:block">
     <nav class="flex">
       <ul class="flex items-center justify-center text-center font-bold w-full gap-7">
         <li @click="goHome" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Početna</li>
