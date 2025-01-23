@@ -9,19 +9,19 @@ export const fetchMyItems = async () => await apiClient.get("/my-items",{
     withCredentials: true,
 });
 
-export const updateItem = (id, formData) =>
-    apiClient.patch(`/my-items/${id}`, formData, {
+export const updateItem = async (id, formData) =>
+    await apiClient.patch(`/my-items/${id}`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
     });
 
-export const deleteItemById = (id) =>
-    apiClient.delete(`/my-items/${id}`, {
+export const deleteItemById = async (id) =>
+    await apiClient.delete(`/my-items/${id}`, {
         withCredentials: true,
     });
 
-export const createItem = (formData) =>
-    apiClient.post(`/my-items`, formData, {
+export const createItem = async (formData) =>
+    await apiClient.post(`/my-items`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
     });

@@ -123,7 +123,7 @@ export default {
       this.$router.push(`/items/${this.post.id}`);
     },
     goProfile() {
-      this.$router.push(`/users/${store.profile.id}`);
+      this.$router.push(`/users/${this.store.profile.id}`);
     },
     async handleDeleteItem(id) {
       this.togglePopUp();
@@ -138,7 +138,7 @@ export default {
         this.itemDeleteId = null;
         this.goProfile();
       } catch (err) {
-        alert(err);
+        console.log(err.message);
       }
     }
   }
