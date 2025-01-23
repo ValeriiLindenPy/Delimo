@@ -1,50 +1,52 @@
-// store/auth.js
-import { defineStore } from 'pinia';
+import {defineStore} from "pinia";
 import apiClient from "@/services/api.js";
 
-
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
     state: () => ({
-        token: localStorage.getItem('token') || null,
+        token: localStorage.getItem("token") || null,
         profile: null,
     }),
     actions: {
-        async register(formData) {
+        async register(userData) {
             try {
-                const res = await apiClient.post('/auth/register', formData, {
+                return await apiClient.post("/auth/register", userData, {
                     withCredentials: true,
-                    headers: {"Content-Type": "application/json"},
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 });
-                return res.data;
             } catch (error) {
-                console.error('Error with registration:', error);
+                console.error("Error with registration:", error);
                 throw error;
             }
         },
+
         async login(credentials) {
             try {
-                const { data } = await apiClient.post('/auth/login', credentials);
+                const { data } = await apiClient.post("/auth/authenticate", credentials);
                 this.token = data.token;
-                localStorage.setItem('token', data.token); // сохраняем токен
-                apiClient.defaults.headers.common['Authorization'] = `Bearer ${data.token}`; // добавляем токен в заголовки
+                localStorage.setItem("token", data.token);
+                apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
             } catch (error) {
-                console.error('Ошибка при авторизации:', error);
+                console.error("Ошибка при авторизации:", error);
                 throw error;
             }
         },
+
         logout() {
             this.token = null;
             this.user = null;
-            localStorage.removeItem('token'); // очищаем токен
-            delete apiClient.defaults.headers.common['Authorization'];
+            localStorage.removeItem("token");
+            delete apiClient.defaults.headers.common["Authorization"];
         },
+
         async fetchUser() {
             if (this.token) {
                 try {
-                    const { data } = await apiClient.get('/users/user-data');
+                    const { data } = await apiClient.get("/users/user-data");
                     this.profile = data;
                 } catch (error) {
-                    console.error('Ошибка при получении данных пользователя:', error);
+                    console.error("Ошибка при получении данных пользователя:", error);
                 }
             }
         },

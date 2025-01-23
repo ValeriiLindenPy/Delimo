@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="container">
     <div class="flex justify-center mt-3">
@@ -13,7 +11,7 @@
     <hr class="flex-grow border-white">
   </div>
 
-  <PostList class="mt-3" :posts="items" />
+  <PostList class="mt-3" :posts="items"/>
 
   <div class="flex justify-center items-center mt-4">
     <hr class="flex-grow border-white">
@@ -24,15 +22,12 @@
   <RequestList :posts="requests"/>
 
 
-
 </template>
 
 <script>
 
 import ItemList from "@/components/ItemList.vue";
-import {useUserStore} from "@/stores/counter.js";
 import RequestList from "@/components/RequestList.vue";
-import {getUserData} from "@/services/userService.js";
 import {getItems} from "@/services/itemService.js";
 import {fetchRequests} from "@/services/requestService.js";
 
@@ -45,7 +40,6 @@ export default {
     return {
       items: null,
       requests: null,
-      store: useUserStore()
     }
   },
   methods: {
@@ -59,16 +53,9 @@ export default {
     }
   },
   async mounted() {
-
-    await this.fetchItems()
-
-    await this.getRequests()
-
-    this.store.checkLogginStatus()
-
-    if (this.store.loggingStatus === "logging" ) {
-      await getUserData();
-    }
+    await this.fetchItems();
+    await this.getRequests();
   }
 }
+
 </script>

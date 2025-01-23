@@ -68,7 +68,7 @@
 <script>
 import PopUpModal from "@/components/UI/PopUpModal.vue";
 import {deleteRequestById} from "@/services/requestService.js";
-import {useUserStore} from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 
 export default {
   name: "UserPostCard",
@@ -80,7 +80,9 @@ export default {
     }
   },
   data() {
+    const store = useAuthStore();
     return {
+      store,
       isPopUp: false,
       requestDeleteId: null,
     };
@@ -96,7 +98,7 @@ export default {
       this.$router.push(`/requests/${this.post.id}`);
     },
     goProfile() {
-      this.$router.push(`/users/${useUserStore().profile.id}`);
+      this.$router.push(`/users/${this.store.profile.id}`);
     },
     async handleDeleteItem(id) {
       this.togglePopUp();

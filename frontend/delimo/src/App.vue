@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-h-screen bg-st0">
-    <Navigation v-if="navigation" :authorized="userStore.authorized" />
+    <Navigation v-if="navigation" :authorized="authStore.isAuthenticated" />
     <RouterView class="flex-grow" />
     <Footer v-if="navigation" />
   </div>
@@ -10,7 +10,7 @@
 import { ref, watch } from "vue";
 import { useRoute, RouterView } from "vue-router";
 import Navigation from "@/components/Navigation.vue";
-import { useUserStore } from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 import Footer from "@/views/Footer.vue";
 
 export default {
@@ -21,7 +21,7 @@ export default {
     RouterView,
   },
   setup() {
-    const userStore = useUserStore();
+    const authStore = useAuthStore();
     const route = useRoute();
     const navigation = ref(true);
 
@@ -34,7 +34,7 @@ export default {
     );
 
     return {
-      userStore,
+      authStore,
       navigation,
     };
   },

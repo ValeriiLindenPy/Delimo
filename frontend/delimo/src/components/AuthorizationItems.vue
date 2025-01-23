@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-import {useUserStore} from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 
 export default {
   name: 'AuthorizationItems',
@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     goUser() {
-      const userId = Number(useUserStore().userId);
+      const userId = Number(useAuthStore().profile.id);
       this.$router.push("/users/"+ userId);
     },
     goLogin() {

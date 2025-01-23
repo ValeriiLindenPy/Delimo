@@ -84,7 +84,7 @@
         <!--        error  -->
 
         <div v-if="error" class="mt-2 flex items-center justify-center text-red-600">
-          <h2>{{error}}</h2>
+          <h2>{{ error }}</h2>
         </div>
 
 
@@ -102,15 +102,17 @@
 
 
 <script>
-import { useUserStore } from "@/stores/counter.js";
-import { cities } from "@/assets/cities.js";
+import {useAuthStore} from "@/stores/auth.js";
+import {cities} from "@/assets/cities.js";
 import {updateUserDetails} from "@/services/userService.js";
 
 export default {
   name: "EditUserDetails",
   data() {
+    const store = useAuthStore();
     return {
       cities,
+      store,
       error: null,
       formData: {
         name: "",
@@ -122,16 +124,11 @@ export default {
       },
     };
   },
-  computed: {
-    userProfile() {
-      return useUserStore().profile;
-    },
-  },
   methods: {
     async submitForm() {
       try {
-        const userStore = useUserStore();
-        const userId = userStore.userId;
+
+        const userId = this.store.profile.id;
 
         const updatedUser = await updateUserDetails(userId, {
           name: this.formData.name,
@@ -142,7 +139,7 @@ export default {
           viber: this.formData.viber,
         });
 
-        userStore.setUserInfo(updatedUser);
+        await this.store.fetchUser();
         this.$router.push("/users/" + userId);
       } catch (error) {
         console.error("Error updating user:", error.message);
@@ -151,13 +148,13 @@ export default {
     },
   },
   mounted() {
-    if (this.userProfile) {
-      this.formData.name = this.userProfile.name || "";
-      this.formData.email = this.userProfile.email || "";
-      this.formData.phone = this.userProfile.phone || "";
-      this.formData.viber = this.userProfile.viber || "";
-      this.formData.city = this.userProfile.city || "";
-      this.formData.street = this.userProfile.street || "";
+    if (this.store.profile) {
+      this.formData.name = this.store.profile.name || "";
+      this.formData.email = this.store.profile.email || "";
+      this.formData.phone = this.store.profile.phone || "";
+      this.formData.viber = this.store.profile.viber || "";
+      this.formData.city = this.store.profile.city || "";
+      this.formData.street = this.store.profile.street || "";
     }
   },
 };

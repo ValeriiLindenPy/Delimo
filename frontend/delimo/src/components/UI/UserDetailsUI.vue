@@ -25,10 +25,16 @@
 
 <script>
 
-import {useUserStore} from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 
 export default {
   name: 'UserDetailsUI',
+  data() {
+    const store = useAuthStore();
+    return {
+      store
+    }
+  },
   props: {
     user: {
       type: Object,
@@ -37,7 +43,7 @@ export default {
   },
   methods: {
      async goEdit() {
-      await this.$router.push("/users/" + useUserStore().userId + "/edit");
+      await this.$router.push("/users/" + this.store.profile.id + "/edit");
     }
   },
 }

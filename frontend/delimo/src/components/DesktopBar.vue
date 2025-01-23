@@ -55,14 +55,15 @@
 
 <script>
 import PopUpModal from "@/components/UI/PopUpModal.vue";
-import {useUserStore} from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 
 export default {
   name: "DesktopBar",
   data() {
+    const store = useAuthStore();
     return {
       activeModal: null,
-      store: useUserStore()
+      store
     };
   },
   methods: {

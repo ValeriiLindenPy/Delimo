@@ -27,26 +27,23 @@
 
 <script>
 import UserDetailsUI from "@/components/UI/UserDetailsUI.vue";
-import {useUserStore} from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 
 
 export default {
   name: "UserDetails",
   components: {UserDetailsUI},
   data() {
+    const store = useAuthStore();
     return {
+      store,
       user: null,
     }
   },
 
-  computed: {
-    userProfile() {
-      return useUserStore().profile;
-    }
-  },
   mounted() {
-    if (this.userProfile) {
-      this.user = this.userProfile
+    if (this.store.profile) {
+      this.user = this.store.profile
     }
   },
   methods: {

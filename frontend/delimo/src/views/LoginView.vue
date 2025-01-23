@@ -30,14 +30,15 @@
           required
       />
 
+      <div v-if="error" class="text-red-500 mt-2">{{ error }}</div>
+
       <div class="flex items-center justify-center pt-2">
         <button
             type="submit"
-            class="bg-st3 shadow-lg p-3
-                 rounded-lg transition-colors duration-500
-                 hover:bg-st4 hover:text-white"
+            class="bg-st3 shadow-lg p-3 rounded-lg transition-colors duration-500 hover:bg-st4 hover:text-white"
+            :disabled="loading"
         >
-          ULOGUJTE SE
+          {{ loading ? "Učitavanje..." : "ULOGUJTE SE" }}
         </button>
       </div>
 
@@ -68,37 +69,45 @@
 </template>
 
 <script>
-import { useUserStore } from "@/stores/counter.js";
+import { useAuthStore } from "@/stores/auth.js";
 import { useRouter } from "vue-router";
 
 export default {
   name: "LoginView",
   data() {
+    const authStore = useAuthStore();
+    const router = useRouter();
     return {
       email: "",
       password: "",
-    }
+      error: null,
+      loading: false,
+      authStore,
+      router,
+    };
   },
-  setup() {
-    const userStore = useUserStore();
-    const router = useRouter();
-
-    const handleGoogleLogin = async () => {
-      // Redirect to the OAuth2 login endpoint
-      await userStore.loggingIn()
-      window.location.href = "http://localhost:8080/oauth2/authorization/google";
-    };
-
-    const handleEmailPasswordLogin = async () => {
-      //todo
-    };
-
-    return {
-      handleGoogleLogin,
-      handleEmailPasswordLogin,
-    };
+  methods: {
+    async handleEmailPasswordLogin() {
+      this.loading = true;
+      try {
+        await this.authStore.login({email: this.email, password: this.password});
+        this.error = null;
+        if (this.authStore.isAuthenticated) {
+          await this.router.push("/");
+        }
+      } catch (error) {
+        this.error = error.response?.data?.message || "Login failed.";
+      } finally {
+        this.loading = false;
+      }
+    },
+    handleGoogleLogin() {
+      try {
+        window.location.href = "http://localhost:8080/oauth2/authorization/google";
+      } catch (error) {
+        this.error = "Failed to initiate Google login.";
+      }
+    },
   },
 };
 </script>
-
-
