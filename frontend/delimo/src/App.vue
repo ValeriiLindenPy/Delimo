@@ -7,10 +7,10 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
-import { useRoute, RouterView } from "vue-router";
+import { onMounted, ref, watch } from "vue";
+import { useRoute, RouterView, useRouter } from "vue-router";
 import Navigation from "@/components/Navigation.vue";
-import {useAuthStore} from "@/stores/auth.js";
+import { useAuthStore } from "@/stores/auth.js";
 import Footer from "@/views/Footer.vue";
 
 export default {
@@ -23,7 +23,20 @@ export default {
   setup() {
     const authStore = useAuthStore();
     const route = useRoute();
+    const router = useRouter();
+
     const navigation = ref(true);
+
+    watch(
+        () => route.query.token,
+        async (newToken) => {
+          if (newToken) {
+            await authStore.setToken(newToken);
+            await router.push('/');
+          }
+        },
+        { immediate: true }
+    );
 
     watch(
         () => route.name,

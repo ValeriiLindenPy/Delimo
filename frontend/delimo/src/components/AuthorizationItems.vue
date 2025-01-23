@@ -49,9 +49,8 @@ export default {
       this.$router.push("/registration");
     },
     goLogout() {
-      // window.location.href = "http://localhost:8080/logout"; //todo
       this.store.logout();
-      this.$router.push("/");
+      this.$router.push("/login");
     }
   }
 }

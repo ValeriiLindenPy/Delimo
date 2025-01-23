@@ -4,6 +4,7 @@
         class="flex flex-col p-6 gap-2 bg-st2 rounded-lg w-auto shadow-2xl md:w-1/3"
         @submit.prevent="handleEmailPasswordLogin"
     >
+      <a href="/" class="no-underline hover:underline">< Početna</a>
       <div class="flex gap-2 justify-center items-center">
         <b class="text-3xl font-extrabold text-st5">Del</b>
         <i class="fa-solid fa-arrows-spin text-3xl text-st3"></i>

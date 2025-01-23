@@ -32,6 +32,12 @@ export const useAuthStore = defineStore("auth", {
                 throw error;
             }
         },
+        async setToken(token) {
+            this.token = token;
+            localStorage.setItem("token", token);
+            apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            await this.fetchUser();
+        },
 
         logout() {
             this.token = null;
