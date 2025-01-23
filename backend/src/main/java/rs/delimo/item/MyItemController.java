@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -66,9 +67,11 @@ public class MyItemController {
     }
 
     @PostMapping(consumes = {"multipart/form-data"})
+    @ResponseStatus(HttpStatus.CREATED)
     public ItemDto create(@ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
-                          @RequestParam(value = "image", required = false) List<MultipartFile> images,
+                          @RequestParam(value = "images", required = false) List<MultipartFile> images,
                           @AuthenticationPrincipal User user) {
+        log.warn("received images: {}", images);
         return itemService.create(item, user, images);
     }
 

@@ -160,6 +160,7 @@ public class ItemServiceImpl implements ItemService {
 //            throw new ConfirmationException("Please confirm email");
 //        }
 
+        log.warn("start image upload");
         List<String> imageUrls = processImages(images);
 
         Item newItem = ItemMapper.toItem(item);
@@ -196,6 +197,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     private List<String> processImages(List<MultipartFile> images) {
+        log.warn("images: {}", images);
         List<String> imageUrls = new ArrayList<>();
         if (images != null && !images.isEmpty()) {
             if (images.size() > MAX_IMAGES_COUNT) {
@@ -212,6 +214,7 @@ public class ItemServiceImpl implements ItemService {
 
     private String uploadImageToImgbb(MultipartFile image) {
         try {
+            log.warn("start upload");
             String uploadUrl = "https://api.imgbb.com/1/upload";
             String encodedImage = Base64.getEncoder().encodeToString(image.getBytes());
             LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
@@ -219,6 +222,7 @@ public class ItemServiceImpl implements ItemService {
             formData.add("image", encodedImage);
             String response = restTemplate.postForObject(uploadUrl, formData, String.class);
             JsonNode root = objectMapper.readTree(response);
+            log.warn("response: {}", response);
             return root.path("data").path("url").asText();
         } catch (Exception e) {
             log.error("Failed to upload image to Imgbb: {}", e.getMessage());
