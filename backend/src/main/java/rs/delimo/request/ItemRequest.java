@@ -28,7 +28,7 @@ public class ItemRequest {
     @Column(nullable = false)
     private Integer pricePerDay;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester;
 

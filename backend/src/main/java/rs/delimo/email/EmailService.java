@@ -20,7 +20,7 @@ public class EmailService {
 
     public void sendVerificationEmail(@Email String email, String token) {
         String subject = "Email Verification";
-        String verificationUrl = "http://localhost:5173/login/verify?token=" + token;
+        String verificationUrl = "http://localhost:5173/login?verificationToken=" + token;
 
         Context context = new Context();
         context.setVariable("verificationUrl", verificationUrl);
