@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useRoute, RouterView, useRouter } from "vue-router";
 import Navigation from "@/components/Navigation.vue";
 import { useAuthStore } from "@/stores/auth.js";
@@ -42,7 +42,7 @@ export default {
     watch(
         () => route.name,
         (newRoute) => {
-          navigation.value = newRoute !== "LoginView" && newRoute !== "RegistrationView";
+          navigation.value = newRoute !== "LoginView" && newRoute !== "RegistrationView"&& newRoute !== "PasswordForgot";
         },
         { immediate: true }
     );

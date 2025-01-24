@@ -34,6 +34,10 @@
           required
       />
 
+      <a href="/password-forgot" class="pt-2 no-underline hover:underline">
+        Zaboravio si lozinku?
+      </a>
+
       <div v-if="error" class="text-red-500 mt-2">{{ error }}</div>
 
       <div class="flex items-center justify-center pt-2">

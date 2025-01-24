@@ -15,6 +15,7 @@ import UserRequests from "@/views/UserRequests.vue";
 import EditRequest from "@/views/EditRequest.vue";
 import FeedBack from "@/views/FeedBack.vue";
 import RequestsView from "@/views/RequestsView.vue";
+import PasswordForgot from "@/views/PasswordForgot.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +29,11 @@ const router = createRouter({
       path: '/login',
       name: 'LoginView',
       component: LoginView,
+    },
+    {
+      path: '/password-forgot',
+      name: 'PasswordForgot',
+      component: PasswordForgot,
     },
     {
       path: '/registration',

@@ -21,6 +21,16 @@ export const useAuthStore = defineStore("auth", {
             }
         },
 
+        async forgotPassword(email) {
+            try {
+                return await apiClient.post("/auth/forgot-password", {
+                    email: email,
+                });
+            }catch (error) {
+                throw error;
+            }
+        },
+
         async verify(token) {
             try {
                 return await apiClient.get("/auth/verify", {params: {token}});
