@@ -11,15 +11,23 @@
     </div>
   </PopUpModal>
 
-  <div class="w-full bg-st2">
-    <div class="container flex flex-col justify-center items-center my-auto">
-      <form class="flex flex-col p-6 gap-2 bg-st2 rounded-lg w-auto md:w-1/3"
+  <div class="w-full bg-st2 min-h-screen">
+    <div class="flex flex-col justify-center items-center my-auto">
+      <form class="flex flex-col w-full p-4 gap-2 bg-st2 rounded-lg md:p-6 md:w-1/3"
             @submit.prevent="validateAndSubmit">
+        <router-link to="/">
         <div class="flex gap-2 justify-center items-center">
           <b class="text-3xl font-extrabold text-st5">Del</b>
           <i class="fa-solid fa-arrows-spin text-3xl text-st3"></i>
           <b class="text-3xl font-extra bold text-st5">imo</b>
         </div>
+        </router-link>
+
+        <div v-if="loading" class="mt-10">
+          <Loader/>
+        </div>
+
+        <div class="flex flex-col" v-else>
 
         <!-- firstName -->
         <label class="pt-3 text-xs font-bold">IME (*):</label>
@@ -114,6 +122,7 @@
               id="terms-checkbox"
               type="checkbox"
               class="w-4 h-4 rounded border-b-2 border-st5 bg-st2 transition duration-500 text-st5 focus:outline-none focus:ring-2 focus:ring-st5 checked:bg-st5 checked:border-st5"
+              required
           />
           <label for="terms-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
             Prihvatam Pravila i uslove korišćenja
@@ -125,18 +134,22 @@
               id="age-checkbox"
               type="checkbox"
               class="w-4 h-4 rounded border-b-2 border-st5 bg-st2 transition duration-500 text-st5 focus:outline-none focus:ring-2 focus:ring-st5 checked:bg-st5 checked:border-st5"
+              required
           />
           <label for="age-checkbox" class="ms-2 text-sm font-medium text-st5 dark:text-st5">
             Imam više od 16 godina
           </label>
         </div>
 
+        </div>
+
         <div class="flex items-center justify-center pt-2">
           <button
+              :disabled="loading"
               type="submit"
-              class="bg-st3 px-16 shadow-lg p-3 rounded-lg transition-colors duration-500 hover:bg-st4 hover:text-white"
+              class="bg-st3 disabled:bg-gray-400 px-16 shadow-lg p-3 rounded-lg transition-colors duration-500 hover:bg-st4 hover:text-white"
           >
-            Nastavi
+            {{ loading ? "Učitavanje..." : "Nastavi" }}
           </button>
         </div>
 
@@ -150,8 +163,9 @@
         <div class="flex items-center justify-center pt-4">
           <button
               type="button"
-              class="flex items-center gap-2 bg-white text-black border border-st4 rounded-lg px-4 py-2 hover:bg-st4 hover:text-white transition-colors duration-500"
+              class="flex disabled:bg-gray-400 items-center gap-2 bg-white text-black border border-st4 rounded-lg px-4 py-2 hover:bg-st4 hover:text-white transition-colors duration-500"
               @click="handleGoogleOneTap"
+              :disabled="loading"
           >
             <img
                 src="https://developers.google.com/identity/images/g-logo.png"
@@ -170,12 +184,14 @@
 import { useAuthStore } from "@/stores/auth.js";
 import { cities } from "@/assets/cities.js";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
+import Loader from "@/components/UI/Loader.vue";
 
 export default {
   name: "RegistrationView",
-  components: { PopUpModal },
+  components: {Loader, PopUpModal },
   data() {
     return {
+      loading: false,
       cities,
       isPopUp: false,
       firstName: "",
@@ -231,6 +247,7 @@ export default {
 
       try {
         // 4. Call the Pinia store action
+        this.loading = true;
         this.errorMessage = "";
         const res = await this.auth.register(userData);
 
@@ -241,6 +258,8 @@ export default {
       } catch (error) {
         // Handle server error
         this.errorMessage = error.response?.data?.message || error.message;
+      } finally {
+        this.loading = false;
       }
     },
   },

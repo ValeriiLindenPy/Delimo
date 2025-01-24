@@ -21,17 +21,28 @@ export const useAuthStore = defineStore("auth", {
             }
         },
 
+        async verify(token) {
+            try {
+                return await apiClient.get("/auth/verify", {params: {token}});
+            }catch (error) {
+                throw error;
+            }
+        },
+
         async login(credentials) {
             try {
                 const { data } = await apiClient.post("/auth/authenticate", credentials);
                 this.token = data.token;
                 localStorage.setItem("token", data.token);
                 apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+                await this.fetchUser()
             } catch (error) {
                 console.error("Ошибка при авторизации:", error);
                 throw error;
             }
         },
+
+
         async setToken(token) {
             this.token = token;
             localStorage.setItem("token", token);

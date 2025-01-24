@@ -19,3 +19,4 @@ export const updateUserDetails = async (userId, userDetails) => {
         throw error;
     }
 };
+

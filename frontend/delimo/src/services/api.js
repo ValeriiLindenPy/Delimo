@@ -4,7 +4,7 @@ import router from "@/router/index.js";
 
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8080', // Backend base URL
+    baseURL: 'http://localhost:8080/api', // Backend base URL
     withCredentials: true,
 });
 

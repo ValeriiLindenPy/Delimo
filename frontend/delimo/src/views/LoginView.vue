@@ -4,6 +4,9 @@
         class="flex flex-col p-6 gap-2 bg-st2 rounded-lg w-full md:w-1/3"
         @submit.prevent="handleEmailPasswordLogin"
     >
+      <div v-if="verificationSuccess" class="flex gap-2 bg-green-500 rounded-lg">
+        <p class="p-4 text-white font-bold">Vaša e-mail adresa je potvrđena, možete da se prijavite</p>
+      </div>
       <a href="/" class="no-underline hover:underline">< Početna</a>
       <div class="flex gap-2 justify-center items-center">
         <b class="text-3xl font-extrabold text-st5">Del</b>
@@ -71,37 +74,57 @@
 
 <script>
 import { useAuthStore } from "@/stores/auth.js";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+
 
 export default {
   name: "LoginView",
   data() {
     const authStore = useAuthStore();
     const router = useRouter();
+    const route = useRoute(); // Доступ к параметрам маршрута
     return {
       email: "",
       password: "",
       error: null,
       loading: false,
+      verificationToken: route.query.verificationToken || null,
+      verificationSuccess: false,
       authStore,
       router,
-
     };
   },
-  created() {
-    this.$router.query.token
+  async created() {
+    if (this.verificationToken) {
+      try {
+        this.loading = true;
+        await this.authStore.verify(this.verificationToken).then(
+            ()=> {
+              this.verificationSuccess = true;
+            }
+        );
+
+      } catch (error) {
+        this.error = error.message;
+      } finally {
+        this.loading = false;
+      }
+    }
   },
   methods: {
     async handleEmailPasswordLogin() {
       this.loading = true;
       try {
-        await this.authStore.login({email: this.email, password: this.password});
+        await this.authStore.login({
+          email: this.email,
+          password: this.password,
+        });
         this.error = null;
         if (this.authStore.isAuthenticated) {
-          await this.router.push("/");
+          await this.router.push("/"); // Перенаправление на главную страницу
         }
       } catch (error) {
-        this.error = error.response?.data?.message || "Login failed.";
+        this.error = error.response?.data?.message || "Не удалось войти.";
       } finally {
         this.loading = false;
       }
@@ -110,9 +133,11 @@ export default {
       try {
         window.location.href = "http://localhost:8080/oauth2/authorization/google";
       } catch (error) {
-        this.error = "Failed to initiate Google login.";
+        this.error = "Не удалось начать вход через Google.";
       }
     },
   },
 };
 </script>
+
+
