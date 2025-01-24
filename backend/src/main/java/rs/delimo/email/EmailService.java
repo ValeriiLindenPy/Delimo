@@ -43,7 +43,7 @@ public class EmailService {
     public void sendResetPasswordEmail(String email, String resetToken) {
         String subject = "Password Reset Request";
 
-        String resetUrl = "http://localhost:5173/reset-password?token=" + resetToken;
+        String resetUrl = "http://localhost:5173/reset-password?resetToken=" + resetToken;
 
         Context context = new Context();
         context.setVariable("resetUrl", resetUrl);

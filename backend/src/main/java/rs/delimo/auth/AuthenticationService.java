@@ -17,6 +17,8 @@ import rs.delimo.user.Role;
 import rs.delimo.user.User;
 import rs.delimo.user.UserRepository;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -110,9 +112,11 @@ public class AuthenticationService {
 
         Claims claims = jwtService.getDataFromToken(token);
 
-        Boolean isResetToken = claims.get("reset", Boolean.class);
-        if (isResetToken == null || !isResetToken) {
-            throw new RuntimeException("Not a reset token");
+        boolean reset = Optional.ofNullable(claims.get("reset", Boolean.class)).orElse(false);
+        boolean auth = Optional.ofNullable(claims.get("auth", Boolean.class)).orElse(false);
+
+        if (!reset && !auth) {
+            throw new RuntimeException("Token does not allow password reset");
         }
 
         String email = claims.getSubject();
