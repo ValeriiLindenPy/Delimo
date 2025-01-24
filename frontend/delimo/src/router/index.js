@@ -16,6 +16,7 @@ import EditRequest from "@/views/EditRequest.vue";
 import FeedBack from "@/views/FeedBack.vue";
 import RequestsView from "@/views/RequestsView.vue";
 import PasswordForgot from "@/views/PasswordForgot.vue";
+import PasswordReset from "@/views/PasswordReset.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,11 @@ const router = createRouter({
       path: '/password-forgot',
       name: 'PasswordForgot',
       component: PasswordForgot,
+    },
+    {
+      path: '/reset-password',
+      name: 'PasswordReset',
+      component: PasswordReset,
     },
     {
       path: '/registration',
