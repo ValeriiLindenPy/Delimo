@@ -72,7 +72,7 @@ export default {
     const auth = useAuthStore();
     return {
       email: "",
-      success: true,
+      success: false,
       error: null,
       loading: false,
       router,

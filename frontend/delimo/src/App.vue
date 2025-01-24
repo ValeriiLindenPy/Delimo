@@ -42,7 +42,10 @@ export default {
     watch(
         () => route.name,
         (newRoute) => {
-          navigation.value = newRoute !== "LoginView" && newRoute !== "RegistrationView"&& newRoute !== "PasswordForgot";
+          navigation.value = newRoute !== "LoginView"
+              && newRoute !== "RegistrationView"
+              && newRoute !== "PasswordForgot"
+              && newRoute !== "PasswordReset";
         },
         { immediate: true }
     );

@@ -12,9 +12,13 @@
     <p v-if="user.city" class="mb-2 border-b-2 border-solid pb-1">Grad: <b>{{ user.city }}</b></p>
     <p v-if="user.street" class="mb-2 border-b-2 border-solid pb-1">Ulica: <b>{{ user.street }}</b></p>
 
-    <div class="flex justify-center">
-      <button @click="goEdit" class="p-3 mt-5 bg-st4 text-white rounded-lg">
+    <div class="flex justify-center gap-3">
+      <button @click="goEdit" class="p-3 mt-5 bg-st4 hover:bg-st3 transition-colors duration-500 text-white rounded-lg">
         Izmena ličnih podataka
+      </button>
+
+      <button @click="goReset" class="p-2 mt-5 bg-red-500 hover:bg-black transition-colors duration-500 text-white rounded-lg">
+        Promeni lozinku
       </button>
     </div>
 
@@ -42,6 +46,9 @@ export default {
     }
   },
   methods: {
+    async goReset() {
+      await this.$router.push("/reset-password");
+    },
      async goEdit() {
       await this.$router.push("/users/" + this.store.profile.id + "/edit");
     }

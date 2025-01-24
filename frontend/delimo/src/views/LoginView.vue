@@ -33,8 +33,8 @@
           v-model="password"
           required
       />
-      <div @click="goReset">
-      <p class="pt-2 no-underline hover:underline">
+      <div>
+      <p @click="goReset" class="pt-2 no-underline hover:underline cursor-pointer">
         Zaboravio si lozinku?
       </p>
       </div>
@@ -118,7 +118,7 @@ export default {
   },
   methods: {
     goReset() {
-      this.routerrf
+      this.router.push('/password-forgot')
     },
     async handleEmailPasswordLogin() {
       this.loading = true;

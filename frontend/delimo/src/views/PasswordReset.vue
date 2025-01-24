@@ -80,7 +80,7 @@ export default {
     return {
       password: "",
       password2: "",
-      success: true,
+      success: false,
       error: null,
       loading: false,
       token: auth.token || route.query.resetToken || null,
