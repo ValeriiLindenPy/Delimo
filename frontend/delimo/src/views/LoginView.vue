@@ -1,7 +1,7 @@
 <template>
-  <div class="container flex flex-col justify-center items-center my-auto">
+  <div class="flex flex-col justify-center items-center bg-st2 h-screen">
     <form
-        class="flex flex-col p-6 gap-2 bg-st2 rounded-lg w-auto shadow-2xl md:w-1/3"
+        class="flex flex-col p-6 gap-2 bg-st2 rounded-lg w-full md:w-1/3"
         @submit.prevent="handleEmailPasswordLogin"
     >
       <a href="/" class="no-underline hover:underline">< Početna</a>
@@ -85,7 +85,11 @@ export default {
       loading: false,
       authStore,
       router,
+
     };
+  },
+  created() {
+    this.$router.query.token
   },
   methods: {
     async handleEmailPasswordLogin() {
