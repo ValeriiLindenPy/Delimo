@@ -42,17 +42,15 @@
 </template>
 
 <script>
-import {useUserStore} from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 
 export default {
   name: "UserModal",
   data() {
+    const store = useAuthStore();
     return {
-      useUserStore: false,
+      store,
     }
-  },
-  created() {
-    this.useUserStore = useUserStore();
   },
   props: {
     isModalOpen: {
@@ -69,15 +67,15 @@ export default {
       this.$emit("close");
     },
     goProfile() {
-      this.$router.push("/users/" + this.useUserStore.userId);
+      this.$router.push("/users/" + this.store.profile.id);
       this.$emit("close");
     },
     goItems() {
-      this.$router.push("/users/" + this.useUserStore.userId + "/items");
+      this.$router.push("/users/" + this.store.profile.id + "/items");
       this.$emit("close");
     },
     goRequests() {
-      this.$router.push("/users/" + this.useUserStore.userId + "/requests");
+      this.$router.push("/users/" + this.store.profile.id + "/requests");
       this.$emit("close");
     },
     goLogin() {
@@ -95,6 +93,3 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Adjust if needed, but make sure it stays higher than any other z-index. */
-</style>

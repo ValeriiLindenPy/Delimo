@@ -1,9 +1,13 @@
 <template>
-  <div class="container flex flex-col justify-center items-center my-auto">
+  <div class="flex flex-col justify-center items-center bg-st2 h-screen">
     <form
-        class="flex flex-col p-6 gap-2 bg-st2 rounded-lg w-auto shadow-2xl md:w-1/3"
+        class="flex flex-col p-6 gap-2 bg-st2 rounded-lg w-full md:w-1/3"
         @submit.prevent="handleEmailPasswordLogin"
     >
+      <div v-if="verificationSuccess" class="flex gap-2 bg-green-500 rounded-lg">
+        <p class="p-4 text-white font-bold">Vaša e-mail adresa je potvrđena, možete da se prijavite</p>
+      </div>
+      <a href="/" class="no-underline hover:underline">< Početna</a>
       <div class="flex gap-2 justify-center items-center">
         <b class="text-3xl font-extrabold text-st5">Del</b>
         <i class="fa-solid fa-arrows-spin text-3xl text-st3"></i>
@@ -29,15 +33,21 @@
           v-model="password"
           required
       />
+      <div>
+      <p @click="goReset" class="pt-2 no-underline hover:underline cursor-pointer">
+        Zaboravio si lozinku?
+      </p>
+      </div>
+
+      <div v-if="error" class="text-red-500 mt-2">{{ error }}</div>
 
       <div class="flex items-center justify-center pt-2">
         <button
             type="submit"
-            class="bg-st3 shadow-lg p-3
-                 rounded-lg transition-colors duration-500
-                 hover:bg-st4 hover:text-white"
+            class="bg-st3 shadow-lg p-3 rounded-lg transition-colors duration-500 hover:bg-st4 hover:text-white"
+            :disabled="loading"
         >
-          ULOGUJTE SE
+          {{ loading ? "Učitavanje..." : "ULOGUJTE SE" }}
         </button>
       </div>
 
@@ -68,35 +78,72 @@
 </template>
 
 <script>
-import { useUserStore } from "@/stores/counter.js";
-import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth.js";
+import { useRouter, useRoute } from "vue-router";
+
 
 export default {
   name: "LoginView",
   data() {
+    const authStore = useAuthStore();
+    const router = useRouter();
+    const route = useRoute(); // Доступ к параметрам маршрута
     return {
       email: "",
       password: "",
+      error: null,
+      loading: false,
+      verificationToken: route.query.verificationToken || null,
+      verificationSuccess: false,
+      authStore,
+      router,
+    };
+  },
+  async created() {
+    if (this.verificationToken) {
+      try {
+        this.loading = true;
+        await this.authStore.verify(this.verificationToken).then(
+            ()=> {
+              this.verificationSuccess = true;
+            }
+        );
+
+      } catch (error) {
+        this.error = error.message;
+      } finally {
+        this.loading = false;
+      }
     }
   },
-  setup() {
-    const userStore = useUserStore();
-    const router = useRouter();
-
-    const handleGoogleLogin = async () => {
-      // Redirect to the OAuth2 login endpoint
-      await userStore.loggingIn()
-      window.location.href = "http://localhost:8080/oauth2/authorization/google";
-    };
-
-    const handleEmailPasswordLogin = async () => {
-      //todo
-    };
-
-    return {
-      handleGoogleLogin,
-      handleEmailPasswordLogin,
-    };
+  methods: {
+    goReset() {
+      this.router.push('/password-forgot')
+    },
+    async handleEmailPasswordLogin() {
+      this.loading = true;
+      try {
+        await this.authStore.login({
+          email: this.email,
+          password: this.password,
+        });
+        this.error = null;
+        if (this.authStore.isAuthenticated) {
+          await this.router.push("/"); // Перенаправление на главную страницу
+        }
+      } catch (error) {
+        this.error = error.response?.data?.message || "Не удалось войти.";
+      } finally {
+        this.loading = false;
+      }
+    },
+    handleGoogleLogin() {
+      try {
+        window.location.href = "http://localhost:8080/oauth2/authorization/google";
+      } catch (error) {
+        this.error = "Не удалось начать вход через Google.";
+      }
+    },
   },
 };
 </script>

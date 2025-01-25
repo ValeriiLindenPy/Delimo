@@ -23,10 +23,14 @@
   </div>
 </template>
 <script>
-import {useUserStore} from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 
 export default {
   name: 'AuthorizationItems',
+  data() {
+    const store = useAuthStore();
+    return {store}
+  },
   props: {
     authorized: {
       type: Boolean,
@@ -35,7 +39,7 @@ export default {
   },
   methods: {
     goUser() {
-      const userId = Number(useUserStore().userId);
+      const userId = Number(this.store.profile.id);
       this.$router.push("/users/"+ userId);
     },
     goLogin() {
@@ -45,7 +49,8 @@ export default {
       this.$router.push("/registration");
     },
     goLogout() {
-      window.location.href = "http://localhost:8080/logout";
+      this.store.logout();
+      this.$router.push("/login");
     }
   }
 }

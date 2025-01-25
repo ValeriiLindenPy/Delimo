@@ -71,7 +71,7 @@ export default {
     const itemId = Number(route.params.id)
 
     this.item = (await getItem(itemId)).data
-
+    console.log(this.item);
   },
 }
 </script>

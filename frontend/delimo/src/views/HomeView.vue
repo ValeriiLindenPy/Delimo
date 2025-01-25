@@ -1,6 +1,5 @@
-
-
 <template>
+
   <div class="container">
     <div class="flex justify-center mt-3">
       <img class="object-fit rounded-lg h-30 md:h-40" src="@/assets/img.png" alt="home">
@@ -12,63 +11,68 @@
     <p class="mx-4 text-white font-bold">Svi Oglasi</p>
     <hr class="flex-grow border-white">
   </div>
-
-  <PostList class="mt-3" :posts="items" />
+  <Loader v-if="loadingItems" />
+  <PostList v-else class="mt-3" :posts="items"/>
 
   <div class="flex justify-center items-center mt-4">
     <hr class="flex-grow border-white">
     <p class="mx-4 text-white font-bold">Svi Zahtevi</p>
     <hr class="flex-grow border-white">
   </div>
-
-  <RequestList :posts="requests"/>
-
-
-
+  <Loader class="mb-96" v-if="loadingRequests"/>
+  <RequestList v-else :posts="requests"/>
 </template>
 
 <script>
 
 import ItemList from "@/components/ItemList.vue";
-import {useUserStore} from "@/stores/counter.js";
 import RequestList from "@/components/RequestList.vue";
-import {getUserData} from "@/services/userService.js";
 import {getItems} from "@/services/itemService.js";
 import {fetchRequests} from "@/services/requestService.js";
+import Loader from "@/components/UI/Loader.vue";
 
 export default {
   components: {
+    Loader,
     PostList: ItemList,
     RequestList: RequestList,
   },
   data() {
     return {
+      loadingItems: false,
+      loadingRequests: false,
       items: null,
       requests: null,
-      store: useUserStore()
     }
   },
   methods: {
     async fetchItems() {
-      const res = await getItems();
-      this.items = res.data.content;
+      this.loadingItems = true; // Set loading state to true
+      try {
+        const res = await getItems();
+        this.items = res.data.content;
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      } finally {
+        this.loadingItems = false;
+      }
     },
     async getRequests() {
-      const res = await fetchRequests();
-      this.requests = res.data.content;
+      this.loadingRequests = true; // Set loading state to true
+      try {
+        const res = await fetchRequests();
+        this.requests = res.data.content;
+      } catch (error) {
+        console.error("Error fetching requests:", error);
+      } finally {
+        this.loadingRequests = false;
+      }
     }
   },
   async mounted() {
-
-    await this.fetchItems()
-
-    await this.getRequests()
-
-    this.store.checkLogginStatus()
-
-    if (this.store.loggingStatus === "logging" ) {
-      await getUserData();
-    }
+    await this.fetchItems();
+    await this.getRequests();
   }
 }
+
 </script>

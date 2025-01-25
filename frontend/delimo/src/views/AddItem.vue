@@ -4,14 +4,15 @@
   <PopUpModal :is-active="isPopUp" @close="tooglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1>Strvar je kreirana uspesno!</h1>
-      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="tooglePopUp">Hvala!</button>
+      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="goItem">Hvala!</button>
     </div>
   </PopUpModal>
 
   <div class="flex justify-center mt-2 items-center md:container">
     <div class="bg-st2 rounded-lg w-full md:w-1/2 p-4 text-center">
       <h1 class="text-2xl mb-4">Dodaj stvar</h1>
-      <form @submit.prevent="submitForm" class="flex flex-col text-start space-y-4">
+      <div v-if="loading" class="flex items-center justify-center h-svh">Loading ...</div>
+      <form v-else @submit.prevent="submitForm" class="flex flex-col text-start space-y-4">
         <!-- Name -->
         <div>
           <label for="name" class="text-sm font-medium text-st5">Naslov</label>
@@ -44,7 +45,7 @@
           <input
               id="maxDays"
               type="number"
-              v-model="formData.maxDays"
+              v-model="formData.maxPeriodDays"
               class="w-full mt-1 p-2 border rounded-md text-st4"
               min="1"
               placeholder="Unesite maksimalni broj dana"
@@ -174,25 +175,30 @@
 
 
 <script>
-import { useUserStore } from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
 import { cities } from "@/assets/cities.js";
 import {createItem} from "@/services/itemService.js";
+import router from "@/router/index.js";
 
 
 export default {
   name: "AddItem",
   components: { PopUpModal },
   data() {
+    const store = useAuthStore();
     return {
-      store: null,
+      itemId: null,
+      loading: false,
+      router,
+      store,
       cities,
       isPopUp: false,
       uploadedFiles: [],
       formData: {
         title: "",
         description: "",
-        maxPeriodDays: 1,
+        maxPeriodDays: null,
         street: "",
         city: "",
         pricePerDay: null,
@@ -201,9 +207,6 @@ export default {
       },
       isFree: false,
     };
-  },
-  created() {
-    this.store = useUserStore()
   },
   mounted() {
     // Auto-fill phone, viber, and location if available in the user profile
@@ -226,7 +229,14 @@ export default {
       }
       this.uploadedFiles = [...this.uploadedFiles, ...files];
     },
+    goItem() {
+      this.tooglePopUp();
+      if (this.itemId) {
+        this.$router.push(`/items/${this.itemId}`);
+      }
+    },
     async submitForm() {
+
       const formData = new FormData();
       formData.append("title", this.formData.title);
       formData.append("description", this.formData.description);
@@ -239,22 +249,29 @@ export default {
       this.uploadedFiles.forEach(file => formData.append("images", file));
 
       try {
+        this.loading = true;
         const response = await createItem(formData);
 
-        this.tooglePopUp();
-        this.uploadedFiles = [];
-        this.formData = {
-          title: "",
-          description: "",
-          maxPeriodDays: 1,
-          street: this.store.profile.street || "",
-          city: this.store.profile.city || "",
-          pricePerDay: null,
-          phone: this.store.profile.phone || "",
-          viber: this.store.profile.viber || "",
-        };
-        this.isFree = false;
+        if (response.status === 201) {
+          this.itemId = response.data.id;
+          this.loading = false;
+          this.uploadedFiles = [];
+          this.formData = {
+            title: "",
+            description: "",
+            maxPeriodDays: 1,
+            street: this.store.profile.street || "",
+            city: this.store.profile.city || "",
+            pricePerDay: null,
+            phone: this.store.profile.phone || "",
+            viber: this.store.profile.viber || "",
+          };
+          this.isFree = false;
+          this.tooglePopUp();
+        }
+
       } catch (error) {
+        await this.router.push("/");
         console.error("Error:", error);
       }
     },

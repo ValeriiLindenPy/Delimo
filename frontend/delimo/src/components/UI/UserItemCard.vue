@@ -92,7 +92,7 @@
 import defaultImage from "@/assets/default-image.jpg";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
 import { deleteItemById  } from "@/services/itemService";
-import {useUserStore} from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 
 export default {
   name: "UserPostCard",
@@ -104,8 +104,10 @@ export default {
     }
   },
   data() {
+    const store = useAuthStore();
     return {
       defaultImage,
+      store,
       isPopUp: false,
       itemDeleteId: null,
     };
@@ -121,7 +123,7 @@ export default {
       this.$router.push(`/items/${this.post.id}`);
     },
     goProfile() {
-      this.$router.push(`/users/${useUserStore().profile.id}`);
+      this.$router.push(`/users/${this.store.profile.id}`);
     },
     async handleDeleteItem(id) {
       this.togglePopUp();
@@ -136,7 +138,7 @@ export default {
         this.itemDeleteId = null;
         this.goProfile();
       } catch (err) {
-        alert(err);
+        console.log(err.message);
       }
     }
   }

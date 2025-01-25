@@ -119,7 +119,7 @@
 
 
 <script>
-import { useUserStore } from "@/stores/counter.js";
+import {useAuthStore} from "@/stores/auth.js";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
 import { cities } from "@/assets/cities.js";
 import {createRequest} from "@/services/requestService.js";
@@ -128,8 +128,9 @@ export default {
   name: "AddRequest",
   components: { PopUpModal },
   data() {
+    const store = useAuthStore();
     return {
-      store: null,
+      store,
       cities,
       isPopUp: false,
       formData: {
@@ -143,9 +144,7 @@ export default {
       isFree: false,
     };
   },
-  created() {
-    this.store = useUserStore()
-  },
+
   mounted() {
     // Auto-fill phone, viber, and location if available in the user profile
     if (this.store.profile) {
