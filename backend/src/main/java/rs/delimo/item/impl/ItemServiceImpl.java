@@ -1,8 +1,6 @@
 package rs.delimo.item.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -10,25 +8,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import rs.delimo.error.exception.NotFoundException;
 import rs.delimo.error.exception.OwnerException;
-import rs.delimo.item.Item;
-import rs.delimo.item.ItemMapper;
-import rs.delimo.item.ItemRepository;
-import rs.delimo.item.ItemService;
+import rs.delimo.item.*;
 import rs.delimo.item.dto.ItemDto;
 import rs.delimo.item.dto.ItemRequestDto;
+import rs.delimo.service.ImageManager;
 import rs.delimo.user.User;
 import rs.delimo.user.UserRepository;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +28,9 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final int MAX_IMAGES_COUNT = 5;
+    private final ImageManager imageManager;
+    private final ObjectMapper objectMapper;
 
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Dotenv dotenv = Dotenv.load();
-    private final String imgbbKey = dotenv.get("IMGBB_KEY");
 
     @Override
     public Page<ItemDto> getAll(int page, int size) {
@@ -101,7 +90,7 @@ public class ItemServiceImpl implements ItemService {
             }
         }
 
-        List<String> newImageUrls = processImages(images);
+        List<String> newImageUrls = imageManager.uploadImages(images);
 
         List<String> combinedImageUrls = new ArrayList<>(existingImageUrls);
         combinedImageUrls.addAll(newImageUrls);
@@ -161,7 +150,7 @@ public class ItemServiceImpl implements ItemService {
 //        }
 
         log.warn("start image upload");
-        List<String> imageUrls = processImages(images);
+        List<String> imageUrls = imageManager.uploadImages(images);
 
         Item newItem = ItemMapper.toItem(item);
         newItem.setImages(imageUrls);
@@ -192,41 +181,6 @@ public class ItemServiceImpl implements ItemService {
         }
         if (updated) {
             userRepository.save(owner);
-        }
-    }
-
-
-    private List<String> processImages(List<MultipartFile> images) {
-        log.warn("images: {}", images);
-        List<String> imageUrls = new ArrayList<>();
-        if (images != null && !images.isEmpty()) {
-            if (images.size() > MAX_IMAGES_COUNT) {
-                log.error("illegal image count");
-                throw new IllegalArgumentException("An item can have up to " + MAX_IMAGES_COUNT + " images.");
-            }
-            imageUrls = images.stream()
-                    .map(this::uploadImageToImgbb)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-        }
-        return imageUrls;
-    }
-
-    private String uploadImageToImgbb(MultipartFile image) {
-        try {
-            log.warn("start upload");
-            String uploadUrl = "https://api.imgbb.com/1/upload";
-            String encodedImage = Base64.getEncoder().encodeToString(image.getBytes());
-            LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-            formData.add("key", imgbbKey);
-            formData.add("image", encodedImage);
-            String response = restTemplate.postForObject(uploadUrl, formData, String.class);
-            JsonNode root = objectMapper.readTree(response);
-            log.warn("response: {}", response);
-            return root.path("data").path("url").asText();
-        } catch (Exception e) {
-            log.error("Failed to upload image to Imgbb: {}", e.getMessage());
-            return null;
         }
     }
 
