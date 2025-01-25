@@ -11,7 +11,9 @@
   <div class="flex justify-center mt-2 items-center md:container">
     <div class="bg-st2 rounded-lg w-full md:w-1/2 p-4 text-center">
       <h1 class="text-2xl mb-4">Dodaj stvar</h1>
-      <div v-if="loading" class="flex items-center justify-center h-svh">Loading ...</div>
+      <div v-if="loading" class="flex items-center justify-center h-svh">
+        <Loader/>
+      </div>
       <form v-else @submit.prevent="submitForm" class="flex flex-col text-start space-y-4">
         <!-- Name -->
         <div>
@@ -180,11 +182,12 @@ import PopUpModal from "@/components/UI/PopUpModal.vue";
 import { cities } from "@/assets/cities.js";
 import {createItem} from "@/services/itemService.js";
 import router from "@/router/index.js";
+import Loader from "@/components/UI/Loader.vue";
 
 
 export default {
   name: "AddItem",
-  components: { PopUpModal },
+  components: {Loader, PopUpModal },
   data() {
     const store = useAuthStore();
     return {

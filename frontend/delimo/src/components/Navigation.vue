@@ -12,7 +12,7 @@
       </router-link>
 
       <!-- Search -->
-      <DesktopSearch :go-items="goItems" />
+      <DesktopSearch />
 
       <!-- Authorization Items -->
       <AuthorizationItems :authorized="authorized" />
@@ -57,7 +57,7 @@
   </header>
 
   <!-- Mobile Search (sticky) -->
-  <MobileSearch :go-items="goItems" />
+  <MobileSearch />
 
   <!-- User Modal (moved outside the header, higher z-index) -->
   <transition>
@@ -70,7 +70,6 @@
     />
   </transition>
 </template>
-
 
 <script>
 import UserModal from "@/components/UI/UserModal.vue";
@@ -114,9 +113,6 @@ export default {
     toggleModal() {
       this.isModalOpen = !this.isModalOpen;
     },
-    goItems() {
-      this.$router.push("/items");
-    },
     close() {
       this.menuOpen = false;
       document.body.classList.remove("overflow-hidden");
@@ -124,4 +120,3 @@ export default {
   },
 };
 </script>
-

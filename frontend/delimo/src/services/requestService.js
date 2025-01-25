@@ -36,3 +36,8 @@ export const fetchRequests = async (page = 0, pageSize = 6) =>
     await apiClient.get(`/requests`, {
         params: { page, pageSize },
     });
+
+export const fetchRequestsSearch = async (text, page = 0, pageSize = 6) =>
+    await apiClient.get(`/requests/search`, {
+        params: { page, pageSize, text },
+    });

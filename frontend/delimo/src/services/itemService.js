@@ -32,3 +32,8 @@ export const getItems = async (page = 0, pageSize = 6) => await apiClient.get("/
     {
         params: { page, pageSize },
     });
+
+export const getItemsSearch = async (text, page = 0, pageSize = 6) => await apiClient.get("/items/search",
+    {
+        params: { page, pageSize, text },
+    });
