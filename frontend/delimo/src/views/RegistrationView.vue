@@ -125,7 +125,7 @@
               required
           />
           <label for="terms-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-            Prihvatam Pravila i uslove korišćenja
+            Prihvatam <a href="/pravila-uslovi" class="underline hover:text-st3">Pravila i uslove korišćenja</a>
           </label>
         </div>
 
