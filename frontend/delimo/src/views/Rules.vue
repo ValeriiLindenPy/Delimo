@@ -60,48 +60,73 @@
 
       <section id="how-it-works" class="bg-white rounded-lg p-6 shadow-md mb-6">
         <h2 class="font-bold text-2xl mb-3">Kako funkcioniše</h2>
-        <ul class="list-decimal list-inside text-gray-700 leading-relaxed">
-          <li class="font-bold">Registrujte se na platformu Delimo.</li>
-          <li class="font-bold">Dodajte ili pronađite oglase za predmete koje želite razmeniti.</li>
-          <div class="pl-4">
-            <p class="text-gray-700 leading-relaxed mt-3">
-              Na Delimo postoje 2 tipa oglasa: <b>Zahtev</b> ili <b>Stvar</b>.</p>
-            <ul class="list-disc pl-6">
-              <li>Da biste kreirali oglas, kliknite na dugme u meniju <b>„Kreiraj oglas“</b>.</li>
-              <img class="m-2 shadow-xl  dark:shadow-gray-800" src="/images/additem.png" />
-              <li>Zatim će vam biti ponuđena dva tipa oglasa.</li>
-              <img class="m-2 shadow-xl  dark:shadow-gray-800" src="/images/oglastype.png" />
-            </ul>
-
-
-
-            <p class="text-gray-700 leading-relaxed mt-6">
-              <b>Dodajte stvar </b>: Ako želite omogućiti korisnicima da stupe u kontakt s vama radi iznajmljivanja vašoj stvari, kliknite na <b>„Dodaj stvar“</b>.
-            </p>
-            <p> Nakon toga će se otvoriti meni za dodavanje predmeta. Tamo ćete trebati pružiti informacije o predmetu:</p>
-            <ul class="list-disc pl-10">
-              <li><b>Naziv</b> – naziv stvari</li>
-              <li><b>Opis</b> –  kratak opis stvari</li>
-              <li><b>Maksimalni period</b> –  maksimalni broj dana na koji biste mogli pozajmiti stvar</li>
-              <li><b>Cena</b> –  cena po kojoj biste mogli pozajmiti predmet, možete navesti i besplatno. Po dogovoru, cena može služiti samo kao depozit.</li>
-              <li>
-                Zatim ćete trebati popuniti svoje kontakt informacije kako bi korisnici mogli stupiti u kontakt s vama. Ako ste već popunili kontakt podatke prilikom registracije, oni će automatski biti prikazani i neće biti potrebno dodatno popunjavanje.
-              </li>
-              <li>
-                Takođe, možete dodati do 5 fotografija svom oglasu.
-              </li>
+        <div class="flex flex-wrap">
+          <div class="w-full md:w-1/2">
+            <ul class="list-decimal list-inside text-gray-700 leading-relaxed">
+              <li class="font-bold">Registrujte se na platformu Delimo.</li>
+              <li class="font-bold">Dodajte ili pronađite oglase za predmete koje želite razmeniti.</li>
+              <div class="pl-4">
+                <p class="text-gray-700 leading-relaxed mt-3">
+                  Na Delimo postoje 2 tipa oglasa: <b>Zahtev</b> ili <b>Stvar</b>.
+                </p>
+                <ul class="list-disc pl-6">
+                  <li>Da biste kreirali oglas, kliknite na dugme u meniju <b>„Kreiraj oglas“</b>.</li>
+                  <img
+                      class="m-2 shadow-xl dark:shadow-gray-800 max-w-full rounded-lg"
+                      src="/images/additem.png"
+                      alt="Add item"
+                  />
+                  <li>Zatim će vam biti ponuđena dva tipa oglasa.</li>
+                  <img
+                      class="m-2 shadow-xl dark:shadow-gray-800 max-w-full rounded-lg"
+                      src="/images/oglastype.png"
+                      alt="Ad types"
+                  />
+                </ul>
+                <p class="text-gray-700 leading-relaxed mt-6">
+                  <b>Dodaj stvar</b>: Ako želite omogućiti korisnicima da stupe u kontakt s vama radi iznajmljivanja vašoj stvari, kliknite na <b>„Dodaj stvar“</b>.
+                </p>
+                <p>Nakon toga će se otvoriti meni za dodavanje stvari. Tamo ćete trebati pružiti informacije o stvari:</p>
+                <ul class="list-disc pl-10">
+                  <li><b>Naziv</b> – naziv stvari</li>
+                  <li><b>Opis</b> – kratak opis stvari</li>
+                  <li><b>Maksimalni period</b> – maksimalni broj dana na koji biste mogli pozajmiti stvar</li>
+                  <li><b>Cena</b> – cena po kojoj biste mogli pozajmiti predmet, možete navesti i besplatno. Po dogovoru, cena može služiti samo kao depozit.</li>
+                  <li>
+                    Zatim ćete trebati popuniti svoje kontakt informacije kako bi korisnici mogli stupiti u kontakt s vama. Ako ste već popunili kontakt podatke prilikom registracije, oni će automatski biti prikazani i neće biti potrebno dodatno popunjavanje.
+                  </li>
+                  <li>
+                    Takođe, možete dodati do 5 fotografija svom oglasu.
+                  </li>
+                </ul>
+                <p class="text-gray-700 leading-relaxed mt-6">
+                  <b>Kreiraj zahtev</b>: Ako tražite neku stvar i želite je pozajmiti od nekoga, kliknite na dugme <b>„Kreiraj zahtev“</b>.
+                </p>
+                <p>Zatim će se otvoriti meni za kreiranje zahteva. Tamo ćete trebati uneti informacije o stvari koju želite pozajmiti:</p>
+                <ul class="list-disc pl-10">
+                  <li><b>Naziv</b> – naziv stvari</li>
+                  <li><b>Opis</b> – kratak opis stvari</li>
+                  <li><b>Cena</b> – cena koju biste mogli ponuditi za stvar koju želite pozajmiti na određeno vreme. Takođe možete navesti besplatno. Po dogovoru, cena može služiti samo kao depozit.</li>
+                  <li>
+                    Zatim ćete trebati popuniti svoje kontakt informacije kako bi korisnici mogli stupiti u kontakt s vama. Ako ste već popunili kontakt podatke prilikom registracije, oni će automatski biti prikazani i neće biti potrebno dodatno popunjavanje.
+                  </li>
+                </ul>
+              </div>
+              <li class="font-bold mt-2">Stupite u kontakt sa korisnicima i dogovorite razmenu.</li>
             </ul>
           </div>
-
-
-          <li class="font-bold mt-2">Stupite u kontakt sa korisnicima i dogovorite razmenu.</li>
-        </ul>
-<!--        <img-->
-<!--            src="/images/how-it-works.svg"-->
-<!--            alt="How it works illustration"-->
-<!--            class="mt-4 rounded-lg shadow-md mx-auto w-3/4"-->
-<!--        />-->
+          <div class="w-full md:w-1/2">
+            <img
+                src="/images/howitwork.gif"
+                alt="How it works illustration"
+                class="mt-4 rounded-lg shadow-md float-right w-full md:w-3/4 lg:w-2/3"
+            />
+          </div>
+        </div>
       </section>
+
+
+
 
       <section id="contact" class="bg-white rounded-lg p-6 shadow-md mb-6">
         <h2 class="font-bold text-2xl mb-3">Kontakt</h2>
