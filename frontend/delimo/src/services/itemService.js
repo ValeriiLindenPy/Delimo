@@ -5,8 +5,11 @@ export const fetchMyItem = async (id) => await apiClient.get(`/my-items/${id}`,{
     withCredentials: true,
 });
 
-export const fetchMyItems = async () => await apiClient.get("/my-items",{
+export const fetchMyItems = async (page = 0, size = 6) => await apiClient.get("/my-items",{
     withCredentials: true,
+    params: {
+        page, size,
+    }
 });
 
 export const updateItem = async (id, formData) =>
