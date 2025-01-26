@@ -7,8 +7,10 @@ import org.springframework.hateoas.PagedModel;
 import rs.delimo.item.dto.ItemDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import rs.delimo.item.dto.ItemTitle;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,6 +33,12 @@ public class ItemController {
                 .map(EntityModel::getContent)
                 .toList());
         return response;
+    }
+
+    @GetMapping("/titles")
+    public List<ItemTitle> getFruits(@RequestParam(required = false, defaultValue = "") String q,
+                                     @RequestParam(required = false, defaultValue = "5") int limit) {
+        return itemService.searchTitles(q, limit);
     }
 
     @GetMapping("/{id}")

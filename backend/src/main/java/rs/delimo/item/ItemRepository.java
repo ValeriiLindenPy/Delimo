@@ -39,4 +39,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "where upper(i.title) like upper(concat('%', :text, '%'))" +
             " or upper(i.description) like upper(concat('%', :text, '%'))")
     Page<Item> search(Pageable pageable, @Param("text") String text);
+
+    List<Item> findByTitleContainingIgnoreCase(String q, Pageable pageable);
 }

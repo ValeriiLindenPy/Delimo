@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 import rs.delimo.item.dto.ItemDto;
 import rs.delimo.item.dto.ItemRequestDto;
+import rs.delimo.item.dto.ItemTitle;
 import rs.delimo.user.User;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface ItemService {
     ItemDto editOne(Long itemId, ItemRequestDto item, User user, List<MultipartFile> images, String existingImagesJson);
 
     void delete(Long itemId, User user);
+
+    List<ItemTitle> searchTitles(String q, int limit);
 }
