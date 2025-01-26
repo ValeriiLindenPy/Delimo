@@ -19,6 +19,7 @@ import PasswordForgot from "@/views/PasswordForgot.vue";
 import PasswordReset from "@/views/PasswordReset.vue";
 import SearchView from "@/views/SearchView.vue";
 import PravilaView from "@/views/PravilaView.vue";
+import Rules from "@/views/Rules.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +38,11 @@ const router = createRouter({
       path: '/pravila-uslovi',
       name: 'PravilaView',
       component: PravilaView,
+    },
+    {
+      path: '/rules',
+      name: 'Rules',
+      component: Rules,
     },
     {
       path: '/login',

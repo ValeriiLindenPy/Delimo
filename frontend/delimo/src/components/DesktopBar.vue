@@ -5,7 +5,7 @@
         <li @click="goHome" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Početna</li>
         <li @click="goItems" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Sve Stvari</li>
         <li @click="goRequests" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Svi Zahtevi</li>
-        <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Kako koristiti</li>
+        <li @click="goRules" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Kako koristiti</li>
         <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">O nama</li>
         <li @click="toggleModal('support')" class="p-2 cursor-pointer hover:bg-st4 hover:text-white flex items-center gap-1">
           <i class="fa-solid fa-headset"></i>
@@ -80,6 +80,9 @@ export default {
     },
     goHome() {
       this.$router.push("/");
+    },
+    goRules() {
+      this.$router.push("/rules");
     },
     goFeedback() {
       this.toggleModal('support')
