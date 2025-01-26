@@ -1,6 +1,7 @@
 package rs.delimo.error;
 
 import rs.delimo.error.exception.DublicatingEmailException;
+import rs.delimo.error.exception.ImageUploadException;
 import rs.delimo.error.exception.NotFoundException;
 import rs.delimo.error.exception.OwnerException;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,12 @@ public class ErrorHandler {
     @ExceptionHandler(DublicatingEmailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDublicatingEmailException(final RuntimeException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ImageUploadException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleImageUploadException(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
