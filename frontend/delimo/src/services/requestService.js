@@ -6,9 +6,10 @@ export const fetchMyRequest = async (id) =>
         withCredentials: true,
     });
 
-export const fetchMyRequests = async () =>
+export const fetchMyRequests = async (page = 0, pageSize = 6) =>
     await apiClient.get("/my-requests", {
         withCredentials: true,
+        params: {page, pageSize}
     });
 
 export const createRequest = async (formData) =>
