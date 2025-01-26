@@ -139,7 +139,7 @@ export default {
     },
     handleGoogleLogin() {
       try {
-        window.location.href = "http://localhost:8080/oauth2/authorization/google";
+        window.location.href = "http://localhost:8080/api/oauth2/authorization/google";
       } catch (error) {
         this.error = "Не удалось начать вход через Google.";
       }
