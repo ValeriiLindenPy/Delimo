@@ -1,6 +1,7 @@
 package rs.delimo.item;
 
 import rs.delimo.item.dto.ItemRequestDto;
+import rs.delimo.item.dto.ItemTitle;
 import rs.delimo.user.UserMapper;
 import org.springframework.stereotype.Component;
 import rs.delimo.item.dto.ItemDto;
@@ -21,6 +22,13 @@ public class ItemMapper {
                 .maxPeriodDays(item.getMaxPeriodDays())
                 .pricePerDay(item.getPricePerDay())
                 .owner(UserMapper.toUserDto(item.getOwner()))
+                .build();
+    }
+
+    public static ItemTitle toItemTitle(Item item) {
+        return ItemTitle.builder()
+                .id(item.getId())
+                .title(item.getTitle())
                 .build();
     }
 

@@ -14,6 +14,7 @@ import rs.delimo.error.exception.OwnerException;
 import rs.delimo.item.*;
 import rs.delimo.item.dto.ItemDto;
 import rs.delimo.item.dto.ItemRequestDto;
+import rs.delimo.item.dto.ItemTitle;
 import rs.delimo.service.ImageManager;
 import rs.delimo.user.User;
 import rs.delimo.user.UserRepository;
@@ -125,6 +126,13 @@ public class ItemServiceImpl implements ItemService {
         }
 
         itemRepository.deleteById(itemId);
+    }
+
+    @Override
+    public List<ItemTitle> searchTitles(String q, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        List<Item> items = itemRepository.findByTitleContainingIgnoreCase(q, pageable);
+        return items.stream().map(ItemMapper::toItemTitle).toList();
     }
 
     public Page<ItemDto> searchByText(String text, int page, int pageSize) {

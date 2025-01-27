@@ -7,8 +7,10 @@ import org.springframework.hateoas.PagedModel;
 import rs.delimo.item.dto.ItemDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import rs.delimo.item.dto.ItemTitle;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,15 +24,13 @@ public class ItemController {
     public Map<String, Object> getAll(@RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "6") int pageSize) {
         Page<ItemDto> items = itemService.getAll(page, pageSize);
+        return createPagedResponse(items);
+    }
 
-        PagedModel<EntityModel<ItemDto>> pagedModel = assembler.toModel(items);
-
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("page", pagedModel.getMetadata());
-        response.put("content", pagedModel.getContent().stream()
-                .map(EntityModel::getContent)
-                .toList());
-        return response;
+    @GetMapping("/titles")
+    public List<ItemTitle> getFruits(@RequestParam(required = false, defaultValue = "") String q,
+                                     @RequestParam(required = false, defaultValue = "5") int limit) {
+        return itemService.searchTitles(q, limit);
     }
 
     @GetMapping("/{id}")
@@ -40,15 +40,19 @@ public class ItemController {
 
     @GetMapping("/search")
     public Map<String, Object> searchAllByText(@RequestParam("text") String text,
-                                         @RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "6") int pageSize) {
-        Page<ItemDto> items = itemService.searchByText(text, page, pageSize);
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "6") int pageSize) {
+        Page<ItemDto> items = (text == null || text.isBlank())
+                ? itemService.getAll(page, pageSize)
+                : itemService.searchByText(text, page, pageSize);
+        return createPagedResponse(items);
+    }
 
-        PagedModel<EntityModel<ItemDto>> pagedModel = assembler.toModel(items);
-
+    private Map<String, Object> createPagedResponse(Page<ItemDto> items) {
+        PagedModel<EntityModel<ItemDto>> model = assembler.toModel(items);
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put("page", pagedModel.getMetadata());
-        response.put("content", pagedModel.getContent().stream()
+        response.put("page", model.getMetadata());
+        response.put("content", model.getContent().stream()
                 .map(EntityModel::getContent)
                 .toList());
         return response;
