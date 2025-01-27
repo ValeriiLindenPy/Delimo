@@ -40,3 +40,8 @@ export const getItemsSearch = async (text, page = 0, pageSize = 6) => await apiC
     {
         params: { page, pageSize, text },
     });
+
+export const getItemsTitleSearch = async (q, limit = 3) => await apiClient.get("/items/titles",
+    {
+        params: { q, limit },
+    });
