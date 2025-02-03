@@ -25,6 +25,10 @@
         <span v-else>besplatno</span>
       </div>
 
+      <div class="text-gray-500">
+        {{post.created}}
+      </div>
+
     </div>
   </div>
   </router-link>

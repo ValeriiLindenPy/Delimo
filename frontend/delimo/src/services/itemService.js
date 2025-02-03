@@ -31,6 +31,7 @@ export const createItem = async (formData) =>
 
 //public
 export const getItem = async (id) => await apiClient.get(`/items/${id}`);
+
 export const getItems = async (page = 0, pageSize = 6, city = "") => {
     const params = { page, pageSize };
     if (city && city.trim() !== "") {
@@ -39,10 +40,13 @@ export const getItems = async (page = 0, pageSize = 6, city = "") => {
     return await apiClient.get("/items", { params });
 };
 
-export const getItemsSearch = async (text, page = 0, pageSize = 6) => await apiClient.get("/items/search",
-    {
-        params: { page, pageSize, text },
-    });
+export const getItemsSearch = async (text, page = 0, pageSize = 6, city = "") => {
+    const params = { page, pageSize, text };
+    if (city && city.trim() !== "") {
+        params.city = city;
+    }
+    return await apiClient.get("/items/search", { params });
+};
 
 export const getItemsTitleSearch = async (q, limit = 3) => await apiClient.get("/items/titles",
     {

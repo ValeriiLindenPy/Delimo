@@ -5,6 +5,24 @@
       <img class="object-fit rounded-lg h-30 md:h-40" src="@/assets/img.png" alt="home" />
     </div>
 
+    <!-- City Filter -->
+    <div class="flex justify-end p-4">
+      <div>
+        <label for="citySelect" class="text-white font-bold">Mesto:</label>
+        <select
+            id="citySelect"
+            v-model="city"
+            @change="onCityChanged"
+            class="ml-2 bg-st3 text-white font-bold text-xl rounded-lg p-2"
+        >
+          <option value="">Svi gradovi</option>
+          <option class="hover:bg-st4" v-for="cityItem in cities" :key="cityItem.id" :value="cityItem.name">
+            {{ cityItem.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <!-- Items Section -->
     <div class="flex justify-center items-center mt-4">
       <hr class="flex-grow border-white" />
@@ -17,8 +35,6 @@
       <ItemList v-else class="mt-3" :posts="items" />
     </div>
 
-
-
     <!-- Requests Section -->
     <div class="flex justify-center items-center mt-4">
       <hr class="flex-grow border-white" />
@@ -30,7 +46,6 @@
       <p v-if="requests?.length === 0" class="text-center">Nema zahteva za "{{ text }}".</p>
       <RequestList v-else class="mt-3" :posts="requests" />
     </div>
-
   </div>
 </template>
 
@@ -41,16 +56,19 @@ import { fetchRequestsSearch } from "@/services/requestService.js";
 import ItemList from "@/components/ItemList.vue";
 import Loader from "@/components/UI/Loader.vue";
 import RequestList from "@/components/RequestList.vue";
+import { cities } from "@/assets/cities.js";
 
 export default {
   name: "SearchView",
   components: {
     ItemList,
     Loader,
-    RequestList
+    RequestList,
   },
   data() {
     return {
+      cities,
+      city: "",
       text: null,
       loadingItems: false,
       items: null,
@@ -61,14 +79,16 @@ export default {
   mounted() {
     const route = useRoute();
     this.text = route.query.text || "";
-    console.log(this.text)
     this.fetchItems();
     this.getRequests();
   },
   watch: {
-    // Следим за изменением query.text:
     '$route.query.text'(newValue) {
       this.text = newValue || "";
+      this.fetchItems();
+      this.getRequests();
+    },
+    city() {
       this.fetchItems();
       this.getRequests();
     }
@@ -77,7 +97,7 @@ export default {
     async fetchItems() {
       this.loadingItems = true;
       try {
-        const res = await getItemsSearch(this.text);
+        const res = await getItemsSearch(this.text, 0, 6, this.city);
         this.items = res.data.content;
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -88,18 +108,18 @@ export default {
     async getRequests() {
       this.loadingRequests = true;
       try {
-        const res = await fetchRequestsSearch(this.text);
+        const res = await fetchRequestsSearch(this.text, 0, 6, this.city);
         this.requests = res.data.content;
-        console.log(this.requests.length);
       } catch (error) {
         console.error("Error fetching requests:", error);
       } finally {
         this.loadingRequests = false;
       }
     },
+    async onCityChanged() {
+      await this.fetchItems();
+      await this.getRequests();
+    },
   },
 };
 </script>
-
-
-

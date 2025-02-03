@@ -33,12 +33,18 @@ export const deleteRequestById = (id) =>
 export const fetchRequest = async (id) =>
     await apiClient.get(`/requests/${id}`);
 
-export const fetchRequests = async (page = 0, pageSize = 6) =>
-    await apiClient.get(`/requests`, {
-        params: { page, pageSize },
-    });
+export const fetchRequests = async (page = 0, pageSize = 6, city = "") => {
+    const params = { page, pageSize };
+    if (city && city.trim() !== "") {
+        params.city = city;
+    }
+    return await apiClient.get("/requests", { params });
+};
 
-export const fetchRequestsSearch = async (text, page = 0, pageSize = 6) =>
-    await apiClient.get(`/requests/search`, {
-        params: { page, pageSize, text },
-    });
+export const fetchRequestsSearch = async (text, page = 0, pageSize = 6, city = "") => {
+    const params = { page, pageSize, text };
+    if (city && city.trim() !== "") {
+        params.city = city;
+    }
+    return await apiClient.get("/requests/search", { params });
+};
