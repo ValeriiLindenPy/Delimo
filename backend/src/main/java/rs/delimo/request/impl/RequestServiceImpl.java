@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.delimo.error.exception.NotFoundException;
@@ -29,16 +30,36 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public Page<RequestOutputDto> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
         Page<ItemRequest> requests = requestRepository.findAll(pageable);
         return requests.map(RequestMapper::toOutputDto);
     }
 
     @Override
+    public Page<RequestOutputDto> getAll(String city, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("created").descending());
+        Page<ItemRequest> requests;
+        if (city != null && !city.isBlank()) {
+            requests = requestRepository.findAllByCity(pageable, city);
+        } else {
+            requests = requestRepository.findAll(pageable);
+        }
+        return requests.map(RequestMapper::toOutputDto);
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public Page<RequestOutputDto> search(String text, int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
-        Page<ItemRequest> requests = requestRepository.search(pageable, text);
+    public Page<RequestOutputDto> search(String city, String text, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("created").descending());
+
+        Page<ItemRequest> requests;
+
+        if (city != null && !city.isBlank()) {
+            requests = requestRepository.searchWithCity(pageable, text, city);
+        } else {
+            requests = requestRepository.search(pageable, text);
+        }
+
         return requests.map(RequestMapper::toOutputDto);
     }
 

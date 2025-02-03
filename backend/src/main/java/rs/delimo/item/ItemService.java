@@ -13,9 +13,11 @@ import java.util.List;
 public interface ItemService {
     Page<ItemDto> getAll(int page, int size);
 
+    Page<ItemDto> getAll(String city, int page, int size);
+
     ItemDto getById(Long itemId);
 
-    Page<ItemDto> searchByText(String text, int page, int pageSize);
+    Page<ItemDto> searchByText(String text, int page, int pageSize, String city);
 
     ItemDto create(ItemRequestDto item, User userId, List<MultipartFile> images);
 

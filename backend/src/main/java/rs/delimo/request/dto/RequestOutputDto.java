@@ -20,7 +20,7 @@ public class RequestOutputDto {
     private Integer pricePerDay;
 
     private UserDto requester;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy | HH:mm")
     private LocalDateTime created;
 
 }

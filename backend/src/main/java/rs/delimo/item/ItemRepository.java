@@ -40,5 +40,26 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             " or upper(i.description) like upper(concat('%', :text, '%'))")
     Page<Item> search(Pageable pageable, @Param("text") String text);
 
+    @Query("SELECT i FROM Item i " +
+            "LEFT JOIN FETCH i.images " +
+            "JOIN i.owner o " +
+            "WHERE (:city IS NULL OR o.city = :city) " +
+            "AND (upper(i.title) LIKE upper(concat('%', :text, '%')) " +
+            "OR upper(i.description) LIKE upper(concat('%', :text, '%')))")
+    Page<Item> searchWithCity(@Param("city") String city, @Param("text") String text, Pageable pageable);
+
+
     List<Item> findByTitleContainingIgnoreCase(String q, Pageable pageable);
+
+    @Query(
+            value = "SELECT i FROM Item i " +
+                    "LEFT JOIN FETCH i.images " +
+                    "JOIN i.owner o " +
+                    "WHERE (:city IS NULL OR o.city = :city) " +
+                    "ORDER BY i.created DESC",
+            countQuery = "SELECT count(i) FROM Item i JOIN i.owner o " +
+                    "WHERE (:city IS NULL OR o.city = :city)"
+    )
+    Page<Item> findAllWithImagesByCity(@Param("city") String city, Pageable pageable);
+
 }

@@ -8,6 +8,8 @@ import rs.delimo.user.User;
 public interface RequestService {
     Page<RequestOutputDto> getAll(int page, int pageSize);
 
+    Page<RequestOutputDto> getAll(String city, int page, int pageSize);
+
     RequestOutputDto create(RequestInputDto request, User user);
 
     RequestOutputDto edit(Long requestID, RequestInputDto request, User user);
@@ -20,5 +22,5 @@ public interface RequestService {
 
     RequestOutputDto getByUserAndId(Long id, User user);
 
-    Page<RequestOutputDto> search(String text, int page, int pageSize);
+    Page<RequestOutputDto> search(String city, String text, int page, int pageSize);
 }
