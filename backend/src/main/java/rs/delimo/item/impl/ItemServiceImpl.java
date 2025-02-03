@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +36,22 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Page<ItemDto> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
         Page<Item> itemsPage = itemRepository.findAllWithImages(pageable);
+        return itemsPage.map(ItemMapper::toItemDto);
+    }
+
+    @Override
+    public Page<ItemDto> getAll(String city, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
+        Page<Item> itemsPage;
+
+        if (city != null && !city.isBlank()) {
+            itemsPage = itemRepository.findAllWithImagesByCity(city, pageable);
+        } else {
+            itemsPage = itemRepository.findAllWithImages(pageable);
+        }
+
         return itemsPage.map(ItemMapper::toItemDto);
     }
 
@@ -135,13 +150,22 @@ public class ItemServiceImpl implements ItemService {
         return items.stream().map(ItemMapper::toItemTitle).toList();
     }
 
-    public Page<ItemDto> searchByText(String text, int page, int pageSize) {
+    public Page<ItemDto> searchByText(String text, int page, int pageSize, String city) {
         if (text == null || text.isBlank()) {
             return Page.empty();
         }
         log.debug("Executing search for text: {}", text);
-        Pageable pageable = PageRequest.of(page, pageSize);
-        return itemRepository.search(pageable, text).map(ItemMapper::toItemDto);
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("created").descending());
+
+        Page<Item> items;
+
+        if (city != null && !city.isBlank()) {
+            items = itemRepository.searchWithCity(city,text, pageable);
+        } else {
+            items = itemRepository.search(pageable, text);
+        }
+
+        return items.map(ItemMapper::toItemDto);
     }
 
     @Override

@@ -14,8 +14,9 @@ public class ItemRequestController {
 
     @GetMapping
     public Page<RequestOutputDto> getAll(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "6") int pageSize) {
-        return requestService.getAll(page, pageSize);
+                                         @RequestParam(defaultValue = "6") int pageSize,
+                                         @RequestParam(required = false) String city) {
+        return requestService.getAll(city, page, pageSize);
     }
 
     @GetMapping("/{requestId}")
@@ -26,7 +27,8 @@ public class ItemRequestController {
     @GetMapping("/search")
     public Page<RequestOutputDto> search(@RequestParam("text") String text,
                                          @RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "6") int pageSize) {
-        return requestService.search(text, page, pageSize);
+                                         @RequestParam(defaultValue = "6") int pageSize,
+                                         @RequestParam(required = false) String city) {
+        return requestService.search(city, text, page, pageSize);
     }
 }
