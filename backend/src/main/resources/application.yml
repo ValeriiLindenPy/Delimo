@@ -32,7 +32,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
   mail:
-    host: smtp.gmail.com
+    host: mailcluster.loopia.se
     port: 587
     username: ${MAIL_USER}
     password: ${MAIL_PASSWORD}
