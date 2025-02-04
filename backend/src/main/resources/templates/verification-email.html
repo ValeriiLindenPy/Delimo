@@ -1,16 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div>
-    <h1>Email Verification</h1>
-    <p>Thank you for registering!</p>
-    <p>Please click the button below to verify your email:</p>
-    <a th:href="${verificationUrl}">Verify Email</a>
-    <p>If the button doesn't work, copy this link into your browser: <span th:text="${verificationUrl}"></span></p>
+    <h1>Verifikacija email adrese</h1>
+    <p>Hvala vam što ste se registrovali!</p>
+    <p>Molimo vas da kliknete na dugme ispod kako biste verifikovali svoju email adresu:</p>
+    <a th:href="${verificationUrl}">Verifikuj email</a>
+    <p>Ako dugme ne radi, kopirajte ovaj link u svoj pretraživač: <span th:text="${verificationUrl}"></span></p>
+
+    <hr>
+
+    <p>Pozdrav,</p>
+    <p>Valerii Linden,</p>
+    <p>________________________________</p>
+    <p>Email: <a href="mailto:info@delimo.rs">info@delimo.rs</a></p>
+    <p>www: <a href="http://www.delimo.rs">http://www.delimo.rs</a></p>
+    <img src="https://i.ibb.co/HpPsrtzk/Screenshot-2025-02-04-142938.png"
+         alt="Delimo Logo" style="max-width: 300px;">
 </div>
 </body>
 </html>

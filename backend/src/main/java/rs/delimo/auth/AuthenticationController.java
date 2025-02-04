@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import rs.delimo.auth.dto.*;
+import rs.delimo.email.EmailService;
 
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthenticationController {
     private final AuthenticationService service;
+    private final EmailService emailService;
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody @Validated RegisterRequest request) {

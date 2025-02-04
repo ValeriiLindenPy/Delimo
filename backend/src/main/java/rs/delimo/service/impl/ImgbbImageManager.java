@@ -28,7 +28,7 @@ public class ImgbbImageManager implements ImageManager {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public ImgbbImageManager(@Value("${imgbb.key}") String imgbbKey, RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public ImgbbImageManager(@Value("${app.imgbb.key}") String imgbbKey, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.imgbbKey = imgbbKey;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
