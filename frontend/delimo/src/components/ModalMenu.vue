@@ -44,10 +44,10 @@
       <div class="flex flex-col justify-center items-center">
         <h1 class="text-center font-bold text-2xl">Kreiraj oglas</h1>
         <div class="flex justify-center text-center pt-3 gap-2">
-          <button class="py-3 px-8 bg-st4 font-bold rounded-lg text-white transition-colors duration-500 hover:bg-st3 hover:text-black">
+          <button @click="goAddItem" class="py-3 px-8 bg-st4 font-bold rounded-lg text-white transition-colors duration-500 hover:bg-st3 hover:text-black">
             Dodaj stvar
           </button>
-          <button class="py-3 px-8 bg-st4 font-bold rounded-lg text-white transition-colors duration-500 hover:bg-st3 hover:text-black">
+          <button @click="goAddRequest" class="py-3 px-8 bg-st4 font-bold rounded-lg text-white transition-colors duration-500 hover:bg-st3 hover:text-black">
             Kreiraj zahtev
           </button>
         </div>
@@ -92,6 +92,14 @@ export default {
       this.$emit('close')
       this.$router.push("/");
     },
+    goAddItem() {
+      this.$emit('close')
+      this.$router.push("/items/adding-item");
+    },
+    goAddRequest() {
+      this.$emit('close')
+      this.$router.push("/items/adding-request");
+    },
     goRules() {
       this.$emit('close')
       this.$router.push("/rules");
@@ -105,7 +113,5 @@ export default {
       this.$router.push("/requests");
     }
   },
-
-
 }
 </script>
