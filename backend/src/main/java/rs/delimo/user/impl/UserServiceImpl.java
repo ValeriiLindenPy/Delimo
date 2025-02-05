@@ -25,98 +25,124 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(Long id) {
-        return userRepository.findById(id).map(UserMapper::toUserDto)
-                .orElseThrow(
-                        () -> new NotFoundException("User with id - %d not found".formatted(id))
-                );
+        log.info("Fetching user by id: {}", id);
+        UserDto userDto = userRepository.findById(id)
+                .map(UserMapper::toUserDto)
+                .orElseThrow(() -> {
+                    log.error("User with id {} not found", id);
+                    return new NotFoundException("User with id - %d not found".formatted(id));
+                });
+        log.info("Retrieved user: {}", userDto);
+        return userDto;
     }
 
     @Override
     @Transactional
     public UserDto editById(Long id, UserDto userDto) {
-        log.trace("start edit");
+        log.trace("Starting edit of user with id: {}", id);
 
-        User oldUser = userRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("User with id - %d not found".formatted(id))
-        );
+        User oldUser = userRepository.findById(id).orElseThrow(() -> {
+            log.error("User with id {} not found for editing", id);
+            return new NotFoundException("User with id - %d not found".formatted(id));
+        });
 
-        log.trace("userid - {}", oldUser.getId());
+        log.trace("User found. Current user id: {}", oldUser.getId());
 
         if (userDto.getEmail() != null && !oldUser.getEmail().equals(userDto.getEmail())) {
+            log.debug("Attempting to update email from '{}' to '{}'", oldUser.getEmail(), userDto.getEmail());
             if (userRepository.existsByEmail(userDto.getEmail())) {
-                log.info("error email");
-                throw new DublicatingEmailException("User with email '%s' already exists"
-                        .formatted(userDto.getEmail()));
+                log.info("Email '{}' already exists", userDto.getEmail());
+                throw new DublicatingEmailException("User with email '%s' already exists".formatted(userDto.getEmail()));
             }
             oldUser.setEmail(userDto.getEmail());
         }
 
-        log.trace("check other data");
+        log.trace("Checking other data for update");
 
         if (userDto.getName() != null) {
+            log.debug("Updating name to '{}'", userDto.getName());
             oldUser.setName(userDto.getName());
         }
-
-
         if (userDto.getStreet() != null) {
+            log.debug("Updating street to '{}'", userDto.getStreet());
             oldUser.setStreet(userDto.getStreet());
         }
-
         if (userDto.getCity() != null) {
+            log.debug("Updating city to '{}'", userDto.getCity());
             oldUser.setCity(userDto.getCity());
         }
-
         if (userDto.getPhone() != null) {
+            log.debug("Updating phone to '{}'", userDto.getPhone());
             oldUser.setPhone(userDto.getPhone());
         }
-
         if (userDto.getViber() != null) {
+            log.debug("Updating Viber to '{}'", userDto.getViber());
             oldUser.setViber(userDto.getViber());
         }
 
-        log.trace("check other data completed");
+        log.trace("Completed checking data for update");
 
-        return UserMapper.toUserDto(userRepository.save(oldUser));
+        UserDto updatedUserDto = UserMapper.toUserDto(userRepository.save(oldUser));
+        log.info("User with id {} updated successfully", id);
+        return updatedUserDto;
     }
 
     @Override
     public UserDto create(UserDto userDto) {
+        log.info("Creating a new user with email: {}", userDto.getEmail());
         if (!isDistinctEmail(userDto.getEmail())) {
-            throw new DublicatingEmailException("User with email - %s is already exist"
-                    .formatted(userDto.getEmail()));
+            log.error("User with email {} already exists", userDto.getEmail());
+            throw new DublicatingEmailException("User with email - %s is already exist".formatted(userDto.getEmail()));
         }
-        return UserMapper.toUserDto(userRepository
-                .save(UserMapper.toUser(userDto)));
+        User newUser = UserMapper.toUser(userDto);
+        User savedUser = userRepository.save(newUser);
+        log.info("User created successfully with id: {}", savedUser.getId());
+        return UserMapper.toUserDto(savedUser);
     }
 
     @Override
     @Transactional
     public void deleteById(Long userId) {
+        log.info("Deleting user with id: {}", userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("User with id {} not found for deletion", userId);
+                    return new NotFoundException("User not found");
+                });
+        log.debug("Deleting items for user id: {}", userId);
         itemRepository.deleteByOwner(user);
+        log.debug("Deleting requests for user id: {}", userId);
         requestRepository.deleteByRequester(user);
         userRepository.deleteById(userId);
+        log.info("User with id {} deleted successfully", userId);
     }
 
     @Override
     public UserDto getByUserAuth(User user) {
-
-        User userDb = userRepository.findByEmail(user.getEmail()).orElseThrow(
-                () -> new NotFoundException("User not found")
-        );
-
-        return UserMapper.toUserDto(userDb);
+        log.info("Fetching authenticated user by email: {}", user.getEmail());
+        User userDb = userRepository.findByEmail(user.getEmail()).orElseThrow(() -> {
+            log.error("Authenticated user with email {} not found", user.getEmail());
+            return new NotFoundException("User not found");
+        });
+        UserDto userDto = UserMapper.toUserDto(userDb);
+        log.info("Retrieved authenticated user: {}", userDto);
+        return userDto;
     }
 
-
     private boolean isDistinctEmail(String email) {
-        return !userRepository.existsByEmail(email);
+        boolean distinct = !userRepository.existsByEmail(email);
+        log.debug("Email '{}' distinct: {}", email, distinct);
+        return distinct;
     }
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with email: " + username));
+        log.info("Loading user by username (email): {}", username);
+        User user = userRepository.findByEmail(username).orElseThrow(() -> {
+            log.error("User not found with email: {}", username);
+            return new UsernameNotFoundException("User not found with email: " + username);
+        });
+        log.info("Loaded user: {}", user);
+        return user;
     }
 }

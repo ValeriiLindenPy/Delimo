@@ -28,7 +28,7 @@ public class Item {
     @ElementCollection
     private List<String> images;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 

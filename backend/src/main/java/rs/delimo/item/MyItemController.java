@@ -1,6 +1,5 @@
 package rs.delimo.item;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,31 +25,34 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class MyItemController {
-    public final ItemService itemService;
+    private final ItemService itemService;
     private final PagedResourcesAssembler<ItemDto> assembler;
-
 
     @GetMapping
     public Map<String, Object> getAll(@AuthenticationPrincipal User user,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "6") int size) {
+        log.info("User {} requested all items: page={}, size={}", user.getUsername(), page, size);
         Page<ItemDto> items = itemService.getAllByOwner(page, size, user);
+        log.info("Retrieved {} items for user {}", items.getTotalElements(), user.getUsername());
 
-        // Generate PagedModel
         PagedModel<EntityModel<ItemDto>> pagedModel = assembler.toModel(items);
 
-        // Transform the response to replace `_embedded` with `content`
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("page", pagedModel.getMetadata());
         response.put("content", pagedModel.getContent().stream()
                 .map(EntityModel::getContent)
                 .toList());
+        log.debug("Response for getAll: {}", response);
         return response;
     }
 
     @GetMapping("/{id}")
     public ItemDto getOne(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        return itemService.getByUserAndId(id, user);
+        log.info("User {} requested item with id {}", user.getUsername(), id);
+        ItemDto item = itemService.getByUserAndId(id, user);
+        log.info("Item retrieved: {}", item);
+        return item;
     }
 
     @PatchMapping(value = "/{itemId}", consumes = {"multipart/form-data"})
@@ -61,9 +63,12 @@ public class MyItemController {
             @AuthenticationPrincipal User user,
             @PathVariable Long itemId
     ) {
+        log.info("User {} is editing item with id {}", user.getUsername(), itemId);
         log.info("Received {} new images", images != null ? images.size() : 0);
         log.info("Existing images JSON: {}", existingImagesJson);
-        return itemService.editOne(itemId, item, user, images, existingImagesJson);
+        ItemDto updatedItem = itemService.editOne(itemId, item, user, images, existingImagesJson);
+        log.info("Item updated: {}", updatedItem);
+        return updatedItem;
     }
 
     @PostMapping(consumes = {"multipart/form-data"})
@@ -71,14 +76,19 @@ public class MyItemController {
     public ItemDto create(@ModelAttribute @Validated(ValidationMarker.OnCreate.class) ItemRequestDto item,
                           @RequestParam(value = "images", required = false) List<MultipartFile> images,
                           @AuthenticationPrincipal User user) {
-        log.warn("received images: {}", images);
-        return itemService.create(item, user, images);
+        log.info("User {} is creating a new item", user.getUsername());
+        log.debug("Item details: {}", item);
+        log.warn("Received images: {}", images);
+        ItemDto createdItem = itemService.create(item, user, images);
+        log.info("Item created with id {}", createdItem.getId());
+        return createdItem;
     }
 
-    @RequestMapping(value = "/{itemId}", method = RequestMethod.DELETE)
-    public void delete(
-            @PathVariable Long itemId,
-            @AuthenticationPrincipal User user) {
-         itemService.delete(itemId, user);
+    @DeleteMapping("/{itemId}")
+    public void delete(@PathVariable Long itemId,
+                       @AuthenticationPrincipal User user) {
+        log.info("User {} requested deletion of item with id {}", user.getUsername(), itemId);
+        itemService.delete(itemId, user);
+        log.info("Item with id {} has been deleted", itemId);
     }
 }
