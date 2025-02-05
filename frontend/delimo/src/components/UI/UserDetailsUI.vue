@@ -1,10 +1,36 @@
 <template>
-
-  <div class="bg-white rounded-md shadow-sm p-3 text-xl font-sans">
-    <div class="flex gap-2 items-center mb-4">
-      <i class="fa-regular fa-user text-st3 font-extrabold"></i>
-      <p class="font-extrabold">Podešavanja naloga</p>
+  <PopUpModal :is-active="isPopUp" @close="togglePopUp">
+    <div class="flex flex-col items-center justify-center gap-2">
+      <h1>Obriši nalog?</h1>
+      <div class="flex gap-4">
+        <button
+            class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
+            @click="confirmDelete"
+        >
+          Da
+        </button>
+        <button
+            class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
+            @click="togglePopUp"
+        >
+          Ne
+        </button>
+      </div>
     </div>
+  </PopUpModal>
+
+  <div class="bg-white md:rounded-md shadow-sm p-6 text-xl font-sans">
+    <div class="flex justify-between items-center mb-5">
+      <div class="flex gap-2">
+        <i class="fa-regular fa-user text-st3 font-extrabold"></i>
+        <p class="font-extrabold">Podešavanja naloga</p>
+      </div>
+
+      <p class="text-base text-red-500 font-light cursor-pointer" @click="togglePopUp">
+        Obrisati nalog
+      </p>
+    </div>
+
     <p class="mb-2 border-b-2 border-solid pb-1">Ime: <b>{{ user.name }}</b></p>
     <p class="mb-2 border-b-2 border-solid pb-1">Email: <b>{{ user.email }}</b></p>
     <p v-if="user.phone" class="mb-2 border-b-2 border-solid pb-1">Telefon: <b>{{ user.phone }}</b></p>
@@ -21,23 +47,23 @@
         Promeni lozinku
       </button>
     </div>
-
-
   </div>
-
 </template>
 
 <script>
-
-import {useAuthStore} from "@/stores/auth.js";
+import { useAuthStore } from "@/stores/auth.js";
+import PopUpModal from "@/components/UI/PopUpModal.vue";
+import {deleteUser} from "@/services/userService.js";
 
 export default {
   name: 'UserDetailsUI',
+  components: { PopUpModal },
   data() {
     const store = useAuthStore();
     return {
-      store
-    }
+      store,
+      isPopUp: false,
+    };
   },
   props: {
     user: {
@@ -49,11 +75,21 @@ export default {
     async goReset() {
       await this.$router.push("/reset-password");
     },
-     async goEdit() {
+    async goEdit() {
       await this.$router.push("/users/" + this.store.profile.id + "/edit");
+    },
+    togglePopUp() {
+      this.isPopUp = !this.isPopUp;
+    },
+    async confirmDelete() {
+      try {
+        await deleteUser(this.user.id);
+        await this.store.logout();
+        await this.$router.push("/login");
+      } catch (error) {
+        console.error("Ошибка при удалении пользователя:", error);
+      }
     }
-  },
-}
-
-
+  }
+};
 </script>

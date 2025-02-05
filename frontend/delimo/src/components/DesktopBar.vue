@@ -6,7 +6,6 @@
         <li @click="goItems" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Sve Stvari</li>
         <li @click="goRequests" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Svi Zahtevi</li>
         <li @click="goRules" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Kako koristiti</li>
-        <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">O nama</li>
         <li @click="toggleModal('support')" class="p-2 cursor-pointer hover:bg-st4 hover:text-white flex items-center gap-1">
           <i class="fa-solid fa-headset"></i>
           <p>Podršка</p>

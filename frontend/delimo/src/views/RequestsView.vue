@@ -64,6 +64,7 @@ export default {
         this.posts = res.data.content;
         this.totalPages = res.data.totalPages;
       } catch (error) {
+        this.$router.push('/server-error');
         console.error("Error fetching requests:", error);
       }
     },
