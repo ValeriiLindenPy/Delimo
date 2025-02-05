@@ -1,10 +1,12 @@
 <template>
-  <Loader v-if="isLoading" />
+  <Loader v-if="isLoading"/>
 
   <PopUpModal :is-active="isPopUp" @close="tooglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1>Strvar je kreirana uspesno!</h1>
-      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="tooglePopUp">Hvala!</button>
+      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="tooglePopUp">
+        Hvala!
+      </button>
     </div>
   </PopUpModal>
 
@@ -117,15 +119,15 @@
 </template>
 
 <script>
-import { useAuthStore } from "@/stores/auth.js";
+import {useAuthStore} from "@/stores/auth.js";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
 import Loader from "@/components/UI/Loader.vue"; // Import Loader component
-import { cities } from "@/assets/cities.js";
-import { createRequest } from "@/services/requestService.js";
+import {cities} from "@/assets/cities.js";
+import {createRequest} from "@/services/requestService.js";
 
 export default {
   name: "AddRequest",
-  components: { PopUpModal, Loader },
+  components: {PopUpModal, Loader},
   data() {
     const store = useAuthStore();
     return {
@@ -172,7 +174,7 @@ export default {
       formData.append("viber", this.formData.viber);
 
       try {
-        const response = await createRequest(formData);
+        await createRequest(formData);
 
         this.isLoading = false;
         this.tooglePopUp();

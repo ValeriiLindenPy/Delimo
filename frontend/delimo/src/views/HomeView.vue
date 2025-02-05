@@ -41,13 +41,13 @@ export default {
     return {
       loadingItems: false,
       loadingRequests: false,
-      items: null,
-      requests: null,
+      items: [],
+      requests: [],
     }
   },
   methods: {
     async fetchItems() {
-      this.loadingItems = true; // Set loading state to true
+      this.loadingItems = true;
       try {
         const res = await getItems();
         this.items = res.data.content;
@@ -58,7 +58,7 @@ export default {
       }
     },
     async getRequests() {
-      this.loadingRequests = true; // Set loading state to true
+      this.loadingRequests = true;
       try {
         const res = await fetchRequests();
         this.requests = res.data.content;

@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center mt-2 items-center md:container flex-col">
-    <div class="flex flex-col w-full bg-st2 p-4 rounded-lg md:w-1/2">
+    <div class="flex flex-col w-full bg-st2 p-4 md:rounded-lg md:w-1/2">
       <h1 class="text-2xl font-bold mb-4">Pomoć i kontakt</h1>
 
       <p class="text-st5 mb-3">

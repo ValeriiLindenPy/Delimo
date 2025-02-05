@@ -87,9 +87,9 @@ export default {
       city: "",
       text: null,
       loadingItems: false,
-      items: null,
+      items: [],
       loadingRequests: false,
-      requests: null,
+      requests: [],
     };
   },
   mounted() {

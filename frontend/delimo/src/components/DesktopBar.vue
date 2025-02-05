@@ -1,4 +1,5 @@
 <template>
+  <div class="desktop-bar">
   <div class="bg-st2 hidden md:block">
     <nav class="flex">
       <ul class="flex items-center justify-center text-center font-bold w-full gap-7">
@@ -49,6 +50,7 @@
       <button @click="goAddRequest" class="py-3 px-8 bg-st4 font-bold rounded-lg text-white transition-colors duration-500 hover:bg-st3 hover:text-black">Kreiraj zahtev</button>
     </div>
   </PopUpModal>
+  </div>
 </template>
 
 
