@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.delimo.error.exception.DublicatingEmailException;
 import rs.delimo.error.exception.NotFoundException;
+import rs.delimo.item.ItemRepository;
+import rs.delimo.request.RequestRepository;
 import rs.delimo.user.User;
 import rs.delimo.user.UserMapper;
 import rs.delimo.user.UserRepository;
@@ -18,6 +20,8 @@ import rs.delimo.user.dto.UserDto;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
+    private final RequestRepository requestRepository;
 
     @Override
     public UserDto getById(Long id) {
@@ -86,9 +90,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        getById(id);
-        userRepository.deleteById(id);
+    @Transactional
+    public void deleteById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        itemRepository.deleteByOwner(user);
+        requestRepository.deleteByRequester(user);
+        userRepository.deleteById(userId);
     }
 
     @Override
