@@ -130,6 +130,7 @@ export default {
         }
 
       } catch (error) {
+        this.$router.push('/server-error');
         this.error = "Не удалось начать вход через Google.";
       }finally {
         this.loading = false;

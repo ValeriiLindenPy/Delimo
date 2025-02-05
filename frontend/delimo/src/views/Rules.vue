@@ -131,23 +131,25 @@
       <section id="contact" class="bg-white rounded-lg p-6 shadow-md mb-6">
         <h2 class="font-bold text-2xl mb-3">Kontakt</h2>
         <p class="text-gray-700 leading-relaxed">
-          Ako imate dodatnih pitanja, slobodno nas kontaktirajte putem emaila: <a href="mailto:kontakt@delimo.com" class="text-indigo-500 font-bold">kontakt@delimo.com</a>
+          Ako imate dodatnih pitanja, slobodno nas kontaktirajte putem emaila:
+          <a href="mailto:info@delimo.rs" class="text-indigo-500 font-bold">info@delimo.rs</a>
         </p>
         <p class="text-gray-700 leading-relaxed mt-3">
           Ili nas pratite na društvenim mrežama za najnovije informacije i savete.
         </p>
         <div class="flex space-x-4 mt-4">
-          <a href="#" class="text-indigo-500 hover:text-indigo-700">
+          <a href="https://www.facebook.com/groups/1088229589716163" target="_blank" class="text-indigo-500 hover:text-indigo-700">
             <i class="fab fa-facebook fa-2x"></i>
           </a>
-          <a href="#" class="text-indigo-500 hover:text-indigo-700">
+          <a href="https://www.instagram.com/delimo.rs/" target="_blank" class="text-indigo-500 hover:text-indigo-700">
             <i class="fab fa-instagram fa-2x"></i>
           </a>
-          <a href="#" class="text-indigo-500 hover:text-indigo-700">
-            <i class="fab fa-twitter fa-2x"></i>
+          <a href="https://t.me/DelimoApp" target="_blank" class="text-indigo-500 hover:text-indigo-700">
+            <i class="fab fa-telegram fa-2x"></i>
           </a>
         </div>
       </section>
+
     </div>
   </div>
 </template>

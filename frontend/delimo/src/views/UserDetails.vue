@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto">
+  <div class="md:container mx-auto">
     <h1 class="text-white pt-6 text-2xl font-bold text-center">Moj Nalog</h1>
     <div class="flex pt-6 gap-3 items-start justify-center">
       <UserDetailsUI v-if="user" class="grow mt-2" :user="user" />

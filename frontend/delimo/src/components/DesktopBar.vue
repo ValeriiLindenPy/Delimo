@@ -1,4 +1,5 @@
 <template>
+  <div class="desktop-bar">
   <div class="bg-st2 hidden md:block">
     <nav class="flex">
       <ul class="flex items-center justify-center text-center font-bold w-full gap-7">
@@ -6,7 +7,6 @@
         <li @click="goItems" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Sve Stvari</li>
         <li @click="goRequests" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Svi Zahtevi</li>
         <li @click="goRules" class="p-2 cursor-pointer hover:bg-st4 hover:text-white">Kako koristiti</li>
-        <li class="p-2 cursor-pointer hover:bg-st4 hover:text-white">O nama</li>
         <li @click="toggleModal('support')" class="p-2 cursor-pointer hover:bg-st4 hover:text-white flex items-center gap-1">
           <i class="fa-solid fa-headset"></i>
           <p>Podršка</p>
@@ -50,6 +50,7 @@
       <button @click="goAddRequest" class="py-3 px-8 bg-st4 font-bold rounded-lg text-white transition-colors duration-500 hover:bg-st3 hover:text-black">Kreiraj zahtev</button>
     </div>
   </PopUpModal>
+  </div>
 </template>
 
 

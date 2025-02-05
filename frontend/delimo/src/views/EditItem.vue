@@ -1,4 +1,7 @@
 <template>
+  <!-- Loader отображается, когда isLoading равен true -->
+
+
   <PopUpModal :is-active="isPopUp" @close="togglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1>Stvar je kreirana uspešno!</h1>
@@ -8,13 +11,14 @@
     </div>
   </PopUpModal>
 
-  <div class="flex justify-center mt-2 items-center md:container flex-col">
+  <Loader v-if="isLoading" />
+
+  <div v-else class="flex justify-center mt-2 items-center md:container flex-col">
     <div class="flex flex-col w-full bg-st2 p-4 rounded-lg md:w-1/2">
       <h1 class="text-2xl font-bold mb-4">Izmeni stvar</h1>
 
       <div v-if="post">
         <form @submit.prevent="updatePost">
-
           <!-- Naslov -->
           <div class="mb-4">
             <label class="block font-semibold mb-1" for="name">Naslov</label>
@@ -171,6 +175,7 @@
           <button
               type="submit"
               class="bg-st4 mr-2 text-white py-2 px-4 rounded hover:bg-st3 transition duration-500"
+              :disabled="isLoading"
           >
             Sačuvaj
           </button>
@@ -190,17 +195,20 @@
 <script>
 import { fetchMyItem, updateItem } from "@/services/itemService";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
+import Loader from "@/components/UI/Loader.vue";
 import { cities } from "@/assets/cities.js";
+import { useAuthStore } from "@/stores/auth.js";
 
 export default {
   name: "EditItem",
-  components: { PopUpModal },
-
+  components: {PopUpModal, Loader},
   data() {
     return {
+      store: useAuthStore(),
       cities,
       id: Number(this.$route.params.id),
       isPopUp: false,
+      isLoading: false,
       post: null,
       formData: {
         title: "",
@@ -215,6 +223,7 @@ export default {
         street: null,
         city: null,
       },
+      imageError: null,
     };
   },
   computed: {
@@ -233,11 +242,18 @@ export default {
   },
   async created() {
     try {
-      const { data } = await fetchMyItem(this.id);
+      // Приказ Loader-а може бити додат ако имате дуго чекање приликом преузимања података.
+      this.isLoading = true;
+      const {data} = await fetchMyItem(this.id);
+      if (data.owner.id !== this.store.profile.id) {
+        this.$router.push(`/`);
+      }
       this.post = data;
       this.formData = this.mapPostToFormData(data);
     } catch (error) {
       console.error("Error fetching item:", error);
+    } finally {
+      this.isLoading = false;
     }
   },
   methods: {
@@ -245,20 +261,38 @@ export default {
       this.isPopUp = !this.isPopUp;
     },
     async handleFileUpload(event) {
+      const maxSize = 1.5 * 1024 * 1024;
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
       const files = Array.from(event.target.files);
       const remainingSlots = 5 - this.formData.images.length;
+      let validFiles = [];
 
-      files.slice(0, remainingSlots).forEach((file) => {
+      for (const file of files.slice(0, remainingSlots)) {
+        if (!allowedTypes.includes(file.type)) {
+          this.imageError = `Slika "${file.name}" nije podržana. Dozvoljeni formati: JPG, JPEG, PNG.`;
+          return;
+        }
+
+        if (file.size > maxSize) {
+          this.imageError = `Slika "${file.name}" je prevelika. Maksimalna veličina je 1.5MB.`;
+          return;
+        }
+
+        validFiles.push(file);
+      }
+
+      validFiles.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.formData.images.push({
             preview: e.target.result,
-            file: file, // Store the actual file object
+            file: file,
           });
         };
         reader.readAsDataURL(file);
       });
 
+      this.imageError = null;
       event.target.value = null;
     },
     removeImage(index) {
@@ -276,17 +310,21 @@ export default {
         isFree: post.pricePerDay === 0 || post.pricePerDay === null,
         available: post.available || false,
         maxPeriodDays: post.maxPeriodDays || 1,
-        images: post.images?.map((url) => ({ preview: url })) || [],
+        images: post.images?.map((url) => ({preview: url})) || [],
       };
     },
     async updatePost() {
+      // Показање Loader-а током ажурирања
+      this.isLoading = true;
       try {
         const formData = new FormData();
 
-        // Добавление других полей формы...
         formData.append("title", this.formData.title || "");
         formData.append("description", this.formData.description || "");
-        formData.append("pricePerDay", this.formData.isFree ? "0" : this.formData.pricePerDay || "");
+        formData.append(
+            "pricePerDay",
+            this.formData.isFree ? "0" : this.formData.pricePerDay || ""
+        );
         formData.append("available", this.formData.available ? "true" : "false");
         formData.append("maxPeriodDays", this.formData.maxPeriodDays || "1");
         formData.append("phone", this.formData.phone || "");
@@ -294,18 +332,15 @@ export default {
         formData.append("city", this.formData.city || "");
         formData.append("street", this.formData.street || "");
 
-        // Отправка новых файлов
         this.formData.images.forEach((image) => {
           if (image.file) {
             formData.append("image", image.file);
           }
         });
 
-        // Отправка списка существующих изображений, которые пользователь не удалил
-        // Предполагаем, что те элементы, у которых нет поля file, являются URL
         const existingImages = this.formData.images
-            .filter(img => !img.file)
-            .map(img => img.preview);
+            .filter((img) => !img.file)
+            .map((img) => img.preview);
         formData.append("existingImages", JSON.stringify(existingImages));
 
         const response = await updateItem(this.id, formData);
@@ -315,9 +350,10 @@ export default {
         }
       } catch (error) {
         console.error("Error updating item:", error);
+      } finally {
+        this.isLoading = false;
       }
-    }
-    ,
+    },
   },
 };
 </script>

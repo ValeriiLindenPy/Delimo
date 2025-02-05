@@ -1,15 +1,17 @@
-
-
 <template>
+  <Loader v-if="isLoading"/>
+
   <PopUpModal :is-active="isPopUp" @close="tooglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1>Strvar je kreirana uspesno!</h1>
-      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="tooglePopUp">Hvala!</button>
+      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="tooglePopUp">
+        Hvala!
+      </button>
     </div>
   </PopUpModal>
 
   <div class="flex justify-center mt-2 items-center md:container">
-    <div class="bg-st2 rounded-lg w-full md:w-1/2 p-4 text-center">
+    <div class="bg-st2 md:rounded-lg w-full md:w-1/2 p-4 text-center">
       <h1 class="text-2xl mb-4">Dodaj Zahtev</h1>
       <form @submit.prevent="submitForm" class="flex flex-col text-start space-y-4">
         <!-- Name -->
@@ -38,14 +40,13 @@
           ></textarea>
         </div>
 
-
         <!-- Price -->
         <div class="flex flex-col">
           <label for="price" class="text-sm font-medium text-st5">Cena</label>
           <div class="flex items-center gap-4">
             <input
                 id="price"
-                type="text"
+                type="number"
                 v-model="formData.pricePerDay"
                 :disabled="isFree"
                 class="w-full mt-1 p-2 border rounded-md text-st5"
@@ -90,7 +91,6 @@
         </div>
 
         <!-- Location -->
-
         <div>
           <label for="city" class="text-sm font-medium text-st5">Grad</label>
           <select
@@ -109,6 +109,7 @@
         <button
             type="submit"
             class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
+            :disabled="isLoading"
         >
           Dodaj stvar
         </button>
@@ -117,22 +118,23 @@
   </div>
 </template>
 
-
 <script>
 import {useAuthStore} from "@/stores/auth.js";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
-import { cities } from "@/assets/cities.js";
+import Loader from "@/components/UI/Loader.vue"; // Import Loader component
+import {cities} from "@/assets/cities.js";
 import {createRequest} from "@/services/requestService.js";
 
 export default {
   name: "AddRequest",
-  components: { PopUpModal },
+  components: {PopUpModal, Loader},
   data() {
     const store = useAuthStore();
     return {
       store,
       cities,
       isPopUp: false,
+      isLoading: false, // Flag for showing the Loader
       formData: {
         title: "",
         description: "",
@@ -160,6 +162,9 @@ export default {
     },
 
     async submitForm() {
+
+      this.isLoading = true;
+
       const formData = new FormData();
       formData.append("title", this.formData.title);
       formData.append("description", this.formData.description);
@@ -168,10 +173,10 @@ export default {
       formData.append("phone", this.formData.phone);
       formData.append("viber", this.formData.viber);
 
-
       try {
-        const response = await createRequest(formData);
+        await createRequest(formData);
 
+        this.isLoading = false;
         this.tooglePopUp();
         this.formData = {
           title: "",
@@ -184,9 +189,9 @@ export default {
         this.isFree = false;
       } catch (error) {
         console.error("Error:", error);
+        this.isLoading = false;
       }
     },
   },
 };
 </script>
-

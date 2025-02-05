@@ -54,6 +54,7 @@ export default {
         const res = await fetchRequest(itemId);
         item.value = res.data;
       } catch (error) {
+        this.$router.push('/server-error');
         console.error("Error fetching request data:", error);
       }
     });

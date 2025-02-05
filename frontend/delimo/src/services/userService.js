@@ -20,3 +20,20 @@ export const updateUserDetails = async (userId, userDetails) => {
     }
 };
 
+export const deleteUser = async (userId) => {
+    try {
+        return await apiClient.delete(
+            `/users/${userId}`,
+            {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+    } catch (error) {
+        console.error("Error updating user details:", error);
+        throw error;
+    }
+};
+

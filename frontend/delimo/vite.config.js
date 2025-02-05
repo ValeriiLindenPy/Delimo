@@ -9,10 +9,10 @@ export default defineConfig({
     vue(),
     // vueDevTools(),
   ],
-  // server: {
-  //   host: '192.168.0.18',
-  //   port: 5174,
-  // },
+  server: {
+    host: '192.168.0.18',
+    port: 5174,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

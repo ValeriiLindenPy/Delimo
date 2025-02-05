@@ -9,7 +9,7 @@
   </PopUpModal>
 
   <div class="flex justify-center mt-2 items-center md:container">
-    <div class="bg-st2 rounded-lg w-full md:w-1/2 p-4 text-center">
+    <div class="bg-st2 md:rounded-lg w-full md:w-1/2 p-4 text-center">
       <h1 class="text-2xl mb-4">Dodaj stvar</h1>
       <div v-if="loading" class="flex items-center justify-center h-svh">
         <Loader/>
@@ -61,11 +61,13 @@
           <div class="flex items-center gap-4">
             <input
                 id="price"
-                type="text"
+                type="number"
                 v-model="formData.pricePerDay"
                 :disabled="isFree"
                 class="w-full mt-1 p-2 border rounded-md text-st5"
                 placeholder="100.00 RSD"
+                min="0"
+                step="0.01"
                 required
             />
             <div class="flex items-center gap-1">
@@ -162,6 +164,9 @@
             </li>
           </ul>
         </div>
+        <div v-if="imageError" class="text-red-500">
+          {{imageError}}
+        </div>
 
         <!-- Submit button -->
         <button
@@ -191,6 +196,7 @@ export default {
   data() {
     const store = useAuthStore();
     return {
+      imageError: null,
       itemId: null,
       loading: false,
       router,
@@ -225,12 +231,32 @@ export default {
       this.isPopUp = !this.isPopUp;
     },
     handleFileUpload(event) {
+      const maxSize = 1.5 * 1024 * 1024; // 2MB
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
       const files = Array.from(event.target.files);
-      if (this.uploadedFiles.length + files.length > 5) {
-        alert("Možete dodati najviše 5 fotografija.");
+      let validFiles = [];
+
+      for (const file of files) {
+        if (!allowedTypes.includes(file.type)) {
+          this.imageError = `Slika "${file.name}" nije podržana. Dozvoljeni formati: JPG, JPEG, PNG.`;
+          return;
+        }
+
+        if (file.size > maxSize) {
+          this.imageError = `Slika "${file.name}" je prevelika. Maksimalna veličina je 1.5MB.`;
+          return;
+        }
+
+        validFiles.push(file);
+      }
+
+      if (this.uploadedFiles.length + validFiles.length > 5) {
+        this.imageError = "Možete dodati najviše 5 fotografija.";
         return;
       }
-      this.uploadedFiles = [...this.uploadedFiles, ...files];
+
+      this.uploadedFiles = [...this.uploadedFiles, ...validFiles];
+      this.imageError = null;
     },
     goItem() {
       this.tooglePopUp();

@@ -117,6 +117,7 @@ export default {
       this.isPopUp = !this.isPopUp;
     },
     onEdit() {
+      console.log("Edit", this.post.id);
       this.$router.push(`/items/${this.post.id}/edit`);
     },
     goItem() {

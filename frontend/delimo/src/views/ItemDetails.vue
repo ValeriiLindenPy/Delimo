@@ -70,8 +70,13 @@ export default {
     const route = useRoute()
     const itemId = Number(route.params.id)
 
-    this.item = (await getItem(itemId)).data
-    console.log(this.item);
+    try {
+      this.item = (await getItem(itemId)).data
+    } catch (error) {
+      console.error(error);
+      this.$router.push('/server-error')
+    }
+
   },
 }
 </script>
