@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center mb-2 bg-white p-4 rounded-lg">
+  <div class="flex items-center mb-2 bg-white p-4 md:rounded-lg">
             <span
                 class="bg-st2 text-st3 text-sm font-bold px-3 py-3 rounded md:text-md whitespace-nowrap"
             >

@@ -1,9 +1,17 @@
 <template>
-  <div class="container flex justify-center">
-    <div class="pt-6 flex flex-col w-full md:w-2/3">
-      <!--Images and contacts-->
+  <div class="md:container flex justify-center items-center mt-16">
+    <div class="flex flex-col w-full md:w-2/3">
       <div class="flex flex-col justify-center">
         <!-- Only show if `item` is loaded -->
+        <NameUI v-if="item" :name="item.title" />
+        <PriceUI v-if="item" :price="item.pricePerDay" />
+      </div>
+
+      <!-- INFO -->
+      <div>
+        <DescriptionUI v-if="item" :description="item.description" />
+        <AddressUI v-if="item" :address="address" />
+        <MaxPeriodUI v-if="item" :is-request="true" :max-period-days="item.maxPeriodDays" />
         <ContactsUI
             v-if="item"
             :name="item.title"
@@ -11,15 +19,10 @@
             :viber="item.requester.viber"
         />
       </div>
-
-      <!-- INFO -->
-      <div>
-        <NameUI v-if="item" :name="item.title" />
-        <DescriptionUI v-if="item" :description="item.description" />
-        <PriceUI v-if="item" :price="item.pricePerDay" />
-        <AddressUI v-if="item" :address="address" />
-      </div>
     </div>
+
+    <!--Images and contacts-->
+
   </div>
 </template>
 
@@ -34,10 +37,13 @@ import AddressUI from "@/components/UI/AddressUI.vue";
 import ContactsUI from "@/components/UI/ContactsUI.vue";
 import DescriptionUI from "@/components/UI/DescriptionUI.vue";
 import PriceUI from "@/components/UI/PriceUI.vue";
+import MaxPeriodUI from "@/components/UI/MaxPeriodUI.vue";
+
 
 export default {
   name: "RequestDetails",
   components: {
+    MaxPeriodUI,
     DescriptionUI,
     NameUI,
     AddressUI,

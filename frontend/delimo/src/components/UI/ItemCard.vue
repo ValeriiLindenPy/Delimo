@@ -23,7 +23,7 @@
 
         <div class="flex flex-col gap-2">
           <span
-              class="bg-st2 text-st3 text-sm font-bold px-3 py-1 rounded md:text-md whitespace-nowrap"
+              class="bg-st2 text-st3 text-center text-sm font-bold px-3 py-1 rounded md:text-md whitespace-nowrap"
           >
           {{ post.maxPeriodDays }} dan(a)
         </span>

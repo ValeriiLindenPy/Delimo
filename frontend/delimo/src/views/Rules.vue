@@ -9,7 +9,7 @@
     <!-- FAQ Content -->
     <div class="mt-6">
       <!-- Navigation Tabs -->
-      <div class="flex justify-center space-x-4 mb-6">
+      <div class="flex justify-center space-x-4 mb-6 text-xs sm:text-sm md:text-xl">
         <button
             class="px-4 py-2 rounded-md bg-indigo-500 text-white font-bold hover:bg-indigo-600 focus:ring focus:ring-indigo-300"
             @click="scrollToSection('about')"
@@ -22,16 +22,16 @@
         >
           Kako funkcioniše
         </button>
-        <button
+        <a
             class="px-4 py-2 rounded-md bg-indigo-500 text-white font-bold hover:bg-indigo-600 focus:ring focus:ring-indigo-300"
-            @click="scrollToSection('contact')"
+            href="#contact"
         >
           Kontakt
-        </button>
+        </a>
       </div>
 
       <!-- Sections -->
-      <section id="about" class="bg-white rounded-lg p-6 shadow-md mb-6">
+      <section id="about" class="bg-white rounded-lg p-6 shadow-md mb-6 scroll-mt-36">
         <h2 class="font-bold text-2xl mb-3">O nama</h2>
         <div class="relative">
           <img
@@ -58,7 +58,7 @@
       </section>
 
 
-      <section id="how-it-works" class="bg-white rounded-lg p-6 shadow-md mb-6">
+      <section id="how-it-works" class="bg-white rounded-lg p-6 shadow-md mb-6 scroll-mt-36">
         <h2 class="font-bold text-2xl mb-3">Kako funkcioniše</h2>
         <div class="flex flex-wrap">
           <div class="w-full md:w-1/2">
@@ -128,7 +128,7 @@
 
 
 
-      <section id="contact" class="bg-white rounded-lg p-6 shadow-md mb-6">
+      <section class="bg-white rounded-lg p-6 shadow-md mb-6 scroll-mt-36">
         <h2 class="font-bold text-2xl mb-3">Kontakt</h2>
         <p class="text-gray-700 leading-relaxed">
           Ako imate dodatnih pitanja, slobodno nas kontaktirajte putem emaila:
@@ -144,7 +144,7 @@
           <a href="https://www.instagram.com/delimo.rs/" target="_blank" class="text-indigo-500 hover:text-indigo-700">
             <i class="fab fa-instagram fa-2x"></i>
           </a>
-          <a href="https://t.me/DelimoApp" target="_blank" class="text-indigo-500 hover:text-indigo-700">
+          <a id="contact" href="https://t.me/DelimoApp" target="_blank" class="text-indigo-500 hover:text-indigo-700">
             <i class="fab fa-telegram fa-2x"></i>
           </a>
         </div>
@@ -158,9 +158,15 @@
 export default {
   methods: {
     scrollToSection(id) {
-      const section = document.getElementById(id);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
+      const ref = document.getElementById(id);
+      if (ref) {
+        // Небольшая задержка позволяет элементу полностью отрендериться и рассчитать свои размеры
+        setTimeout(() => {
+          ref.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }, 100);
       }
     },
   },

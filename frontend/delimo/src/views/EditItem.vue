@@ -40,6 +40,19 @@
             ></textarea>
           </div>
 
+          <div>
+            <label for="maxDays" class="text-sm font-medium text-st5">Maksimalni period (dani)</label>
+            <input
+                id="maxDays"
+                type="number"
+                v-model="formData.maxPeriodDays"
+                class="w-full mt-1 p-2 border rounded-md text-st4"
+                min="1"
+                placeholder="Unesite maksimalni broj dana"
+                required
+            />
+          </div>
+
           <!-- Cena -->
           <div class="flex flex-col mb-4">
             <label for="price" class="text-sm font-medium text-st5">Cena</label>

@@ -1,7 +1,10 @@
 <template>
-  <div class="flex p-2 flex-col text-center items-center justify-center bg-st2 rounded-lg">
-    <button @click="showModal('phone')" class="p-2 mb-2 bg-green-400 rounded-lg">Telefone {{ maskedTelephone }} Prikaži</button>
-    <button v-if="viber" @click="showModal('viber')" class="p-2 bg-viber rounded-lg text-white">Viber {{ maskedViber }} Prikaži</button>
+  <div class="flex p-2 flex-col text-center items-center justify-center bg-st2 md:rounded-lg">
+    <div class="flex flex-col items-center justify-center">
+      <button @click="showModal('phone')" class="p-2 bg-green-400 rounded-lg">Telefone {{ maskedTelephone }} Prikaži</button>
+      <button v-if="viber" @click="showModal('viber')" class="p-2 mt-2 bg-viber rounded-lg text-white">Viber {{ maskedViber }} Prikaži</button>
+    </div>
+
 
     <ModalContacts v-if="modalVisible" @close="modalVisible = false">
       <template #content>
