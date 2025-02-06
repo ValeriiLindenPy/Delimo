@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rs.delimo.error.exception.DublicatingEmailException;
+import rs.delimo.error.exception.DuplicatingEmailException;
 import rs.delimo.error.exception.NotFoundException;
 import rs.delimo.item.ItemRepository;
 import rs.delimo.request.RequestRepository;
@@ -15,14 +15,30 @@ import rs.delimo.user.UserRepository;
 import rs.delimo.user.UserService;
 import rs.delimo.user.dto.UserDto;
 
+/**
+ * Implementation of the {@link rs.delimo.user.UserService} interface providing user-related operations.
+ * <p>
+ * This service is responsible for fetching, editing, and deleting users as well as loading users by username.
+ * It uses {@link UserRepository} for user persistence, {@link ItemRepository} for managing user-owned items,
+ * and {@link RequestRepository} for handling user-related requests.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final RequestRepository requestRepository;
 
+    /**
+     * Retrieves a {@link UserDto} by the given user id.
+     *
+     * @param id the unique identifier of the user.
+     * @return the {@link UserDto} corresponding to the given id.
+     * @throws NotFoundException if no user is found with the provided id.
+     */
     @Override
     public UserDto getById(Long id) {
         log.info("Fetching user by id: {}", id);
@@ -36,6 +52,15 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
+    /**
+     * Edits an existing user's information based on the provided {@link UserDto}.
+     *
+     * @param id      the unique identifier of the user to edit.
+     * @param userDto the data transfer object containing the new user details.
+     * @return the updated {@link UserDto} after saving the changes.
+     * @throws NotFoundException        if no user is found with the provided id.
+     * @throws DuplicatingEmailException if the new email already exists for another user.
+     */
     @Override
     @Transactional
     public UserDto editById(Long id, UserDto userDto) {
@@ -52,7 +77,7 @@ public class UserServiceImpl implements UserService {
             log.debug("Attempting to update email from '{}' to '{}'", oldUser.getEmail(), userDto.getEmail());
             if (userRepository.existsByEmail(userDto.getEmail())) {
                 log.info("Email '{}' already exists", userDto.getEmail());
-                throw new DublicatingEmailException("User with email '%s' already exists".formatted(userDto.getEmail()));
+                throw new DuplicatingEmailException("User with email '%s' already exists".formatted(userDto.getEmail()));
             }
             oldUser.setEmail(userDto.getEmail());
         }
@@ -87,19 +112,12 @@ public class UserServiceImpl implements UserService {
         return updatedUserDto;
     }
 
-    @Override
-    public UserDto create(UserDto userDto) {
-        log.info("Creating a new user with email: {}", userDto.getEmail());
-        if (!isDistinctEmail(userDto.getEmail())) {
-            log.error("User with email {} already exists", userDto.getEmail());
-            throw new DublicatingEmailException("User with email - %s is already exist".formatted(userDto.getEmail()));
-        }
-        User newUser = UserMapper.toUser(userDto);
-        User savedUser = userRepository.save(newUser);
-        log.info("User created successfully with id: {}", savedUser.getId());
-        return UserMapper.toUserDto(savedUser);
-    }
-
+    /**
+     * Deletes a user by the provided user id. This operation also removes associated items and requests.
+     *
+     * @param userId the unique identifier of the user to be deleted.
+     * @throws NotFoundException if no user is found with the provided id.
+     */
     @Override
     @Transactional
     public void deleteById(Long userId) {
@@ -117,6 +135,13 @@ public class UserServiceImpl implements UserService {
         log.info("User with id {} deleted successfully", userId);
     }
 
+    /**
+     * Retrieves a {@link UserDto} for an authenticated user.
+     *
+     * @param user the authenticated {@link User} object.
+     * @return the {@link UserDto} corresponding to the authenticated user.
+     * @throws NotFoundException if the authenticated user cannot be found in the repository.
+     */
     @Override
     public UserDto getByUserAuth(User user) {
         log.info("Fetching authenticated user by email: {}", user.getEmail());
@@ -129,12 +154,13 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    private boolean isDistinctEmail(String email) {
-        boolean distinct = !userRepository.existsByEmail(email);
-        log.debug("Email '{}' distinct: {}", email, distinct);
-        return distinct;
-    }
-
+    /**
+     * Loads a {@link User} based on the provided username (email).
+     *
+     * @param username the email of the user to be loaded.
+     * @return the {@link User} associated with the given username.
+     * @throws UsernameNotFoundException if no user is found with the provided email.
+     */
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Loading user by username (email): {}", username);

@@ -30,16 +30,8 @@ public class UserController {
         return userService.editById(id, userDto);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@Validated(ValidationMarker.OnCreate.class)
-                              @RequestBody UserDto userDto) {
-        return userService.create(userDto);
-    }
-
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
          userService.deleteById(id);
     }
-
 }

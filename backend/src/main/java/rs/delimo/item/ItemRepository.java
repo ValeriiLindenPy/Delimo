@@ -17,7 +17,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     void deleteByOwner(User owner);
 
-    @Query("select it from Item it where it.owner = ?1")
+    @Query("select it from Item it where it.owner.id = ?1")
     List<Item> findByUserId(Long userId);
 
     @Query("SELECT i FROM Item i LEFT JOIN FETCH i.images WHERE i.id = :itemId")
@@ -43,14 +43,13 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             " or upper(i.description) like upper(concat('%', :text, '%'))")
     Page<Item> search(Pageable pageable, @Param("text") String text);
 
-    @Query("SELECT i FROM Item i " +
+    @Query("SELECT DISTINCT i FROM Item i " +
             "LEFT JOIN FETCH i.images " +
             "JOIN i.owner o " +
             "WHERE (:city IS NULL OR o.city = :city) " +
             "AND (upper(i.title) LIKE upper(concat('%', :text, '%')) " +
             "OR upper(i.description) LIKE upper(concat('%', :text, '%')))")
     Page<Item> searchWithCity(@Param("city") String city, @Param("text") String text, Pageable pageable);
-
 
     List<Item> findByTitleContainingIgnoreCase(String q, Pageable pageable);
 

@@ -41,6 +41,7 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
     @Value("${app.frontend-url}")
     private String frontendUrl;
 
@@ -68,7 +69,7 @@ public class SecurityConfig {
                 })
 
                 .oauth2Login(oauth2 ->
-                        oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(CustomOAuth2UserService()))
+                        oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOAuth2UserService))
                                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 )
 
@@ -98,11 +99,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    public OAuth2UserService<OidcUserRequest, OidcUser> CustomOAuth2UserService() {
-        return new CustomOAuth2UserService(userRepository);
     }
 
     @Bean

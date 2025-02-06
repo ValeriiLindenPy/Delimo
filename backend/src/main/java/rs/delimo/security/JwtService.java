@@ -44,7 +44,6 @@ public class JwtService {
                 .compact();
     }
 
-
     /**
      * Generates a short-lived JWT specifically for email verification.
      */
@@ -73,7 +72,6 @@ public class JwtService {
                 .signWith(secretKey)
                 .compact();
     }
-
 
     public Claims getDataFromToken(String token) {
         return Jwts.parser()
