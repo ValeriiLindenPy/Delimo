@@ -167,6 +167,19 @@ public class ItemServiceImpl implements ItemService {
             oldItem.setAvailable(item.getAvailable());
         }
 
+        if (item.getAvailable() != null && !item.getAvailable().equals(oldItem.getAvailable())) {
+            log.debug("Updating availability from '{}' to '{}'", oldItem.getAvailable(), item.getAvailable());
+            oldItem.setAvailable(item.getAvailable());
+        }
+
+        if (item.getPricePerDay() != null && !item.getPricePerDay().equals(oldItem.getPricePerDay())) {
+            oldItem.setPricePerDay(item.getPricePerDay());
+        }
+
+        if (item.getMaxPeriodDays() != null && !item.getMaxPeriodDays().equals(oldItem.getMaxPeriodDays())) {
+            oldItem.setMaxPeriodDays(item.getMaxPeriodDays());
+        }
+
         ItemDto updatedItem = ItemMapper.toItemDto(itemRepository.save(oldItem));
         log.info("Item with id {} updated successfully", itemId);
         return updatedItem;

@@ -28,6 +28,9 @@ public class ItemRequest {
     @Column(nullable = false)
     private Integer pricePerDay;
 
+    @Column(nullable = false)
+    private Integer maxPeriodDays;
+
     @ManyToOne
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester;

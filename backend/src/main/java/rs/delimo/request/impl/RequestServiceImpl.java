@@ -91,14 +91,10 @@ public class RequestServiceImpl implements RequestService {
 
         updateUserContactInfo(request, requester);
 
-        //todo
-//        if (!requester.getConfirmed()) {
-//            throw new ConfirmationException("Please confirm email");
-//        }
-
         ItemRequest itemRequest = ItemRequest.builder()
                 .description(request.getDescription())
                 .title(request.getTitle())
+                .maxPeriodDays(request.getMaxPeriodDays())
                 .pricePerDay(request.getPricePerDay())
                 .requester(requester)
                 .build();
@@ -130,6 +126,9 @@ public class RequestServiceImpl implements RequestService {
         }
         if (request.getPricePerDay() != null && !request.getPricePerDay().equals(OldItemRequest.getPricePerDay())) {
             OldItemRequest.setPricePerDay(request.getPricePerDay());
+        }
+        if (request.getMaxPeriodDays() != null && !request.getMaxPeriodDays().equals(OldItemRequest.getMaxPeriodDays())) {
+            OldItemRequest.setMaxPeriodDays(request.getMaxPeriodDays());
         }
 
         return RequestMapper.toOutputDto(requestRepository.save(OldItemRequest));
