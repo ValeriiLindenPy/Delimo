@@ -10,16 +10,12 @@
       <div class="flex">
         <ul class="flex-col">
           <li class="flex gap-2 items-center mb-2">
-            <i class="fa-regular fa-paper-plane text-st3"></i>
-            <span>@delimoservice</span>
+            <i class="fab fa-telegram fa-lg text-st3"></i>
+            <span>t.me/DelimoApp</span>
           </li>
           <li class="flex gap-2 items-center mb-2">
-            <i class="fa-solid fa-at text-st3"></i>
-            <span>delimoservice@gmail.com</span>
-          </li>
-          <li class="flex gap-2 items-center mb-2">
-            <i class="fa-solid fa-phone text-st3"></i>
-            <span>+381621110623</span>
+            <i class="fa-solid fa-envelope fa-lg text-st3"></i>
+            <span>info@delimo.rs</span>
           </li>
         </ul>
       </div>
@@ -93,7 +89,7 @@
           <Loader v-if="isSubmitting" />
 
           <!-- Success/Error Message -->
-          <p v-if="message" :class="messageType === 'error' ? 'text-red-500' : 'text-green-500'">
+          <p v-if="message && messageType === 'error'" class="text-red-500">
             {{ message }}
           </p>
 

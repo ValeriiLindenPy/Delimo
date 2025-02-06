@@ -25,16 +25,12 @@
       <h1 class="text-center font-bold text-2xl mb-2">Podrška</h1>
       <ul class="flex-col">
         <li class="flex gap-2 items-center mb-2">
-          <i class="fa-regular fa-paper-plane text-st3"></i>
-          <span>@delimoservice</span>
+          <i class="fab fa-telegram fa-lg text-st3"></i>
+          <span>t.me/DelimoApp</span>
         </li>
         <li class="flex gap-2 items-center mb-2">
-          <i class="fa-solid fa-at text-st3"></i>
-          <span>delimoservice@gmail.com</span>
-        </li>
-        <li class="flex gap-2 items-center mb-2">
-          <i class="fa-solid fa-phone text-st3"></i>
-          <span>+381621110623</span>
+          <i class="fa-solid fa-envelope fa-lg text-st3"></i>
+          <span>info@delimo.rs</span>
         </li>
       </ul>
       <button @click="goFeedback" class="p-4 rounded-lg mt-4 bg-st4 text-white hover:bg-st3 hover:text-black transition-colors duration-500">Pomoć i kontakt</button>

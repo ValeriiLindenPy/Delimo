@@ -7,7 +7,7 @@
     >
       <i class="fa-solid fa-chevron-left text-white"></i>
     </button>
-    <span class="text-2xl text-white font-bold">Strana {{ currentPage + 1 }} od {{ totalPages }}</span>
+    <span class="text-lg text-white font-bold">Strana {{ currentPage + 1 }} od {{ totalPages }}</span>
     <button
         @click="changePage(currentPage + 1)"
         :disabled="currentPage === totalPages - 1"

@@ -20,11 +20,11 @@
       </div>
     </PopUpModal>
 
-    <div class="bg-white md:rounded-md shadow-sm p-6 text-xl font-sans">
+    <div class="bg-white md:rounded-md shadow-sm p-6 text-lg font-sans">
       <div class="flex justify-between items-center mb-5">
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center">
           <i class="fa-regular fa-user text-st3 font-extrabold"></i>
-          <p class="font-extrabold">Подешавања налога</p>
+          <p class="font-extrabold">Podešavanje naloga</p>
         </div>
 
         <p class="text-base text-red-500 font-light cursor-pointer" @click="togglePopUp">
@@ -40,11 +40,11 @@
       <p v-if="user.street" class="mb-2 border-b-2 border-solid pb-1">Ulica: <b>{{ user.street }}</b></p>
 
       <div class="flex justify-center gap-3">
-        <button @click="goEdit" class="p-3 mt-5 bg-st4 hover:bg-st3 transition-colors duration-500 text-white rounded-lg">
+        <button @click="goEdit" class="p-2 text-sm mt-5 bg-st4 hover:bg-st3 transition-colors duration-500 text-white rounded-lg">
           Izmena ličnih podataka
         </button>
 
-        <button @click="goReset" class="p-2 mt-5 bg-red-500 hover:bg-black transition-colors duration-500 text-white rounded-lg">
+        <button @click="goReset" class="p-2 text-sm mt-5 bg-red-500 hover:bg-black transition-colors duration-500 text-white rounded-lg">
           Promeni lozinku
         </button>
       </div>

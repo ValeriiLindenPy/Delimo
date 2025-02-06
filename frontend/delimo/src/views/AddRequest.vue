@@ -40,6 +40,20 @@
           ></textarea>
         </div>
 
+        <!-- Max rent period -->
+        <div>
+          <label for="maxDays" class="text-sm font-medium text-st5">Maksimalni period (dani)</label>
+          <input
+              id="maxDays"
+              type="number"
+              v-model="formData.maxPeriodDays"
+              class="w-full mt-1 p-2 border rounded-md text-st4"
+              min="1"
+              placeholder="Unesite maksimalni broj dana"
+              required
+          />
+        </div>
+
         <!-- Price -->
         <div class="flex flex-col">
           <label for="price" class="text-sm font-medium text-st5">Cena</label>
@@ -111,7 +125,7 @@
             class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
             :disabled="isLoading"
         >
-          Dodaj stvar
+          Dodaj zahtev
         </button>
       </form>
     </div>
@@ -136,6 +150,7 @@ export default {
       isPopUp: false,
       isLoading: false, // Flag for showing the Loader
       formData: {
+        maxPeriodDays: null,
         title: "",
         description: "",
         city: "",
@@ -169,6 +184,7 @@ export default {
       formData.append("title", this.formData.title);
       formData.append("description", this.formData.description);
       formData.append("city", this.formData.city);
+      formData.append("maxPeriodDays", this.formData.maxPeriodDays);
       formData.append("pricePerDay", this.isFree ? 0 : this.formData.pricePerDay);
       formData.append("phone", this.formData.phone);
       formData.append("viber", this.formData.viber);

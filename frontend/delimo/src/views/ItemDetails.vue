@@ -1,27 +1,28 @@
 <template>
-  <div class="container">
+  <div class="md:container">
     <div class="grid grid-cols-1 pt-6 md:grid-cols-2 gap-1">
       <!-- Images and contacts -->
       <div class="flex flex-col justify-center">
-        <div class="images-carousel mb-2">
+        <div class="images-carousel m-3">
           <Carousel v-if="item" :images="item.images" :defaultImage="defaultImage" />
         </div>
+        <NameUI v-if="item" :name="item.title" />
+        <PriceUI v-if="item" :price="item.pricePerDay" />
+      </div>
+
+      <!-- Info -->
+      <div>
+
+        <DescriptionUI v-if="item" :description="item.description" />
+        <AvailableUI v-if="item" :available="item.available" />
+        <MaxPeriodUI v-if="item" :max-period-days="item.maxPeriodDays" />
+        <AddressUI v-if="item" :address="getAddress" />
         <ContactsUI
             v-if="item && item.available"
             :name="item.title"
             :telephone="item.owner?.phone"
             :viber="item.owner?.viber"
         />
-      </div>
-
-      <!-- Info -->
-      <div>
-        <NameUI v-if="item" :name="item.title" />
-        <DescriptionUI v-if="item" :description="item.description" />
-        <AvailableUI v-if="item" :available="item.available" />
-        <PriceUI v-if="item" :price="item.pricePerDay" />
-        <MaxPeriodUI v-if="item" :max-period-days="item.maxPeriodDays" />
-        <AddressUI v-if="item" :address="getAddress" />
       </div>
     </div>
   </div>
