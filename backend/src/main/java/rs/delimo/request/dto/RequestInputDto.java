@@ -14,6 +14,8 @@ public class RequestInputDto {
     private String description;
     @NotNull(groups = ValidationMarker.OnCreate.class, message = "Price shouldn't be null")
     private Integer pricePerDay;
+    @NotNull(groups = ValidationMarker.OnCreate.class, message = "Period shouldn't be null")
+    private Integer maxPeriodDays;
     @NotBlank(groups = ValidationMarker.OnCreate.class, message = "City shouldn't be blank")
     private String city;
     @NotBlank(groups = ValidationMarker.OnCreate.class, message = "Phone shouldn't be blank")

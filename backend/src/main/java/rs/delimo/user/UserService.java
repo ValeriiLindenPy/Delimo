@@ -8,8 +8,6 @@ public interface UserService extends UserDetailsService {
 
     UserDto editById(Long id, UserDto userDto);
 
-    UserDto create(UserDto userDto);
-
     void deleteById(Long id);
 
     UserDto getByUserAuth(User user);

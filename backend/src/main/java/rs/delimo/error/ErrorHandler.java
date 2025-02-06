@@ -2,7 +2,7 @@ package rs.delimo.error;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import rs.delimo.error.exception.DublicatingEmailException;
+import rs.delimo.error.exception.DuplicatingEmailException;
 import rs.delimo.error.exception.ImageUploadException;
 import rs.delimo.error.exception.NotFoundException;
 import rs.delimo.error.exception.OwnerException;
@@ -27,7 +27,7 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler(DublicatingEmailException.class)
+    @ExceptionHandler(DuplicatingEmailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDublicatingEmailException(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());

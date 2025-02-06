@@ -1,11 +1,8 @@
 package rs.delimo.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import rs.delimo.error.ValidationMarker;
 import rs.delimo.user.dto.UserDto;
 
 
@@ -30,16 +27,8 @@ public class UserController {
         return userService.editById(id, userDto);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@Validated(ValidationMarker.OnCreate.class)
-                              @RequestBody UserDto userDto) {
-        return userService.create(userDto);
-    }
-
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
          userService.deleteById(id);
     }
-
 }

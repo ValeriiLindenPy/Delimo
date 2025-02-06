@@ -19,7 +19,10 @@ public class RequestOutputDto {
 
     private Integer pricePerDay;
 
+    private Integer maxPeriodDays;
+
     private UserDto requester;
+
     @JsonFormat(pattern = "dd-MM-yyyy | HH:mm")
     private LocalDateTime created;
 

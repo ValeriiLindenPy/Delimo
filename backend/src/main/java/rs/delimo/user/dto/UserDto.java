@@ -1,8 +1,8 @@
 package rs.delimo.user.dto;
 
-
 import lombok.Builder;
 import lombok.Data;
+
 
 
 @Data

@@ -24,15 +24,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Implementation of the {@link ItemService} interface.
+ * <p>
+ * This service provides methods to manage items, including creating, updating,
+ * deleting, and searching for items. It also handles image uploads and updates
+ * the owner's contact information if necessary.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ItemServiceImpl implements ItemService {
+
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final ImageManager imageManager;
     private final ObjectMapper objectMapper;
 
+    /**
+     * Retrieves a paginated list of all items.
+     *
+     * @param page the page number (zero-based)
+     * @param size the number of items per page
+     * @return a {@link Page} of {@link ItemDto} objects
+     */
     @Override
     public Page<ItemDto> getAll(int page, int size) {
         log.info("Fetching all items: page={}, size={}", page, size);
@@ -42,6 +58,14 @@ public class ItemServiceImpl implements ItemService {
         return itemsPage.map(ItemMapper::toItemDto);
     }
 
+    /**
+     * Retrieves a paginated list of items filtered by city.
+     *
+     * @param city the city to filter items by; if null or blank, all items are returned
+     * @param page the page number (zero-based)
+     * @param size the number of items per page
+     * @return a {@link Page} of {@link ItemDto} objects filtered by the specified city
+     */
     @Override
     public Page<ItemDto> getAll(String city, int page, int size) {
         log.info("Fetching items for city: '{}' - page={}, size={}", city, page, size);
@@ -59,6 +83,15 @@ public class ItemServiceImpl implements ItemService {
         return itemsPage.map(ItemMapper::toItemDto);
     }
 
+    /**
+     * Retrieves a paginated list of items owned by the specified user.
+     *
+     * @param page the page number (zero-based)
+     * @param size the number of items per page
+     * @param user the owner whose items will be retrieved
+     * @return a {@link Page} of {@link ItemDto} objects owned by the specified user
+     * @throws NotFoundException if the user is not found
+     */
     @Override
     public Page<ItemDto> getAllByOwner(int page, int size, User user) {
         log.info("Fetching items for owner: {} - page={}, size={}", user.getEmail(), page, size);
@@ -73,6 +106,13 @@ public class ItemServiceImpl implements ItemService {
         return itemsPage.map(ItemMapper::toItemDto);
     }
 
+    /**
+     * Retrieves an item by its ID.
+     *
+     * @param itemId the ID of the item to retrieve
+     * @return the {@link ItemDto} for the specified item
+     * @throws NotFoundException if no item with the given ID is found
+     */
     @Override
     @Transactional(readOnly = true)
     public ItemDto getById(Long itemId) {
@@ -87,6 +127,14 @@ public class ItemServiceImpl implements ItemService {
         return itemDto;
     }
 
+    /**
+     * Retrieves an item by its ID for a specific user.
+     *
+     * @param id   the ID of the item to retrieve
+     * @param user the user who owns the item
+     * @return the {@link ItemDto} for the specified item owned by the user
+     * @throws NotFoundException if the user or item is not found
+     */
     @Override
     public ItemDto getByUserAndId(Long id, User user) {
         log.info("Fetching item with id: {} for user: {}", id, user.getEmail());
@@ -105,6 +153,22 @@ public class ItemServiceImpl implements ItemService {
         return itemDto;
     }
 
+    /**
+     * Edits an existing item.
+     * <p>
+     * The method updates the item details, uploads new images, merges them with
+     * existing images, and updates the owner's contact information if necessary.
+     * </p>
+     *
+     * @param itemId             the ID of the item to be updated
+     * @param item               the updated item data as {@link ItemRequestDto}
+     * @param user               the user attempting the update
+     * @param images             the new images to be uploaded for the item
+     * @param existingImagesJson a JSON string representing the list of existing image URLs
+     * @return the updated {@link ItemDto}
+     * @throws NotFoundException if the user or item is not found
+     * @throws OwnerException    if the item does not belong to the user
+     */
     @Override
     @Transactional
     public ItemDto editOne(Long itemId, ItemRequestDto item, User user, List<MultipartFile> images, String existingImagesJson) {
@@ -126,10 +190,8 @@ public class ItemServiceImpl implements ItemService {
                     .formatted(itemId, owner.getId()));
         }
 
-        // Update owner's contact info if necessary
         updateUserContactInfo(item, owner);
 
-        // Process existing images JSON
         List<String> existingImageUrls = new ArrayList<>();
         if (existingImagesJson != null && !existingImagesJson.isBlank()) {
             try {
@@ -140,11 +202,9 @@ public class ItemServiceImpl implements ItemService {
             }
         }
 
-        // Upload new images
         List<String> newImageUrls = imageManager.uploadImages(images);
         log.info("Uploaded {} new images", newImageUrls.size());
 
-        // Combine existing and new image URLs
         List<String> combinedImageUrls = new ArrayList<>(existingImageUrls);
         combinedImageUrls.addAll(newImageUrls);
         log.debug("Combined image URLs: {}", combinedImageUrls);
@@ -153,7 +213,6 @@ public class ItemServiceImpl implements ItemService {
             oldItem.setImages(combinedImageUrls);
         }
 
-        // Update fields if provided
         if (item.getTitle() != null && !item.getTitle().equals(oldItem.getTitle())) {
             log.debug("Updating title from '{}' to '{}'", oldItem.getTitle(), item.getTitle());
             oldItem.setTitle(item.getTitle());
@@ -162,9 +221,18 @@ public class ItemServiceImpl implements ItemService {
             log.debug("Updating description");
             oldItem.setDescription(item.getDescription());
         }
+
         if (item.getAvailable() != null && !item.getAvailable().equals(oldItem.getAvailable())) {
             log.debug("Updating availability from '{}' to '{}'", oldItem.getAvailable(), item.getAvailable());
             oldItem.setAvailable(item.getAvailable());
+        }
+
+        if (item.getPricePerDay() != null && !item.getPricePerDay().equals(oldItem.getPricePerDay())) {
+            oldItem.setPricePerDay(item.getPricePerDay());
+        }
+
+        if (item.getMaxPeriodDays() != null && !item.getMaxPeriodDays().equals(oldItem.getMaxPeriodDays())) {
+            oldItem.setMaxPeriodDays(item.getMaxPeriodDays());
         }
 
         ItemDto updatedItem = ItemMapper.toItemDto(itemRepository.save(oldItem));
@@ -172,6 +240,14 @@ public class ItemServiceImpl implements ItemService {
         return updatedItem;
     }
 
+    /**
+     * Deletes an item.
+     *
+     * @param itemId the ID of the item to delete
+     * @param user   the user requesting deletion
+     * @throws NotFoundException if the user or item is not found
+     * @throws OwnerException    if the item does not belong to the user
+     */
     @Override
     @Transactional
     public void delete(Long itemId, User user) {
@@ -197,6 +273,13 @@ public class ItemServiceImpl implements ItemService {
         log.info("Item with id {} deleted successfully", itemId);
     }
 
+    /**
+     * Searches for item titles containing the specified query text.
+     *
+     * @param q     the query string to search for within item titles
+     * @param limit the maximum number of titles to return
+     * @return a list of {@link ItemTitle} objects that match the query
+     */
     @Override
     public List<ItemTitle> searchTitles(String q, int limit) {
         log.info("Searching for item titles with query '{}' and limit {}", q, limit);
@@ -206,6 +289,15 @@ public class ItemServiceImpl implements ItemService {
         return items.stream().map(ItemMapper::toItemTitle).toList();
     }
 
+    /**
+     * Searches for items by text and optionally by city.
+     *
+     * @param text     the search text to match against item fields
+     * @param page     the page number (zero-based)
+     * @param pageSize the number of items per page
+     * @param city     the city to filter the search by; if null or blank, the search is not city-specific
+     * @return a {@link Page} of {@link ItemDto} objects matching the search criteria
+     */
     @Override
     public Page<ItemDto> searchByText(String text, int page, int pageSize, String city) {
         log.info("Searching for items with text '{}' and city '{}' - page={}, pageSize={}", text, city, page, pageSize);
@@ -227,6 +319,19 @@ public class ItemServiceImpl implements ItemService {
         return items.map(ItemMapper::toItemDto);
     }
 
+    /**
+     * Creates a new item.
+     * <p>
+     * This method creates a new item, uploads the provided images, sets the item as available,
+     * assigns the current user as the owner, and updates the owner's contact information if missing.
+     * </p>
+     *
+     * @param item   the item data as {@link ItemRequestDto}
+     * @param user   the user creating the item
+     * @param images the images to be uploaded for the item
+     * @return the created {@link ItemDto}
+     * @throws NotFoundException if the user is not found
+     */
     @Override
     @Transactional
     public ItemDto create(ItemRequestDto item, User user, List<MultipartFile> images) {
@@ -238,11 +343,6 @@ public class ItemServiceImpl implements ItemService {
                 });
 
         updateUserContactInfo(item, owner);
-
-        // Uncomment the following lines if email confirmation is required
-        // if (!owner.getConfirmed()) {
-        //     throw new ConfirmationException("Please confirm email");
-        // }
 
         log.warn("Starting image upload for new item");
         List<String> imageUrls = imageManager.uploadImages(images);
@@ -258,6 +358,12 @@ public class ItemServiceImpl implements ItemService {
         return createdItem;
     }
 
+    /**
+     * Updates the owner's contact information if it is not already set.
+     *
+     * @param item  the item data containing contact information
+     * @param owner the owner whose contact information should be updated
+     */
     private void updateUserContactInfo(ItemRequestDto item, User owner) {
         boolean updated = false;
         if (item.getCity() != null && (owner.getCity() == null || owner.getCity().isBlank())) {
@@ -284,13 +390,5 @@ public class ItemServiceImpl implements ItemService {
             userRepository.save(owner);
             log.info("Owner contact information updated for user {}", owner.getEmail());
         }
-    }
-
-    private void isUserExist(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("User with id {} not found", userId);
-                    return new NotFoundException("User with id - %d not found".formatted(userId));
-                });
     }
 }
