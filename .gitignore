@@ -18,6 +18,8 @@ frontend/delimo/src/assets/constants.js
 .idea/**/vcs.xml
 .idea/**/.name
 
+volumes
+
 # Spring/Java specific ignores
 backend/target/
 backend/.settings/
