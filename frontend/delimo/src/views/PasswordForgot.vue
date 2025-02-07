@@ -1,7 +1,7 @@
 <template>
   <PopUpModal :is-active="success" @close="toggleOk">
     <div class="flex flex-col items-center justify-center gap-2">
-      <h1 class="bg-green-300 rounded-lg text-white font-bold p-3">
+      <h1 class="bg-st4 rounded-lg text-white font-bold p-3">
         Poslali smo vam potvrdu na e-poštu. Proverite svoju e-poštu i potvrdite je.
       </h1>
       <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
@@ -10,6 +10,7 @@
       </button>
     </div>
   </PopUpModal>
+
   <div class="flex flex-col justify-center items-center bg-st2 h-screen">
     <form
         class="flex flex-col p-6 gap-2 bg-st2 rounded-lg w-full md:w-1/3"
@@ -102,7 +103,7 @@ export default {
         }
 
       } catch (error) {
-        this.error = "Не удалось начать вход через Google.";
+        this.error = "Došlo je do greške.";
       }finally {
         this.loading = false;
       }

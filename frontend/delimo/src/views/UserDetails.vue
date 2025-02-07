@@ -8,14 +8,14 @@
         <div @click="goItems" class="flex p-5 border-b-2 border-solid hover:bg-st4 cursor-pointer hover:text-white rounded-t-lg items-center">
           <div class="flex gap-2 items-center mb-4">
             <i class="fa-solid fa-folder text-st3 font-extrabold"></i>
-            <p class="font-extrabold">Moje Stvari</p>
+            <p class="font-extrabold">Moje stvari</p>
           </div>
         </div>
 
         <div @click="goRequests" class="flex p-5 hover:bg-st4 cursor-pointer hover:text-white rounded-b-lg items-center">
           <div class="flex gap-2 items-center mb-4">
             <i class="fa-solid fa-brush text-st3 font-extrabold"></i>
-            <p class="font-extrabold">Moji Zahtevi</p>
+            <p class="font-extrabold">Moji zahtevi</p>
           </div>
         </div>
       </div>

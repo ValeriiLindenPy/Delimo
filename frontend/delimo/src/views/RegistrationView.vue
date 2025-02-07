@@ -2,7 +2,7 @@
   <PopUpModal :is-active="isPopUp" @close="togglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1 class="bg-green-300 rounded-lg text-white font-bold p-3">
-        Poslali smo vam potvrdu na e-poštu. Proverite svoju e-poštu i potvrdite je.
+        Poslali smo vam potvrdu na e-poštu. Proverite svoj e-mail i potvrdite ga.
       </h1>
       <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
               @click="toggleOk">
@@ -115,7 +115,7 @@
 
         <div v-if="errorMessage" class="text-red-500 text-sm mt-2">{{ errorMessage }}</div>
 
-        <p class="pt-2 text-xs font-bold">(*) required fields</p>
+        <p class="pt-2 text-xs font-bold">(*) Obavezna polja</p>
 
         <div class="flex items-center mt-2 mb-2">
           <input
@@ -216,14 +216,18 @@ export default {
       this.$router.push("/");
     },
     async handleGoogleOneTap() {
-      // Logic for handling Google One Tap Login
+      try {
+        window.location.href = "http://localhost:8080/api/oauth2/authorization/google";
+      } catch (error) {
+        this.error = "Nije uspelo pokretanje prijave preko Google-a.";
+      }
     },
     async validateAndSubmit() {
       const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z])[a-zA-Z\d!@#$%^&*]{8,20}$/;
 
       // 1. Basic password format checks
       if (!passwordRegex.test(this.password)) {
-        this.errorMessage = "Lozinka mora imati od 8 do 20 karaktera, jednu cifru i jedan specijalni simbol.";
+        this.errorMessage = "Lozinka mora imati između 8 i 20 karaktera, najmanje jednu cifru i jedan specijalni simbol.";
         return;
       }
 
