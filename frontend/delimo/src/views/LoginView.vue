@@ -129,7 +129,7 @@ export default {
         });
         this.error = null;
         if (this.authStore.isAuthenticated) {
-          await this.router.push("/"); // Перенаправление на главную страницу
+          await this.router.push("/");
         }
       } catch (error) {
         this.error = error.response?.data?.message || "Neuspešna prijava.";
@@ -139,7 +139,7 @@ export default {
     },
     handleGoogleLogin() {
       try {
-        window.location.href = "http://localhost:8080/api/oauth2/authorization/google";
+        window.location.href = `${import.meta.env.VITE_API_URL}/oauth2/authorization/google`;
       } catch (error) {
         this.error = "Nije uspelo pokretanje prijave preko Google-a.";
       }

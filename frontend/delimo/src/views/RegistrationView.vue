@@ -217,7 +217,7 @@ export default {
     },
     async handleGoogleOneTap() {
       try {
-        window.location.href = "http://localhost:8080/api/oauth2/authorization/google";
+        window.location.href = `${import.meta.env.VITE_API_URL}/oauth2/authorization/google`;
       } catch (error) {
         this.error = "Nije uspelo pokretanje prijave preko Google-a.";
       }
@@ -250,17 +250,14 @@ export default {
       };
 
       try {
-        // 4. Call the Pinia store action
         this.loading = true;
         this.errorMessage = "";
         const res = await this.auth.register(userData);
 
-        // 5. Check response / status
         if (res.status === 200) {
           this.togglePopUp();
         }
       } catch (error) {
-        // Handle server error
         this.errorMessage = error.response?.data?.message || error.message;
       } finally {
         this.loading = false;

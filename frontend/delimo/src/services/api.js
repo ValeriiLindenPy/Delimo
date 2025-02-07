@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/auth.js";
 import router from "@/router/index.js";
 
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://192.168.0.18:8080/api',
+    baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true,
 });
 

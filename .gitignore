@@ -1,7 +1,7 @@
 # Node.js/Vue.js specific ignores
 frontend/delimo/node_modules
 frontend/delimo/.vscode
-frontend/.env
+frontend/delimo/.env
 frontend/.output/
 frontend/delimo/src/assets/constants.js
 # IntelliJ IDEA/WebStorm specific ignores
