@@ -1,4 +1,9 @@
+FROM openjdk:21-jdk AS builder
+WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
+
 FROM openjdk:21-jdk
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]

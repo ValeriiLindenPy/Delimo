@@ -21,12 +21,13 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      # Build the Spring Boot backend
+      # Build the Spring Boot backend JAR
       - name: Build Spring Boot backend
         run: |
           cd backend
           chmod +x mvnw  # Ensure mvnw is executable
           ./mvnw clean package -DskipTests
+          ls -l target  # Debug: Check if the JAR file was created
 
       # Log in to Docker Hub
       - name: Log in to Docker Hub
@@ -44,5 +45,6 @@ jobs:
       # Build and push Spring Boot backend Docker image
       - name: Build and push backend Docker image
         run: |
-          docker build -t valeriilinden/delimo-backend:prod --build-arg JAR_FILE=target/*.jar ./backend
+          cd backend
+          docker build -t valeriilinden/delimo-backend:prod --build-arg JAR_FILE=target/*.jar .
           docker push valeriilinden/delimo-backend:prod
