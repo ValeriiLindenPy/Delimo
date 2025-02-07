@@ -1,46 +1,87 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  backend:
-    build:
-      context: backend
-      dockerfile: Dockerfile
-    image: delimo-backend
-    container_name: delimo-backend
-    ports:
-      - "192.168.0.18:8080:8080"  # Bind backend to 192.168.0.18
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/delimo
-      SPRING_DATASOURCE_USERNAME: dbuser
-      SPRING_DATASOURCE_PASSWORD: 12345
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: postgres:16.1
-    container_name: delimo-db
-    ports:
-      - "192.168.0.18:5432:5432"  # Bind database to 192.168.0.18
+  watchtower:
+    image: containrrr/watchtower
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "60"
+      - "--rolling-restart"
     volumes:
-      - ./volumes/postgres:/var/lib/postgresql/data/
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+  traefik:
+    image: traefik:v3.1
+    command:
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=info@delimo.rs"  # Значение из глобального .env
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: always
+
+  backend:
+    image: valeriilinden/delimo-backend:prod
+    env_file:
+      - ./backend/.env
     environment:
-      - POSTGRES_DB=delimo
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=12345
-    healthcheck:
-      test: ["CMD", "pg_isready", "-q", "-d", "delimo", "-U", "dbuser"]
-      timeout: 5s
-      interval: 5s
-      retries: 10
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/delimo
+      - APP_FRONTEND_URL=https://delimo.rs
+    deploy:
+      mode: replicated
+      replicas: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=myresolver"
+      - "traefik.http.services.backend.loadbalancer.server.port=8080"
+      - "com.centurylinklabs.watchtower.enable=true"
+    depends_on:
+      - db
+    restart: always
 
   frontend:
-    build:
-      context: frontend/delimo
-      dockerfile: Dockerfile
-    image: frontend
-    container_name: delimo-frontend
+    image: valeriilinden/delimo-frontend:prod
+    env_file:
+      - ./frontend/.env
+    environment:
+      - VITE_API_URL=https://delimo.rs/api
+    deploy:
+      mode: replicated
+      replicas: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`delimo.rs`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "com.centurylinklabs.watchtower.enable=true"
+    restart: always
+
+  db:
+    image: postgres:latest
+    env_file:
+      - ./db/.env
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
-      - "192.168.0.18:80:80"  # Bind frontend to 192.168.0.18
-    depends_on:
-      - backend
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  db-data:
