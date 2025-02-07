@@ -22,11 +22,11 @@ jobs:
       # Build and push Vue.js frontend
       - name: Build and push frontend Docker image
         run: |
-          docker build -t valeriilinden/delimo:prod ./frontend/delimo
-          docker push valeriilinden/delimo:prod
+          docker build -t valeriilinden/delimo-frontend:prod ./frontend/delimo
+          docker push valeriilinden/delimo-frontend:prod
 
       # Build and push Spring Boot backend
       - name: Build and push backend Docker image
         run: |
-          docker build -t valeriilinden/delimo:prod ./backend
-          docker push valeriilinden/delimo:prod
+          docker build -t valeriilinden/delimo-backend:prod ./backend
+          docker push valeriilinden/delimo-backend:prod
