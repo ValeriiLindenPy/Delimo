@@ -3,7 +3,7 @@
 
   <PopUpModal :is-active="isPopUp" @close="tooglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
-      <h1>Strvar je kreirana uspesno!</h1>
+      <h1>Zahtev je kreiran uspesno!</h1>
       <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="tooglePopUp">
         Hvala!
       </button>

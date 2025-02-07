@@ -2,7 +2,7 @@
   <PopUpModal :is-active="success" @close="toggleOk">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1 class="bg-green-300 rounded-lg text-white font-bold p-3">
-        Vasa lozinka je promenina!
+        Vaša lozinka je promenjena!
       </h1>
       <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
               @click="toggleOk">
@@ -118,7 +118,7 @@ export default {
       }
 
       if (!this.token) {
-        this.error = "Greska se desava";
+        this.error = "Došlo je do greške.";
         return;
       }
 
@@ -131,7 +131,7 @@ export default {
 
       } catch (error) {
         this.$router.push('/server-error');
-        this.error = "Не удалось начать вход через Google.";
+        this.error = "Nije uspelo pokretanje prijave preko Google-a.";
       }finally {
         this.loading = false;
       }

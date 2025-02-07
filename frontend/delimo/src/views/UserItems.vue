@@ -1,7 +1,7 @@
 <template>
   <div class="md:container">
     <div class="flex justify-center items-center">
-      <h1 class="text-white pt-3 text-2xl font-bold">Moje Stvari</h1>
+      <h1 class="text-white pt-3 text-2xl font-bold">Moje stvari</h1>
     </div>
 
     <div class="mt-2">

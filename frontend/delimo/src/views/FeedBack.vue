@@ -96,8 +96,8 @@
           <!-- PopUp Modal -->
           <PopUpModal :is-active="isModalOpen" @close="closeModal">
             <div class="flex flex-col items-center justify-center gap-2">
-              <div class="bg-green-300 rounded-lg font-bold p-3">
-                <p v-if="message" :class="messageType === 'error' ? 'text-red-500' : 'text-green-500'">
+              <div class="bg-st4 rounded-lg font-bold p-3">
+                <p v-if="message" :class="messageType === 'error' ? 'text-red-500' : 'text-white'">
                   {{ message }}
                 </p>
               </div>

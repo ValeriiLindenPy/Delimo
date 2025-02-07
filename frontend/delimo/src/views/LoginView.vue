@@ -35,7 +35,7 @@
       />
       <div>
       <p @click="goReset" class="pt-2 no-underline hover:underline cursor-pointer">
-        Zaboravio si lozinku?
+        Zaboravili ste lozinku?
       </p>
       </div>
 
@@ -132,7 +132,7 @@ export default {
           await this.router.push("/"); // Перенаправление на главную страницу
         }
       } catch (error) {
-        this.error = error.response?.data?.message || "Не удалось войти.";
+        this.error = error.response?.data?.message || "Neuspešna prijava.";
       } finally {
         this.loading = false;
       }
@@ -141,7 +141,7 @@ export default {
       try {
         window.location.href = "http://localhost:8080/api/oauth2/authorization/google";
       } catch (error) {
-        this.error = "Не удалось начать вход через Google.";
+        this.error = "Nije uspelo pokretanje prijave preko Google-a.";
       }
     },
   },

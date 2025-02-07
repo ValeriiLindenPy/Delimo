@@ -8,7 +8,7 @@
 
   <div class="flex justify-center items-center mt-4">
     <hr class="flex-grow border-white">
-    <p class="mx-4 text-white font-bold">Svi Oglasi</p>
+    <p class="mx-4 text-white font-bold">Sve Stvari</p>
     <hr class="flex-grow border-white">
   </div>
   <Loader v-if="loadingItems" />
