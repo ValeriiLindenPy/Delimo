@@ -39,3 +39,8 @@ Thumbs.db
 *.log
 *.bak
 *.tmp
+
+.env
+backend/src/main/resources/.env
+db/.env
+
