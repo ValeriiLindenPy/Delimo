@@ -59,6 +59,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     auth.requestMatchers("/items/**").permitAll();
                     auth.requestMatchers("/emails/**").permitAll();
+                    auth.requestMatchers(HttpMethod.POST, "/emails/feedback").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/requests/**").permitAll();
                     auth.requestMatchers(HttpMethod.DELETE, "/my-items/**").authenticated();
