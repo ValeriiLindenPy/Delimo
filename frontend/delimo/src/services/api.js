@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/auth.js";
 import router from "@/router/index.js";
 
 const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: "https://delimo.rs/api",
     withCredentials: true,
 });
 
