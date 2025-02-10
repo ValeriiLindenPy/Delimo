@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.8'
 
 services:
   watchtower:
@@ -11,15 +11,18 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+
   traefik:
     image: traefik:v3.1
     command:
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
+      - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
       - "--entryPoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=info@delimo.rs"  # Значение из глобального .env
+      - "--certificatesresolvers.myresolver.acme.email=info@delimo.rs"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
@@ -36,9 +39,6 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/delimo
       - APP_FRONTEND_URL=https://delimo.rs
-    deploy:
-      mode: replicated
-      replicas: 3
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
@@ -53,15 +53,13 @@ services:
   frontend:
     image: valeriilinden/delimo-frontend:prod
     env_file:
-      - ./frontend/.env
+      - ./frontend/delimo/.env
     environment:
       - VITE_API_URL=https://delimo.rs/api
-    deploy:
-      mode: replicated
-      replicas: 3
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`delimo.rs`)"
+      # ??? ?????????? ?????? ?????????? ???????? || (?????????? ???)
+      - "traefik.http.routers.frontend.rule=Host(`delimo.rs`) || Host(`www.delimo.rs`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
