@@ -24,7 +24,7 @@ public class JwtService {
     private final long verificationTokenExpirationMs = TimeUnit.DAYS.toMillis(MAX_DAYS_VERIFICATION_TOKEN_VALID);
     private final SecretKey secretKey;
 
-    public JwtService(@Value("${JWT_SECRET}") String jwtSecret) {
+    public JwtService(@Value("${app.jwt.secret}") String jwtSecret) {
         this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
