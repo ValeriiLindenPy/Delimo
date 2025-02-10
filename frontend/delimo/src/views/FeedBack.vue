@@ -136,7 +136,7 @@ export default {
       message: "",
       messageType: "",
       isSubmitting: false,
-      isModalOpen: false // State to control modal visibility
+      isModalOpen: false
     };
   },
   methods: {
@@ -166,6 +166,7 @@ export default {
       } catch (error) {
         this.message = "Došlo je do greške pri slanju!";
         this.messageType = "error";
+        console.log(error)
       } finally {
         this.isSubmitting = false;
       }
