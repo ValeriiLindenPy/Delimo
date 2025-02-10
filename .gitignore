@@ -31,6 +31,7 @@ backend/build/
 backend/logs/
 backend/.env
 backend/volumes
+backend/src/main/resources/.env
 # OS-specific files
 .DS_Store
 Thumbs.db
@@ -39,8 +40,6 @@ Thumbs.db
 *.log
 *.bak
 *.tmp
-
 .env
-backend/src/main/resources/.env
 db/.env
 
