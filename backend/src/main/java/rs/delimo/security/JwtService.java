@@ -1,10 +1,10 @@
 package rs.delimo.security;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import rs.delimo.user.User;
 
@@ -24,10 +24,8 @@ public class JwtService {
     private final long verificationTokenExpirationMs = TimeUnit.DAYS.toMillis(MAX_DAYS_VERIFICATION_TOKEN_VALID);
     private final SecretKey secretKey;
 
-    public JwtService() {
-        Dotenv dotenv = Dotenv.load();
-        String secret = dotenv.get("JWT_SECRET");
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+    public JwtService(@Value("${JWT_SECRET}") String jwtSecret) {
+        this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
     public String generateToken(User user) {
