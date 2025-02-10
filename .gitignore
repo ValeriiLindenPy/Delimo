@@ -36,6 +36,8 @@ backend/src/main/resources/.env
 .DS_Store
 Thumbs.db
 
+letsencrypt/
+
 # General ignores
 *.log
 *.bak
