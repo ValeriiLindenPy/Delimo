@@ -56,6 +56,10 @@ services:
       - "traefik.http.routers.backend.tls.certresolver=myresolver"
       - "traefik.http.services.backend.loadbalancer.server.port=8080"
       - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.http.routers.oauth.rule=Host(`delimo.rs`) && PathPrefix(`/api/login/oauth2/code`)"
+      - "traefik.http.routers.oauth.entrypoints=websecure"
+      - "traefik.http.routers.oauth.tls.certresolver=myresolver"
+      - "traefik.http.services.oauth.loadbalancer.server.port=8080"
     depends_on:
       - db
     restart: always
