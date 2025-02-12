@@ -139,8 +139,10 @@ export default {
     },
     handleGoogleLogin() {
       try {
+        console.log(import.meta.env.VITE_API_URL)
         window.location.href = `${import.meta.env.VITE_API_URL}/oauth2/authorization/google`;
       } catch (error) {
+        console.log(error);
         this.error = "Nije uspelo pokretanje prijave preko Google-a.";
       }
     },
