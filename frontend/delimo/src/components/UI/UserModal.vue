@@ -87,7 +87,8 @@ export default {
       this.$emit("close");
     },
   goLogout() {
-    window.location.href = "http://localhost:8080/logout";
+    this.store.logout();
+    this.$router.push("/login");
   }
   },
 };
