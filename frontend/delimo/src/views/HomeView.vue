@@ -8,19 +8,27 @@
 
   <div class="flex justify-center items-center mt-4">
     <hr class="flex-grow border-white">
-    <p class="mx-4 text-white font-bold">Sve Stvari</p>
+    <p class="mx-4 text-white font-bold">Stvari</p>
     <hr class="flex-grow border-white">
   </div>
   <Loader v-if="loadingItems" />
   <PostList v-else class="mt-3" :posts="items"/>
 
   <div class="flex justify-center items-center mt-4">
+    <button @click="goItems" class="p-3 bg-st3 font-bold rounded-lg hover:bg-st4 hover:text-white">Pogledaj sve stvari po gradovima</button>
+  </div>
+
+  <div class="flex justify-center items-center mt-4">
     <hr class="flex-grow border-white">
-    <p class="mx-4 text-white font-bold">Svi Zahtevi</p>
+    <p class="mx-4 text-white font-bold">Zahtevi</p>
     <hr class="flex-grow border-white">
   </div>
   <Loader class="mb-96" v-if="loadingRequests"/>
   <RequestList v-else :posts="requests"/>
+
+  <div class="flex justify-center items-center mt-4">
+    <button @click="goRequests" class="p-3 bg-st3 font-bold rounded-lg hover:bg-st4 hover:text-white">Pogledaj svi zahtevi po gradovima</button>
+  </div>
 </template>
 
 <script>
@@ -46,6 +54,12 @@ export default {
     }
   },
   methods: {
+    goItems() {
+      this.$router.push("/items");
+    },
+    goRequests() {
+      this.$router.push("/requests");
+    },
     async fetchItems() {
       this.loadingItems = true;
       try {
