@@ -1,5 +1,3 @@
-
-
 <template>
   <PopUpModal :is-active="isPopUp" @close="tooglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
@@ -218,7 +216,6 @@ export default {
     };
   },
   mounted() {
-    // Auto-fill phone, viber, and location if available in the user profile
     if (this.store.profile) {
       this.formData.phone = this.store.profile.phone || "";
       this.formData.viber = this.store.profile.viber || "";
@@ -231,7 +228,7 @@ export default {
       this.isPopUp = !this.isPopUp;
     },
     handleFileUpload(event) {
-      const maxSize = 1.5 * 1024 * 1024; // 2MB
+      const maxSize = 5 * 1024 * 1024;
       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
       const files = Array.from(event.target.files);
       let validFiles = [];
@@ -243,7 +240,7 @@ export default {
         }
 
         if (file.size > maxSize) {
-          this.imageError = `Slika "${file.name}" je prevelika. Maksimalna veličina je 1.5MB.`;
+          this.imageError = `Slika "${file.name}" je prevelika. Maksimalna veličina je 5MB.`;
           return;
         }
 
