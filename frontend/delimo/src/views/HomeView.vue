@@ -2,9 +2,7 @@
 
   <div class="container">
     <div class="flex justify-center mt-3">
-      <img class="object-cover rounded-lg w-[300px] h-[200px] md:w-[400px] md:h-[250px]"
-           src="@/assets/img.webp"
-           alt="home">
+      <img class="object-fit rounded-lg h-30 md:h-40" src="@/assets/img.webp" alt="home">
     </div>
   </div>
 
