@@ -1,7 +1,5 @@
 <template>
   <!-- Loader отображается, когда isLoading равен true -->
-
-
   <PopUpModal :is-active="isPopUp" @close="togglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1>Stvar je promenjena uspešno!</h1>
@@ -40,7 +38,8 @@
             ></textarea>
           </div>
 
-          <div>
+          <!-- Maksimalni period (dani) -->
+          <div class="mb-4">
             <label for="maxDays" class="text-sm font-medium text-st5">Maksimalni period (dani)</label>
             <input
                 id="maxDays"
@@ -88,7 +87,7 @@
             <label for="available" class="text-sm font-medium text-st5">Dostupno</label>
           </div>
 
-          <!-- Phone -->
+          <!-- Telefon -->
           <div>
             <label for="phone" class="text-sm font-medium text-st5">Telefon</label>
             <input
@@ -161,7 +160,12 @@
               </label>
             </div>
 
-            <!-- Pregled fotografija -->
+            <!-- Вывод сообщения об ошибке -->
+            <div v-if="imageError" class="text-red-500 mt-2">
+              {{ imageError }}
+            </div>
+
+            <!-- Просмотр фотографий -->
             <div class="flex flex-wrap gap-4 mt-2">
               <div
                   v-for="(image, index) in formData.images"
@@ -184,7 +188,7 @@
             </p>
           </div>
 
-          <!-- Submit i Odustani dugmad -->
+          <!-- Submit и Отмена -->
           <button
               type="submit"
               class="bg-st4 mr-2 text-white py-2 px-4 rounded hover:bg-st3 transition duration-500"
@@ -214,7 +218,7 @@ import { useAuthStore } from "@/stores/auth.js";
 
 export default {
   name: "EditItem",
-  components: {PopUpModal, Loader},
+  components: { PopUpModal, Loader },
   data() {
     return {
       store: useAuthStore(),
@@ -255,9 +259,8 @@ export default {
   },
   async created() {
     try {
-      // Приказ Loader-а може бити додат ако имате дуго чекање приликом преузимања података.
       this.isLoading = true;
-      const {data} = await fetchMyItem(this.id);
+      const { data } = await fetchMyItem(this.id);
       if (data.owner.id !== this.store.profile.id) {
         this.$router.push(`/`);
       }
@@ -274,7 +277,7 @@ export default {
       this.isPopUp = !this.isPopUp;
     },
     async handleFileUpload(event) {
-      const maxSize = 1.5 * 1024 * 1024;
+      const maxSize = 10 * 1024 * 1024;
       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
       const files = Array.from(event.target.files);
       const remainingSlots = 5 - this.formData.images.length;
@@ -287,7 +290,7 @@ export default {
         }
 
         if (file.size > maxSize) {
-          this.imageError = `Slika "${file.name}" je prevelika. Maksimalna veličina je 1.5MB.`;
+          this.imageError = `Slika "${file.name}" je prevelika. Maksimalna veličina je 10MB.`;
           return;
         }
 
@@ -323,11 +326,10 @@ export default {
         isFree: post.pricePerDay === 0 || post.pricePerDay === null,
         available: post.available || false,
         maxPeriodDays: post.maxPeriodDays || 1,
-        images: post.images?.map((url) => ({preview: url})) || [],
+        images: post.images?.map((url) => ({ preview: url })) || [],
       };
     },
     async updatePost() {
-      // Показање Loader-а током ажурирања
       this.isLoading = true;
       try {
         const formData = new FormData();
