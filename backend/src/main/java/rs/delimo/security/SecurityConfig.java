@@ -91,6 +91,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Profile("!test")
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("https://delimo.rs", "https://www.delimo.rs"));
@@ -104,6 +105,21 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Profile("test")
+    public CorsConfigurationSource corsConfigurationSourceTest() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOriginPattern("*");
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -115,9 +131,11 @@ public class SecurityConfig {
 
 
     @Bean
+    @Profile("test")
     public SecurityFilterChain securityFilterChainNoAuth(HttpSecurity http, @Qualifier("defaultUserFilter") Filter defaultFilter) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSourceTest()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .addFilterBefore(defaultFilter, UsernamePasswordAuthenticationFilter.class);
