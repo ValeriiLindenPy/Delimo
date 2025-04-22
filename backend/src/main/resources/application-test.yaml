@@ -1,0 +1,25 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: compose.yml
+
+  application:
+    name: delimo-test
+
+  datasource:
+    url: jdbc:postgresql://localhost:${LOCAL_PORT_5432:-5432}/delimo
+    username: dbuser
+    password: 12345
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+server:
+  port: 8080
