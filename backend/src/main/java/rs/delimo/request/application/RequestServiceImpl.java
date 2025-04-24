@@ -216,7 +216,7 @@ public class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public RequestOutputDto getById(UUID requestId) {
         ItemRequest request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException("Request with id - %d not found".formatted(requestId)));
+                .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestId)));
         return mapper.toOutputDto(request);
     }
 
@@ -235,7 +235,7 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         ItemRequest request = requestRepository.findById(requestID)
-                .orElseThrow(() -> new NotFoundException("Request with id - %d not found".formatted(requestID)));
+                .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestID)));
 
         if (!Objects.equals(request.getRequester().getId(), requester.getId())) {
             throw new OwnerException("Request with id %s does not belong to user with id %s"

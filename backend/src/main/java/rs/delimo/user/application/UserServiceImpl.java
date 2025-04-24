@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
                 .map(mapper::toDto)
                 .orElseThrow(() -> {
                     log.error("User with id {} not found", id);
-                    return new NotFoundException("User with id - %d not found".formatted(id));
+                    return new NotFoundException("User with id - %s not found".formatted(id));
                 });
         log.info("Retrieved user: {}", userDto);
         return userDto;
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
         User oldUser = userRepository.findById(id).orElseThrow(() -> {
             log.error("User with id {} not found for editing", id);
-            return new NotFoundException("User with id - %d not found".formatted(id));
+            return new NotFoundException("User with id - %s not found".formatted(id));
         });
 
         log.trace("User found. Current user id: {}", oldUser.getId());
