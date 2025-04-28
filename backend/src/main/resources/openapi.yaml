@@ -48,7 +48,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageRequestOutputDto'
+                $ref: '#/components/schemas/RequestPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -154,36 +154,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /requests:
-    get:
-      tags:
-        - Item Requests
-      operationId: listRequests
-      security: []
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 0
-        - name: pageSize
-          in: query
-          schema:
-            type: integer
-            default: 6
-        - name: city
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Public requests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PageRequestOutputDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
   /requests/{id}:
     get:
       tags:
@@ -209,34 +179,35 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /requests/search:
-    get:
+    post:
       tags:
         - Item Requests
-      operationId: searchRequests
-      security: []
+      operationId: listRequests
+      security: [ ]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestFilterDto'
       parameters:
-        - name: text
-          in: query
-          required: true
-          schema:
-            type: string
         - name: page
           in: query
           schema:
             type: integer
             default: 0
-        - name: pageSize
+        - name: size
           in: query
           schema:
             type: integer
             default: 6
       responses:
         '200':
-          description: Search results
+          description: Public items
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageRequestOutputDto'
+                $ref: '#/components/schemas/RequestPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
 
@@ -264,8 +235,6 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
                   $ref: '#/components/schemas/ItemPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -391,12 +360,18 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /items:
-    get:
+  /items/search:
+    post:
       tags:
         - Items
       operationId: listItems
       security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemFilterDto'
       parameters:
         - name: page
           in: query
@@ -408,19 +383,13 @@ paths:
           schema:
             type: integer
             default: 6
-        - name: city
-          in: query
-          schema:
-            type: string
       responses:
         '200':
           description: Public items
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ItemPageResponse'
+                $ref: '#/components/schemas/ItemPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
   /items/{id}:
@@ -473,43 +442,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ItemTitle'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-  /items/search:
-    get:
-      tags:
-        - Items
-      operationId: searchItems
-      security: []
-      parameters:
-        - name: text
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 0
-        - name: pageSize
-          in: query
-          schema:
-            type: integer
-            default: 6
-        - name: city
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Search results
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ItemDto'
         '400':
           $ref: '#/components/responses/BadRequest'
 
@@ -747,6 +679,34 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
 
   schemas:
+    ItemFilterDto:
+      type: object
+      nullable: true
+      properties:
+        ownerId:
+          type: string
+          format: uuid
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        text:
+          type: string
+          nullable: true
+    RequestFilterDto:
+      type: object
+      nullable: true
+      properties:
+        requesterId:
+          type: string
+          format: uuid
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        text:
+          type: string
+          nullable: true
     ItemPageResponse:
       type: object
       nullable: false
@@ -763,6 +723,22 @@ components:
           default: [ ]
           items:
             $ref: '#/components/schemas/ItemDto'
+    RequestPageResponse:
+      type: object
+      nullable: false
+      description: page of items
+      required:
+        - page
+        - content
+      properties:
+        page:
+          $ref: '#/components/schemas/PageResponse'
+        content:
+          type: array
+          nullable: false
+          default: [ ]
+          items:
+            $ref: '#/components/schemas/RequestOutputDto'
     PageResponse:
       type: object
       nullable: false
@@ -843,21 +819,6 @@ components:
         created:
           type: string
           format: date-time
-    PageRequestOutputDto:
-      type: object
-      properties:
-        totalPages:
-          type: integer
-        totalElements:
-          type: integer
-        size:
-          type: integer
-        number:
-          type: integer
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/RequestOutputDto'
     ItemRequestDto:
       type: object
       required:

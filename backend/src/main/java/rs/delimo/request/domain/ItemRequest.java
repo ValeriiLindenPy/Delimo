@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rs.delimo.common.valueobject.RequestId;
+import rs.delimo.common.valueobject.UserId;
 import rs.delimo.user.domain.User;
 
 
@@ -17,9 +19,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemRequest {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @EmbeddedId
+    private RequestId id;
 
     @Column(nullable = false)
     private String title;
@@ -33,9 +34,9 @@ public class ItemRequest {
     @Column(nullable = false)
     private Integer maxPeriodDays;
 
-    @ManyToOne
-    @JoinColumn(name = "requester_id", nullable = false)
-    private User requester;
+    @Embedded
+    @AttributeOverride(name = "value",column = @Column(name = "requester_id"))
+    private UserId requester;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime created;

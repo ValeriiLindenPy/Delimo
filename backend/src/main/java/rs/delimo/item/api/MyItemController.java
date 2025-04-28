@@ -41,8 +41,9 @@ public class MyItemController implements MyItemsApi {
     }
 
     @Override
-    public ResponseEntity<List<ItemPageResponse>> listMyItems(Integer page, Integer size) {
-        return MyItemsApi.super.listMyItems(page, size);
+    public ResponseEntity<ItemPageResponse> listMyItems(Integer page, Integer size) {
+        User user = getCurrentUser();
+        return ResponseEntity.ok(service.getAll(user, page, size));
     }
 
     @Override

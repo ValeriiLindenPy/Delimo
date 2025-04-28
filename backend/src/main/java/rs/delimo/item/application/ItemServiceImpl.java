@@ -10,9 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import rs.delimo.api.dto.ItemDto;
-import rs.delimo.api.dto.ItemRequestDto;
-import rs.delimo.api.dto.ItemTitle;
+import rs.delimo.api.dto.*;
 import rs.delimo.common.exception.NotFoundException;
 import rs.delimo.common.exception.OwnerException;
 import rs.delimo.item.domain.Item;
@@ -21,6 +19,8 @@ import rs.delimo.item.infrastructure.mapper.ItemMapper;
 import rs.delimo.item.infrastructure.repository.ItemRepository;
 import rs.delimo.user.domain.User;
 import rs.delimo.user.infrastructure.repository.UserRepository;
+
+import static rs.delimo.item.domain.specification.ItemSpecifications.from;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,69 +46,6 @@ public class ItemServiceImpl implements ItemService {
     private final ImageManager imageManager;
     private final ObjectMapper objectMapper;
 
-    /**
-     * Retrieves a paginated list of all items.
-     *
-     * @param page the page number (zero-based)
-     * @param size the number of items per page
-     * @return a {@link Page} of {@link ItemDto} objects
-     */
-    @Override
-    public Page<ItemDto> getAll(int page, int size) {
-        log.info("Fetching all items: page={}, size={}", page, size);
-        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
-        Page<Item> itemsPage = itemRepository.findAllWithImages(pageable);
-        log.info("Retrieved {} items", itemsPage.getTotalElements());
-        return itemsPage.map(mapper::toDto);
-    }
-
-    /**
-     * Retrieves a paginated list of items filtered by city.
-     *
-     * @param city the city to filter items by; if null or blank, all items are returned
-     * @param page the page number (zero-based)
-     * @param size the number of items per page
-     * @return a {@link Page} of {@link ItemDto} objects filtered by the specified city
-     */
-    @Override
-    public Page<ItemDto> getAll(String city, int page, int size) {
-        log.info("Fetching items for city: '{}' - page={}, size={}", city, page, size);
-        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
-        Page<Item> itemsPage;
-
-        if (city != null && !city.isBlank()) {
-            itemsPage = itemRepository.findAllWithImagesByCity(city, pageable);
-            log.info("City provided. Retrieved {} items for city '{}'", itemsPage.getTotalElements(), city);
-        } else {
-            itemsPage = itemRepository.findAllWithImages(pageable);
-            log.info("No city provided. Retrieved {} items", itemsPage.getTotalElements());
-        }
-
-        return itemsPage.map(mapper::toDto);
-    }
-
-    /**
-     * Retrieves a paginated list of items owned by the specified user.
-     *
-     * @param page the page number (zero-based)
-     * @param size the number of items per page
-     * @param user the owner whose items will be retrieved
-     * @return a {@link Page} of {@link ItemDto} objects owned by the specified user
-     * @throws NotFoundException if the user is not found
-     */
-    @Override
-    public Page<ItemDto> getAllByOwner(int page, int size, User user) {
-        log.info("Fetching items for owner: {} - page={}, size={}", user.getEmail(), page, size);
-        Pageable pageable = PageRequest.of(page, size);
-        User owner = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> {
-                    log.error("User not found for email: {}", user.getEmail());
-                    return new NotFoundException("User not found");
-                });
-        Page<Item> itemsPage = itemRepository.findAllByOwnerWithImages(pageable, owner.getId());
-        log.info("Owner {} has {} items", owner.getEmail(), itemsPage.getTotalElements());
-        return itemsPage.map(mapper::toDto);
-    }
 
     /**
      * Retrieves an item by its ID.
@@ -121,7 +58,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public ItemDto getById(UUID itemId) {
         log.info("Fetching item with id: {}", itemId);
-        ItemDto itemDto = itemRepository.findByIdWithImages(itemId)
+        ItemDto itemDto = itemRepository.findByIdValue(itemId)
                 .map(mapper::toDto)
                 .orElseThrow(() -> {
                     log.error("Item with id {} not found", itemId);
@@ -147,7 +84,7 @@ public class ItemServiceImpl implements ItemService {
                     log.error("User not found for email: {}", user.getEmail());
                     return new NotFoundException("User not found");
                 });
-        ItemDto itemDto = itemRepository.findOneByUserIdAndItemId(owner.getId(), id)
+        ItemDto itemDto = itemRepository.findOneByOwnerValueAndIdValue(owner.getId().value(), id)
                 .map(mapper::toDto)
                 .orElseThrow(() -> {
                     log.error("Item with id {} not found for user id {}", id, owner.getId());
@@ -182,13 +119,14 @@ public class ItemServiceImpl implements ItemService {
                     log.error("User not found for email: {}", user.getEmail());
                     return new NotFoundException("User not found");
                 });
-        Item oldItem = itemRepository.findById(itemId)
+
+        Item oldItem = itemRepository.findByIdValue(itemId)
                 .orElseThrow(() -> {
                     log.error("Item with id {} not found", itemId);
                     return new NotFoundException("Item with id - %s not found".formatted(itemId));
                 });
 
-        if (!Objects.equals(oldItem.getOwner().getId(), owner.getId())) {
+        if (!Objects.equals(oldItem.getOwner().value(), owner.getId().value())) {
             log.error("Owner mismatch: item id {} does not belong to user id {}", itemId, owner.getId());
             throw new OwnerException("Item with id %s does not belong to user with id %s"
                     .formatted(itemId, owner.getId()));
@@ -261,19 +199,19 @@ public class ItemServiceImpl implements ItemService {
                     log.error("User not found for email: {}", user.getEmail());
                     return new NotFoundException("User not found");
                 });
-        Item oldItem = itemRepository.findById(itemId)
+        Item oldItem = itemRepository.findByIdValue(itemId)
                 .orElseThrow(() -> {
                     log.error("Item with id {} not found", itemId);
                     return new NotFoundException("Item with id - %s not found".formatted(itemId));
                 });
 
-        if (!Objects.equals(oldItem.getOwner().getId(), owner.getId())) {
+        if (!Objects.equals(oldItem.getOwner().value(), owner.getId().value())) {
             log.error("Owner mismatch: item id {} does not belong to user id {}", itemId, owner.getId());
             throw new OwnerException("Item with id %s does not belong to user with id %s"
                     .formatted(itemId, owner.getId()));
         }
 
-        itemRepository.deleteById(itemId);
+        itemRepository.deleteByIdValue(itemId);
         log.info("Item with id {} deleted successfully", itemId);
     }
 
@@ -293,35 +231,51 @@ public class ItemServiceImpl implements ItemService {
         return items.stream().map(mapper::toItemTitle).toList();
     }
 
-    /**
-     * Searches for items by text and optionally by city.
-     *
-     * @param text     the search text to match against item fields
-     * @param page     the page number (zero-based)
-     * @param pageSize the number of items per page
-     * @param city     the city to filter the search by; if null or blank, the search is not city-specific
-     * @return a {@link Page} of {@link ItemDto} objects matching the search criteria
-     */
     @Override
-    public Page<ItemDto> searchByText(String text, int page, int pageSize, String city) {
-        log.info("Searching for items with text '{}' and city '{}' - page={}, pageSize={}", text, city, page, pageSize);
-        if (text == null || text.isBlank()) {
-            log.warn("Search text is empty. Returning empty page.");
-            return Page.empty();
-        }
-        log.debug("Executing search for text: {}", text);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("created").descending());
+    @Transactional(readOnly = true)
+    public ItemPageResponse search(Integer page, Integer size, ItemFilterDto filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
 
-        Page<Item> items;
-        if (city != null && !city.isBlank()) {
-            items = itemRepository.searchWithCity(city, text, pageable);
-            log.info("Search with city '{}' returned {} items", city, items.getTotalElements());
-        } else {
-            items = itemRepository.search(pageable, text);
-            log.info("Search without city returned {} items", items.getTotalElements());
-        }
-        return items.map(mapper::toDto);
+        Page<Item> items = itemRepository.findAll(from(filter), pageable);
+
+        PageResponse pageResponse = new PageResponse()
+                .pageNumber(items.getNumber())
+                .pageSize(items.getSize())
+                .totalPages(items.getTotalPages())
+                .totalElements(items.getTotalElements())
+                .hasNext(items.hasNext());
+
+        return new ItemPageResponse(
+                pageResponse,
+                items.getContent()
+                        .stream()
+                        .map(mapper::toDto)
+                        .toList()
+        );
     }
+
+    @Override
+    public ItemPageResponse getAll(User user, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
+
+        Page<Item> items = itemRepository.findAllByOwnerValue(user.getId().value(), pageable);
+
+        PageResponse pageResponse = new PageResponse()
+                .pageNumber(items.getNumber())
+                .pageSize(items.getSize())
+                .totalPages(items.getTotalPages())
+                .totalElements(items.getTotalElements())
+                .hasNext(items.hasNext());
+
+        return new ItemPageResponse(
+                pageResponse,
+                items.getContent()
+                        .stream()
+                        .map(mapper::toDto)
+                        .toList()
+        );
+    }
+
 
     /**
      * Creates a new item.
@@ -355,7 +309,7 @@ public class ItemServiceImpl implements ItemService {
         Item newItem = mapper.toEntity(item);
         newItem.setImages(imageUrls);
         newItem.setAvailable(true);
-        newItem.setOwner(owner);
+        newItem.setOwner(owner.getId());
 
         ItemDto createdItem = mapper.toDto(itemRepository.save(newItem));
         log.info("Item created successfully with id {}", createdItem.getId());

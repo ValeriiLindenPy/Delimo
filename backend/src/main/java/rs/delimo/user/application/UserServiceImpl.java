@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rs.delimo.api.dto.UserDto;
 import rs.delimo.common.exception.DuplicatingEmailException;
 import rs.delimo.common.exception.NotFoundException;
+import rs.delimo.common.valueobject.UserId;
 import rs.delimo.item.infrastructure.repository.ItemRepository;
 import rs.delimo.request.infrastructure.repository.RequestRepository;
 import rs.delimo.user.domain.User;
@@ -44,8 +45,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto getById(UUID id) {
+        UserId userId = new UserId(id);
         log.info("Fetching user by id: {}", id);
-        UserDto userDto = userRepository.findById(id)
+        UserDto userDto = userRepository.findById(userId)
                 .map(mapper::toDto)
                 .orElseThrow(() -> {
                     log.error("User with id {} not found", id);
@@ -67,9 +69,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto editById(UUID id, UserDto userDto) {
+        UserId userId = new UserId(id);
         log.trace("Starting edit of user with id: {}", id);
 
-        User oldUser = userRepository.findById(id).orElseThrow(() -> {
+        User oldUser = userRepository.findById(userId).orElseThrow(() -> {
             log.error("User with id {} not found for editing", id);
             return new NotFoundException("User with id - %s not found".formatted(id));
         });
@@ -124,17 +127,18 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteById(UUID userId) {
+        UserId id = new UserId(userId);
         log.info("Deleting user with id: {}", userId);
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("User with id {} not found for deletion", userId);
                     return new NotFoundException("User not found");
                 });
         log.debug("Deleting items for user id: {}", userId);
-        itemRepository.deleteByOwner(user);
+        itemRepository.deleteByOwner(id);
         log.debug("Deleting requests for user id: {}", userId);
-        requestRepository.deleteByRequester(user);
-        userRepository.deleteById(userId);
+        requestRepository.deleteByRequester(id);
+        userRepository.deleteById(id);
         log.info("User with id {} deleted successfully", userId);
     }
 

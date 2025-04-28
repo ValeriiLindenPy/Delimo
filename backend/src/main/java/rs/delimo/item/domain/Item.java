@@ -5,12 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import rs.delimo.user.domain.User;
-
-
+import rs.delimo.common.valueobject.ItemId;
+import rs.delimo.common.valueobject.UserId;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -18,9 +16,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @EmbeddedId
+    private ItemId id;
     private String title;
     private String description;
     private Boolean available;
@@ -28,11 +25,12 @@ public class Item {
     private Integer pricePerDay;
 
     @ElementCollection
+    @CollectionTable(name = "item_images", joinColumns = @JoinColumn(name = "item_id"))
+    @Column(name = "image_url")
     private List<String> images;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "owner_id"))
+    private UserId owner;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime created;

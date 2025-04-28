@@ -7,15 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rs.delimo.api.dto.RequestInputDto;
-import rs.delimo.api.dto.RequestOutputDto;
+import rs.delimo.api.dto.*;
 import rs.delimo.common.exception.NotFoundException;
 import rs.delimo.common.exception.OwnerException;
+import rs.delimo.common.valueobject.RequestId;
 import rs.delimo.request.domain.ItemRequest;
 import rs.delimo.request.infrastructure.mapper.RequestMapper;
 import rs.delimo.request.infrastructure.repository.RequestRepository;
 import rs.delimo.user.domain.User;
 import rs.delimo.user.infrastructure.repository.UserRepository;
+import static rs.delimo.request.domain.specification.RequestSpecification.from;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -35,64 +36,31 @@ public class RequestServiceImpl implements RequestService {
     private final RequestMapper mapper;
 
     /**
-     * Retrieves all item requests with pagination and sorts them in descending order by creation time.
-     *
-     * @param page the page number to retrieve
-     * @param size the size of the page
-     * @return a page of {@link RequestOutputDto} representing the item requests
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Page<RequestOutputDto> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
-        Page<ItemRequest> requests = requestRepository.findAll(pageable);
-        return requests.map(mapper::toOutputDto);
-    }
-
-    /**
-     * Retrieves all item requests optionally filtered by city with pagination and sorts them in descending order by creation time.
-     *
-     * @param city     the city to filter requests; if {@code null} or blank, no city filter is applied
-     * @param page     the page number to retrieve
-     * @param pageSize the size of the page
-     * @return a page of {@link RequestOutputDto} representing the filtered item requests
-     */
-    @Override
-    public Page<RequestOutputDto> getAll(String city, int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("created").descending());
-        Page<ItemRequest> requests;
-        if (city != null && !city.isBlank()) {
-            requests = requestRepository.findAllByCity(pageable, city);
-        } else {
-            requests = requestRepository.findAll(pageable);
-        }
-        return requests.map(mapper::toOutputDto);
-    }
-
-    /**
      * Searches for item requests based on a text query and an optional city filter.
      * The results are paginated and sorted in descending order by creation time.
-     *
-     * @param city     the city to filter requests; if {@code null} or blank, no city filter is applied
-     * @param text     the text to search within the requests
-     * @param page     the page number to retrieve
-     * @param pageSize the size of the page
-     * @return a page of {@link RequestOutputDto} representing the search results
+     * @return a page of {@link RequestPageResponse} representing the search results
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<RequestOutputDto> search(String city, String text, int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("created").descending());
+    public RequestPageResponse search(Integer page, Integer size, RequestFilterDto filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
 
-        Page<ItemRequest> requests;
+        Page<ItemRequest> requests = requestRepository.findAll(from(filter), pageable);
 
-        if (city != null && !city.isBlank()) {
-            requests = requestRepository.searchWithCity(pageable, text, city);
-        } else {
-            requests = requestRepository.search(pageable, text);
-        }
+        PageResponse pageResponse = new PageResponse()
+                .pageNumber(requests.getNumber())
+                .pageSize(requests.getSize())
+                .totalPages(requests.getTotalPages())
+                .totalElements(requests.getTotalElements())
+                .hasNext(requests.hasNext());
 
-        return requests.map(mapper::toOutputDto);
+        return new RequestPageResponse(
+                pageResponse,
+                requests.getContent()
+                        .stream()
+                        .map(mapper::toOutputDto)
+                        .toList()
+        );
     }
 
     /**
@@ -106,13 +74,28 @@ public class RequestServiceImpl implements RequestService {
      * @throws NotFoundException if the user is not found
      */
     @Override
-    public Page<RequestOutputDto> getAllByOwner(int page, int pageSize, User user) {
+    public RequestPageResponse getAllByOwner(int page, int pageSize, User user) {
         Pageable pageable = PageRequest.of(page, pageSize);
+
         User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
-        Page<ItemRequest> requests = requestRepository.findAllByRequesterId(requester.getId(), pageable);
 
-        return requests.map(mapper::toOutputDto);
+        Page<ItemRequest> requests = requestRepository.findAllByRequester(requester.getId(), pageable);
+
+        PageResponse pageResponse = new PageResponse()
+                .pageNumber(requests.getNumber())
+                .pageSize(requests.getSize())
+                .totalPages(requests.getTotalPages())
+                .totalElements(requests.getTotalElements())
+                .hasNext(requests.hasNext());
+
+        return new RequestPageResponse(
+                pageResponse,
+                requests.getContent()
+                        .stream()
+                        .map(mapper::toOutputDto)
+                        .toList()
+        );
     }
 
     /**
@@ -127,7 +110,8 @@ public class RequestServiceImpl implements RequestService {
     public RequestOutputDto getByUserAndId(UUID id, User user) {
         User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
-        ItemRequest request = requestRepository.findByIdAndRequesterId(id, requester.getId()).orElseThrow(
+        RequestId requestId = new RequestId(id);
+        ItemRequest request = requestRepository.findByIdAndRequesterId(requestId, requester.getId()).orElseThrow(
                 () -> new NotFoundException("Request with id - %s not found".formatted(id))
         );
         return mapper.toOutputDto(request);
@@ -155,7 +139,7 @@ public class RequestServiceImpl implements RequestService {
                 .title(request.getTitle())
                 .maxPeriodDays(request.getMaxPeriodDays())
                 .pricePerDay(request.getPricePerDay())
-                .requester(requester)
+                .requester(requester.getId())
                 .build();
 
         return mapper.toOutputDto(requestRepository.save(itemRequest));
@@ -176,15 +160,16 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public RequestOutputDto edit(UUID requestID, RequestInputDto request, User user) {
+        RequestId id = new RequestId(requestID);
         User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        ItemRequest oldItemRequest = requestRepository.findById(requestID)
+        ItemRequest oldItemRequest = requestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestID)));
 
         updateUserContactInfo(request, requester);
 
-        if (!Objects.equals(oldItemRequest.getRequester().getId(), requester.getId())) {
+        if (!Objects.equals(oldItemRequest.getRequester().value(), requester.getId().value())) {
             throw new OwnerException("Request with id %s does not belong to user with id %s"
                     .formatted(requestID, requester.getId()));
         }
@@ -215,7 +200,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public RequestOutputDto getById(UUID requestId) {
-        ItemRequest request = requestRepository.findById(requestId)
+        ItemRequest request = requestRepository.findById(new RequestId(requestId))
                 .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestId)));
         return mapper.toOutputDto(request);
     }
@@ -224,24 +209,24 @@ public class RequestServiceImpl implements RequestService {
      * Deletes an item request by its ID.
      * Only the owner of the request is allowed to delete it.
      *
-     * @param requestID the ID of the request to delete
+     * @param requestId the ID of the request to delete
      * @param user      the user attempting to delete the request
      * @throws NotFoundException if the user or the request is not found
      * @throws OwnerException    if the request does not belong to the user
      */
     @Override
-    public void delete(UUID requestID, User user) {
+    public void delete(UUID requestId, User user) {
         User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        ItemRequest request = requestRepository.findById(requestID)
-                .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestID)));
+        ItemRequest request = requestRepository.findById(new RequestId(requestId))
+                .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestId)));
 
-        if (!Objects.equals(request.getRequester().getId(), requester.getId())) {
+        if (!Objects.equals(request.getRequester().value(), requester.getId().value())) {
             throw new OwnerException("Request with id %s does not belong to user with id %s"
-                    .formatted(requestID, requester.getId()));
+                    .formatted(requestId, requester.getId().value()));
         }
-        requestRepository.deleteById(requestID);
+        requestRepository.deleteById(new RequestId(requestId));
     }
 
     /**
