@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import rs.delimo.common.valueobject.RequestId;
 import rs.delimo.common.valueobject.UserId;
-import rs.delimo.user.domain.User;
 
 
 import java.time.LocalDateTime;
@@ -20,7 +19,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ItemRequest {
     @EmbeddedId
-    private RequestId id;
+    @Builder.Default
+    private RequestId id = RequestId.generate();
 
     @Column(nullable = false)
     private String title;
@@ -42,7 +42,11 @@ public class ItemRequest {
     private LocalDateTime created;
 
     @PrePersist
-    private void setCreated() {
+    private void prePersist() {
+        if (this.id == null) {
+            this.id = new RequestId(UUID.randomUUID());
+        }
+
         this.created = LocalDateTime.now();
     }
 }

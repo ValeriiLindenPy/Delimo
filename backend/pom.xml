@@ -107,6 +107,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
@@ -321,7 +325,9 @@
                             <modelPackage>rs.delimo.api.dto</modelPackage>
                             <configOptions>
                                 <useTags>true</useTags>
+                                <library>spring-boot</library>
                                 <interfaceOnly>true</interfaceOnly>
+                                <useSpringController>true</useSpringController>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <serializableModel>true</serializableModel>
                                 <modelMutable>true</modelMutable>

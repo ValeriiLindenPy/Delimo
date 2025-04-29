@@ -9,6 +9,7 @@ import rs.delimo.common.valueobject.ItemId;
 import rs.delimo.common.valueobject.UserId;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,7 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Item {
     @EmbeddedId
-    private ItemId id;
+    @Builder.Default
+    private ItemId id = ItemId.generate();
     private String title;
     private String description;
     private Boolean available;
@@ -36,7 +38,11 @@ public class Item {
     private LocalDateTime created;
 
     @PrePersist
-    private void onCreate() {
+    private void prePersist() {
+        if (this.id == null) {
+            this.id = new ItemId(UUID.randomUUID());
+        }
+
         this.created = LocalDateTime.now();
     }
 }

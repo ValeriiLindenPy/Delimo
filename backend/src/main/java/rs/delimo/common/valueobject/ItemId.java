@@ -10,4 +10,8 @@ import java.util.UUID;
 @Validated
 @Embeddable
 public record ItemId(@NotNull UUID value) implements Serializable {
+
+    public static ItemId generate() {
+        return new ItemId(UUID.randomUUID());
+    }
 }

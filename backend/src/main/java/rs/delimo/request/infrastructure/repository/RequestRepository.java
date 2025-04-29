@@ -21,21 +21,5 @@ public interface RequestRepository extends JpaRepository<ItemRequest, RequestId>
 
     Page<ItemRequest> findAllByRequester(UserId id, Pageable pageable);
 
-    Optional<ItemRequest> findByIdAndRequesterId(RequestId id, UserId requesterId);
-
-    @Query("select ir from ItemRequest ir " +
-            "where upper(ir.title) like upper(concat('%', :text, '%'))" +
-            " or upper(ir.description) like upper(concat('%', :text, '%'))")
-    Page<ItemRequest> search(Pageable pageable, @Param("text") String text);
-
-    @Query("SELECT ir FROM ItemRequest ir " +
-            "JOIN ir.requester r " +
-            "WHERE (:city IS NULL OR r.city = :city) " +
-            "AND (upper(ir.title) LIKE upper(concat('%', :text, '%')) " +
-            "OR upper(ir.description) LIKE upper(concat('%', :text, '%')))")
-    Page<ItemRequest> searchWithCity(Pageable pageable, @Param("text") String text, @Param("city") String city);
-
-    @Query("SELECT ir FROM ItemRequest ir " +
-            "WHERE ir.requester.city = :city")
-    Page<ItemRequest> findAllByCity(Pageable pageable, @Param("city") String city);
+    Optional<ItemRequest> findByIdAndRequester(RequestId id, UserId requesterId);
 }

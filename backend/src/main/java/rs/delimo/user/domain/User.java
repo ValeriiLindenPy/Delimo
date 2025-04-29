@@ -13,6 +13,7 @@ import rs.delimo.common.valueobject.UserId;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 
 @Data
@@ -21,9 +22,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+
 public class User implements UserDetails {
     @EmbeddedId
-    private UserId id;
+    @Builder.Default
+    private UserId id = UserId.generate();
     @Email
     @Column(unique = true)
     private String email;
@@ -50,5 +53,12 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    @PrePersist
+    private void ensureId() {
+        if (this.id == null) {
+            this.id = new UserId(UUID.randomUUID());
+        }
     }
 }

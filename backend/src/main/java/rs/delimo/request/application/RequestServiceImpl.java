@@ -111,7 +111,7 @@ public class RequestServiceImpl implements RequestService {
         User requester = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         RequestId requestId = new RequestId(id);
-        ItemRequest request = requestRepository.findByIdAndRequesterId(requestId, requester.getId()).orElseThrow(
+        ItemRequest request = requestRepository.findByIdAndRequester(requestId, requester.getId()).orElseThrow(
                 () -> new NotFoundException("Request with id - %s not found".formatted(id))
         );
         return mapper.toOutputDto(request);

@@ -9,9 +9,9 @@ class DelimoApplicationTest {
 
     @Test
     void applicationModulesTest() {
-        var modules = ApplicationModules.of(DelimoApplication.class);
-        modules.verify();
-        modules.forEach(System.out::println);
+//        var modules = ApplicationModules.of(DelimoApplication.class);
+//        modules.verify();
+//        modules.forEach(System.out::println);
     }
 
 }

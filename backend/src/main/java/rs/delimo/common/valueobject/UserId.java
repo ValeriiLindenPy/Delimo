@@ -10,4 +10,7 @@ import java.util.UUID;
 @Validated
 @Embeddable
 public record UserId(@NotNull UUID value) implements Serializable {
+    public static UserId generate() {
+        return new UserId(UUID.randomUUID());
+    }
 }

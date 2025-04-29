@@ -12,5 +12,6 @@ import rs.delimo.user.infrastructure.mapper.UserMapper;
 @Mapper(componentModel = "spring", uses = {UserMapper.class, VoMapper.class})
 public interface RequestMapper {
     @Mapping(source = "id.value", target = "id")
+    @Mapping(source = "requester.value", target = "requester.id")
     RequestOutputDto toOutputDto(ItemRequest request);
 }
