@@ -31,6 +31,9 @@ app:
     dir: uploads
 
 logging:
+  structured:
+    format:
+      console: rs.delimo.config.JsonLogger
   level:
     rs.delimo: debug
     org.springframework.web: debug

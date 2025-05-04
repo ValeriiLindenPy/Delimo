@@ -20,13 +20,13 @@ public class ItemSpecifications {
     public static Specification<Item> from(ItemFilterDto filter) {
         Specification<Item> specification = Specification.where(null);
 
-        if (filter.getOwnerId().isPresent()) {
+        if (filter.getOwnerId() != null) {
             specification = specification.and((root, cq, cb)
                     -> cb.equal(root.get(Item_.OWNER).get("value"), filter.getOwnerId()));
         }
 
-        if (StringUtils.hasText(filter.getCity().get())) {
-            String city = filter.getCity().get();
+        if (StringUtils.hasText(filter.getCity())) {
+            String city = filter.getCity();
             specification = specification.and((root, cq, cb)
                     -> {
                 Subquery<UUID> subquery = cq.subquery(UUID.class);
@@ -39,8 +39,8 @@ public class ItemSpecifications {
             });
         }
 
-        if (StringUtils.hasText(filter.getText().get())) {
-            String text = filter.getText().get().toLowerCase();
+        if (StringUtils.hasText(filter.getText())) {
+            String text = filter.getText().toLowerCase();
             String regEx = "%" + text + "%";
             specification = specification.and((root, cq, cb) -> {
                 Predicate descriptionContain = cb.like(cb.lower(root.get(Item_.DESCRIPTION)), regEx);

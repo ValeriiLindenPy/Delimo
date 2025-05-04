@@ -120,7 +120,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestInputDto'
+              $ref: '#/components/schemas/RequestUpdateDto'
       responses:
         '200':
           description: Updated your request
@@ -681,32 +681,26 @@ components:
   schemas:
     ItemFilterDto:
       type: object
-      nullable: true
+      nullable: false
       properties:
         ownerId:
           type: string
           format: uuid
-          nullable: true
         city:
           type: string
-          nullable: true
         text:
           type: string
-          nullable: true
     RequestFilterDto:
       type: object
-      nullable: true
+      nullable: false
       properties:
         requesterId:
           type: string
           format: uuid
-          nullable: true
         city:
           type: string
-          nullable: true
         text:
           type: string
-          nullable: true
     ItemPageResponse:
       type: object
       nullable: false
@@ -794,6 +788,25 @@ components:
         city:
           type: string
           example: Novi Sad
+        phone:
+          type: string
+        viber:
+          type: string
+    RequestUpdateDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        city:
+          type: string
         phone:
           type: string
         viber:

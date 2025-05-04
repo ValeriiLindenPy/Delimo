@@ -8,16 +8,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.delimo.api.dto.*;
+import rs.delimo.common.client.UserClient;
 import rs.delimo.common.exception.NotFoundException;
 import rs.delimo.common.exception.OwnerException;
 import rs.delimo.common.valueobject.RequestId;
+import rs.delimo.common.valueobject.UserId;
 import rs.delimo.request.domain.ItemRequest;
 import rs.delimo.request.infrastructure.mapper.RequestMapper;
 import rs.delimo.request.infrastructure.repository.RequestRepository;
 import rs.delimo.user.domain.User;
 import rs.delimo.user.infrastructure.repository.UserRepository;
 import static rs.delimo.request.domain.specification.RequestSpecification.from;
-
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,8 +34,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
-    private final UserRepository userRepository;
     private final RequestMapper mapper;
+    private final UserClient userClient;
 
     /**
      * Searches for item requests based on a text query and an optional city filter.
@@ -54,11 +56,21 @@ public class RequestServiceImpl implements RequestService {
                 .totalElements(requests.getTotalElements())
                 .hasNext(requests.hasNext());
 
+        Map<UserId, UserDto> users = userClient.findByIds(
+                requests.getContent().stream()
+                        .map(ItemRequest::getRequester)
+                        .toList()
+        );
+
         return new RequestPageResponse(
                 pageResponse,
                 requests.getContent()
                         .stream()
-                        .map(mapper::toOutputDto)
+                        .map(r -> {
+                            RequestOutputDto dto = mapper.toOutputDto(r);
+                            dto.setRequester(users.get(r.getRequester()));
+                            return dto;
+                        })
                         .toList()
         );
     }
@@ -75,12 +87,11 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     public RequestPageResponse getAllByOwner(int page, int pageSize, User user) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("created").descending());
 
-        User requester = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        UserDto requester = userClient.findByEmail(user.getEmail());
 
-        Page<ItemRequest> requests = requestRepository.findAllByRequester(requester.getId(), pageable);
+        Page<ItemRequest> requests = requestRepository.findAllByRequester(new UserId(requester.getId()), pageable);
 
         PageResponse pageResponse = new PageResponse()
                 .pageNumber(requests.getNumber())
@@ -93,7 +104,11 @@ public class RequestServiceImpl implements RequestService {
                 pageResponse,
                 requests.getContent()
                         .stream()
-                        .map(mapper::toOutputDto)
+                        .map(r -> {
+                            RequestOutputDto dto = mapper.toOutputDto(r);
+                            dto.setRequester(requester);
+                            return dto;
+                        })
                         .toList()
         );
     }
@@ -108,13 +123,16 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     public RequestOutputDto getByUserAndId(UUID id, User user) {
-        User requester = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        UserDto requester = userClient.findByEmail(user.getEmail());
         RequestId requestId = new RequestId(id);
-        ItemRequest request = requestRepository.findByIdAndRequester(requestId, requester.getId()).orElseThrow(
+        ItemRequest request = requestRepository.findByIdAndRequester(requestId, new UserId(requester.getId())).orElseThrow(
                 () -> new NotFoundException("Request with id - %s not found".formatted(id))
         );
-        return mapper.toOutputDto(request);
+
+        RequestOutputDto dto = mapper.toOutputDto(request);
+        dto.setRequester(requester);
+
+        return dto;
     }
 
     /**
@@ -129,20 +147,23 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public RequestOutputDto create(RequestInputDto request, User user) {
-        User requester = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        UserDto requester = userClient.findByEmail(user.getEmail());
 
-        updateUserContactInfo(request, requester);
+        requester = userClient.updateUserContactInfoByRequestCreate(request, requester);
 
         ItemRequest itemRequest = ItemRequest.builder()
                 .description(request.getDescription())
                 .title(request.getTitle())
                 .maxPeriodDays(request.getMaxPeriodDays())
                 .pricePerDay(request.getPricePerDay())
-                .requester(requester.getId())
+                .requester(new UserId(requester.getId()))
                 .build();
 
-        return mapper.toOutputDto(requestRepository.save(itemRequest));
+        RequestOutputDto dto = mapper.toOutputDto(requestRepository.save(itemRequest));
+
+        dto.setRequester(requester);
+
+        return dto;
     }
 
     /**
@@ -159,17 +180,16 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     @Transactional
-    public RequestOutputDto edit(UUID requestID, RequestInputDto request, User user) {
+    public RequestOutputDto edit(UUID requestID, RequestUpdateDto request, User user) {
         RequestId id = new RequestId(requestID);
-        User requester = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        UserDto requester = userClient.findByEmail(user.getEmail());
 
         ItemRequest oldItemRequest = requestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestID)));
 
-        updateUserContactInfo(request, requester);
+        requester = userClient.updateUserContactInfoByRequestUpdate(request, requester);
 
-        if (!Objects.equals(oldItemRequest.getRequester().value(), requester.getId().value())) {
+        if (!Objects.equals(oldItemRequest.getRequester().value(), requester.getId())) {
             throw new OwnerException("Request with id %s does not belong to user with id %s"
                     .formatted(requestID, requester.getId()));
         }
@@ -187,7 +207,11 @@ public class RequestServiceImpl implements RequestService {
             oldItemRequest.setMaxPeriodDays(request.getMaxPeriodDays());
         }
 
-        return mapper.toOutputDto(requestRepository.save(oldItemRequest));
+        RequestOutputDto dto = mapper.toOutputDto(requestRepository.save(oldItemRequest));
+
+        dto.setRequester(requester);
+
+        return dto;
     }
 
     /**
@@ -202,7 +226,9 @@ public class RequestServiceImpl implements RequestService {
     public RequestOutputDto getById(UUID requestId) {
         ItemRequest request = requestRepository.findById(new RequestId(requestId))
                 .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestId)));
-        return mapper.toOutputDto(request);
+        RequestOutputDto dto = mapper.toOutputDto(request);
+        dto.setRequester(userClient.findById(request.getRequester()));
+        return dto;
     }
 
     /**
@@ -216,43 +242,15 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     public void delete(UUID requestId, User user) {
-        User requester = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        UserDto requester = userClient.findByEmail(user.getEmail());
 
         ItemRequest request = requestRepository.findById(new RequestId(requestId))
                 .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestId)));
 
-        if (!Objects.equals(request.getRequester().value(), requester.getId().value())) {
+        if (!Objects.equals(request.getRequester().value(), requester.getId())) {
             throw new OwnerException("Request with id %s does not belong to user with id %s"
-                    .formatted(requestId, requester.getId().value()));
+                    .formatted(requestId, requester.getId()));
         }
         requestRepository.deleteById(new RequestId(requestId));
-    }
-
-    /**
-     * Updates the contact information (city, Viber, and phone) of the requester if the information is missing.
-     * Saves the user record if any updates are made.
-     *
-     * @param request   the {@link RequestInputDto} containing the potential new contact information
-     * @param requester the {@link User} whose contact information may be updated
-     */
-    private void updateUserContactInfo(RequestInputDto request, User requester) {
-        boolean updated = false;
-        if (request.getCity() != null && (requester.getCity() == null || requester.getCity().isBlank())) {
-            requester.setCity(request.getCity());
-            updated = true;
-        }
-
-        if (request.getViber() != null && (requester.getViber() == null || requester.getViber().isBlank())) {
-            requester.setViber(request.getViber());
-            updated = true;
-        }
-        if (request.getPhone() != null && (requester.getPhone() == null || requester.getPhone().isBlank())) {
-            requester.setPhone(request.getPhone());
-            updated = true;
-        }
-        if (updated) {
-            userRepository.save(requester);
-        }
     }
 }

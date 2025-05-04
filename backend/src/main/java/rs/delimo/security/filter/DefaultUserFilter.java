@@ -3,6 +3,7 @@ package rs.delimo.security.filter;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Component("defaultUserFilter")
 @Profile("test")
 @RequiredArgsConstructor
+@Slf4j
 public class DefaultUserFilter implements Filter, CommandLineRunner {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -70,9 +72,9 @@ public class DefaultUserFilter implements Filter, CommandLineRunner {
                     .enabled(true)
                     .build();
             repository.save(defaultUser);
-            System.out.println("Default user created: " + DEFAULT_EMAIL);
+            log.info("Default user created: " + DEFAULT_EMAIL);
         } else {
-            System.out.println("Default user already exists: " + DEFAULT_EMAIL);
+            log.warn("Default user already exists: " + DEFAULT_EMAIL);
         }
     }
 }

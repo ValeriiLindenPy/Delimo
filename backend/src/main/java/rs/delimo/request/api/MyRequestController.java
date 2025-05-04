@@ -38,7 +38,7 @@ public class MyRequestController implements MyItemRequestsApi {
     }
 
     @Override
-    public ResponseEntity<RequestOutputDto> updateMyRequest(UUID id, RequestInputDto requestInputDto) {
+    public ResponseEntity<RequestOutputDto> updateMyRequest(UUID id, RequestUpdateDto requestInputDto) {
         return ResponseEntity.ok(service.edit(id, requestInputDto, getCurrentUser()));
     }
 
