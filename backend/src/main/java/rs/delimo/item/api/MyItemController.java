@@ -3,12 +3,14 @@ package rs.delimo.item.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import rs.delimo.api.controller.MyItemsApi;
 import rs.delimo.api.dto.ItemDto;
 import rs.delimo.api.dto.ItemPageResponse;
 import rs.delimo.api.dto.ItemRequestDto;
+import rs.delimo.api.dto.ItemUpdateDto;
 import rs.delimo.item.application.ItemService;
 import rs.delimo.user.domain.User;
 
@@ -22,9 +24,11 @@ public class MyItemController implements MyItemsApi {
     private final ItemService service;
 
     @Override
-    public ResponseEntity<ItemDto> createMyItem(ItemRequestDto item, List<MultipartFile> images) {
+    public ResponseEntity<ItemDto> createMyItem(
+            @RequestPart("item") ItemRequestDto item,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
         User user = getCurrentUser();
-        return ResponseEntity.ok(service.create(item,user, images));
+        return ResponseEntity.ok(service.create(item, user, images));
     }
 
     @Override
@@ -47,9 +51,13 @@ public class MyItemController implements MyItemsApi {
     }
 
     @Override
-    public ResponseEntity<ItemDto> updateMyItem(UUID id, ItemRequestDto item, String existingImages, List<MultipartFile> images) {
+    public ResponseEntity<ItemDto> updateMyItem(
+            UUID id,
+            @RequestPart("item") ItemUpdateDto item,
+            @RequestPart(value = "existingImages", required = false) String existingImages,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
         User user = getCurrentUser();
-        return ResponseEntity.ok(service.editOne(id, item, user,images, existingImages));
+        return ResponseEntity.ok(service.editOne(id, item, user, images, existingImages));
     }
 
 

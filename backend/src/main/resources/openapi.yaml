@@ -318,7 +318,7 @@ paths:
               type: object
               properties:
                 item:
-                  $ref: '#/components/schemas/ItemRequestDto'
+                  $ref: '#/components/schemas/ItemUpdateDto'
                 existingImages:
                   type: string
                   description: JSON-encoded list of IDs of images to retain
@@ -757,7 +757,6 @@ components:
           format: int64
         hasNext:
           type: boolean
-
     ErrorResponse:
       type: object
       properties:
@@ -841,6 +840,29 @@ components:
         - maxPeriodDays
         - city
         - phone
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        available:
+          type: boolean
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        city:
+          type: string
+        street:
+          type: string
+        phone:
+          type: string
+        viber:
+          type: string
+    ItemUpdateDto:
+      type: object
       properties:
         title:
           type: string

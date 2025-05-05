@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rs.delimo.api.dto.*;
+import rs.delimo.common.client.UserClient;
 import rs.delimo.common.exception.NotFoundException;
 import rs.delimo.common.exception.OwnerException;
+import rs.delimo.common.valueobject.ItemId;
+import rs.delimo.common.valueobject.UserId;
 import rs.delimo.item.domain.Item;
 import rs.delimo.item.domain.service.ImageManager;
 import rs.delimo.item.infrastructure.mapper.ItemMapper;
@@ -22,10 +25,8 @@ import rs.delimo.user.infrastructure.repository.UserRepository;
 
 import static rs.delimo.item.domain.specification.ItemSpecifications.from;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the {@link ItemService} interface.
@@ -42,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemMapper mapper;
-    private final UserRepository userRepository;
+    private final UserClient userClient;
     private final ImageManager imageManager;
     private final ObjectMapper objectMapper;
 
@@ -58,13 +59,15 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public ItemDto getById(UUID itemId) {
         log.info("Fetching item with id: {}", itemId);
-        ItemDto itemDto = itemRepository.findByIdValue(itemId)
-                .map(mapper::toDto)
+        Item item = itemRepository.findById(new ItemId(itemId))
                 .orElseThrow(() -> {
                     log.error("Item with id {} not found", itemId);
                     return new NotFoundException("Item with id - %s not found".formatted(itemId));
                 });
-        log.debug("Retrieved item: {}", itemDto);
+        log.warn("User id - {}", item.getOwner().value());
+        ItemDto itemDto = mapper.toDto(item);
+        itemDto.setOwner(userClient.findById(new UserId(item.getOwner().value())));
+        log.warn("Retrieved item: {}", itemDto);
         return itemDto;
     }
 
@@ -77,20 +80,20 @@ public class ItemServiceImpl implements ItemService {
      * @throws NotFoundException if the user or item is not found
      */
     @Override
+    @Transactional(readOnly = true)
     public ItemDto getByUserAndId(UUID id, User user) {
         log.info("Fetching item with id: {} for user: {}", id, user.getEmail());
-        User owner = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> {
-                    log.error("User not found for email: {}", user.getEmail());
-                    return new NotFoundException("User not found");
-                });
-        ItemDto itemDto = itemRepository.findOneByOwnerValueAndIdValue(owner.getId().value(), id)
+
+        UserDto owner = userClient.findByEmail(user.getEmail());
+
+        ItemDto itemDto = itemRepository.findOneByOwnerAndId(new UserId(owner.getId()), new ItemId(id))
                 .map(mapper::toDto)
                 .orElseThrow(() -> {
                     log.error("Item with id {} not found for user id {}", id, owner.getId());
                     return new NotFoundException("Item with id - %s not found".formatted(id));
                 });
         log.info("Retrieved item: {}", itemDto);
+        itemDto.setOwner(owner);
         return itemDto;
     }
 
@@ -112,27 +115,24 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     @Transactional
-    public ItemDto editOne(UUID itemId, ItemRequestDto item, User user, List<MultipartFile> images, String existingImagesJson) {
+    public ItemDto editOne(UUID itemId, ItemUpdateDto item, User user, List<MultipartFile> images, String existingImagesJson) {
         log.info("User {} is editing item with id {}", user.getEmail(), itemId);
-        User owner = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> {
-                    log.error("User not found for email: {}", user.getEmail());
-                    return new NotFoundException("User not found");
-                });
 
-        Item oldItem = itemRepository.findByIdValue(itemId)
+        UserDto owner = userClient.findByEmail(user.getEmail());
+
+        Item oldItem = itemRepository.findById(new ItemId(itemId))
                 .orElseThrow(() -> {
                     log.error("Item with id {} not found", itemId);
                     return new NotFoundException("Item with id - %s not found".formatted(itemId));
                 });
 
-        if (!Objects.equals(oldItem.getOwner().value(), owner.getId().value())) {
+        if (!Objects.equals(oldItem.getOwner().value(), owner.getId())) {
             log.error("Owner mismatch: item id {} does not belong to user id {}", itemId, owner.getId());
             throw new OwnerException("Item with id %s does not belong to user with id %s"
                     .formatted(itemId, owner.getId()));
         }
 
-        updateUserContactInfo(item, owner);
+        owner = userClient.updateUserContactInfoByItemUpdate(item, owner);
 
         List<String> existingImageUrls = new ArrayList<>();
         if (existingImagesJson != null && !existingImagesJson.isBlank()) {
@@ -179,6 +179,7 @@ public class ItemServiceImpl implements ItemService {
 
         ItemDto updatedItem = mapper.toDto(itemRepository.save(oldItem));
         log.info("Item with id {} updated successfully", itemId);
+        updatedItem.setOwner(owner);
         return updatedItem;
     }
 
@@ -194,24 +195,22 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public void delete(UUID itemId, User user) {
         log.info("User {} requested deletion of item with id {}", user.getEmail(), itemId);
-        User owner = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> {
-                    log.error("User not found for email: {}", user.getEmail());
-                    return new NotFoundException("User not found");
-                });
-        Item oldItem = itemRepository.findByIdValue(itemId)
+
+        UserDto owner = userClient.findByEmail(user.getEmail());
+
+        Item oldItem = itemRepository.findById(new ItemId(itemId))
                 .orElseThrow(() -> {
                     log.error("Item with id {} not found", itemId);
                     return new NotFoundException("Item with id - %s not found".formatted(itemId));
                 });
 
-        if (!Objects.equals(oldItem.getOwner().value(), owner.getId().value())) {
+        if (!Objects.equals(oldItem.getOwner().value(), owner.getId())) {
             log.error("Owner mismatch: item id {} does not belong to user id {}", itemId, owner.getId());
             throw new OwnerException("Item with id %s does not belong to user with id %s"
                     .formatted(itemId, owner.getId()));
         }
 
-        itemRepository.deleteByIdValue(itemId);
+        itemRepository.deleteById(new ItemId(itemId));
         log.info("Item with id {} deleted successfully", itemId);
     }
 
@@ -245,11 +244,20 @@ public class ItemServiceImpl implements ItemService {
                 .totalElements(items.getTotalElements())
                 .hasNext(items.hasNext());
 
+        Set<UserId> userIds = items.getContent().stream().map(Item::getOwner)
+                .collect(Collectors.toSet());
+
+        Map<UserId, UserDto> users = userClient.findByIds(userIds);
+
         return new ItemPageResponse(
                 pageResponse,
                 items.getContent()
                         .stream()
-                        .map(mapper::toDto)
+                        .map(item -> {
+                            ItemDto dto = mapper.toDto(item);
+                            dto.setOwner(users.get(item.getOwner()));
+                            return dto;
+                        })
                         .toList()
         );
     }
@@ -258,7 +266,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemPageResponse getAll(User user, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
 
-        Page<Item> items = itemRepository.findAllByOwnerValue(user.getId().value(), pageable);
+        Page<Item> items = itemRepository.findAllByOwner(user.getId(), pageable);
 
         PageResponse pageResponse = new PageResponse()
                 .pageNumber(items.getNumber())
@@ -267,11 +275,20 @@ public class ItemServiceImpl implements ItemService {
                 .totalElements(items.getTotalElements())
                 .hasNext(items.hasNext());
 
+        Set<UserId> userIds = items.getContent().stream().map(Item::getOwner)
+                .collect(Collectors.toSet());
+
+        Map<UserId, UserDto> users = userClient.findByIds(userIds);
+
         return new ItemPageResponse(
                 pageResponse,
                 items.getContent()
                         .stream()
-                        .map(mapper::toDto)
+                        .map(item -> {
+                            ItemDto dto = mapper.toDto(item);
+                            dto.setOwner(users.get(item.getOwner()));
+                            return dto;
+                        })
                         .toList()
         );
     }
@@ -294,13 +311,10 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto create(ItemRequestDto item, User user, List<MultipartFile> images) {
         log.info("User {} is creating a new item", user.getEmail());
-        User owner = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> {
-                    log.error("User not found for email: {}", user.getEmail());
-                    return new NotFoundException("User not found");
-                });
 
-        updateUserContactInfo(item, owner);
+        UserDto owner = userClient.findByEmail(user.getEmail());
+
+        owner = userClient.updateUserContactInfoByItemCreate(item, owner);
 
         log.warn("Starting image upload for new item");
         List<String> imageUrls = imageManager.uploadImages(images);
@@ -309,44 +323,11 @@ public class ItemServiceImpl implements ItemService {
         Item newItem = mapper.toEntity(item);
         newItem.setImages(imageUrls);
         newItem.setAvailable(true);
-        newItem.setOwner(owner.getId());
+        newItem.setOwner(new UserId(owner.getId()));
 
         ItemDto createdItem = mapper.toDto(itemRepository.save(newItem));
         log.info("Item created successfully with id {}", createdItem.getId());
+        createdItem.setOwner(owner);
         return createdItem;
-    }
-
-    /**
-     * Updates the owner's contact information if it is not already set.
-     *
-     * @param item  the item data containing contact information
-     * @param owner the owner whose contact information should be updated
-     */
-    private void updateUserContactInfo(ItemRequestDto item, User owner) {
-        boolean updated = false;
-        if (item.getCity() != null && (owner.getCity() == null || owner.getCity().isBlank())) {
-            owner.setCity(item.getCity());
-            updated = true;
-            log.debug("Updated owner's city to '{}'", item.getCity());
-        }
-        if (item.getStreet() != null && (owner.getStreet() == null || owner.getStreet().isBlank())) {
-            owner.setStreet(item.getStreet());
-            updated = true;
-            log.debug("Updated owner's street to '{}'", item.getStreet());
-        }
-        if (item.getViber() != null && (owner.getViber() == null || owner.getViber().isBlank())) {
-            owner.setViber(item.getViber());
-            updated = true;
-            log.debug("Updated owner's Viber to '{}'", item.getViber());
-        }
-        if (item.getPhone() != null && (owner.getPhone() == null || owner.getPhone().isBlank())) {
-            owner.setPhone(item.getPhone());
-            updated = true;
-            log.debug("Updated owner's phone to '{}'", item.getPhone());
-        }
-        if (updated) {
-            userRepository.save(owner);
-            log.info("Owner contact information updated for user {}", owner.getEmail());
-        }
     }
 }

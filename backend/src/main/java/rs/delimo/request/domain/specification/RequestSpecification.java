@@ -34,8 +34,8 @@ public class RequestSpecification {
                         .where(cb.equal(userRoot.get(User_.CITY), city));
 
                 return root
-                        .get(ItemRequest_.REQUESTER)   // UserId
-                        .get("value")                  // UUID
+                        .get(ItemRequest_.REQUESTER)
+                        .get("value")
                         .in(subquery);
             });
         }

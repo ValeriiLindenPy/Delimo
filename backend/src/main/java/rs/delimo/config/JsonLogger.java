@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.boot.json.JsonWriter;
 import org.springframework.boot.logging.structured.StructuredLogFormatter;
 
+
 import java.io.IOException;
 
 public class JsonLogger implements StructuredLogFormatter<ILoggingEvent> {
@@ -15,6 +16,9 @@ public class JsonLogger implements StructuredLogFormatter<ILoggingEvent> {
     private final JsonWriter<ILoggingEvent> writer = JsonWriter.<ILoggingEvent>of(members -> {
         members.add("Level", e -> e.getLevel().toString());
         members.add("Message", ILoggingEvent::getFormattedMessage);
+        members.add("profile", e ->
+                System.getProperty("spring.profiles.active", "")
+        );
         members.add("timestamp", e -> String.valueOf(e.getTimeStamp()));
         members.add("class", e -> {
             StackTraceElement[] callerData = e.getCallerData();

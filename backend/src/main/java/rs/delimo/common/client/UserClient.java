@@ -1,8 +1,6 @@
 package rs.delimo.common.client;
 
-import rs.delimo.api.dto.RequestInputDto;
-import rs.delimo.api.dto.RequestUpdateDto;
-import rs.delimo.api.dto.UserDto;
+import rs.delimo.api.dto.*;
 import rs.delimo.common.valueobject.UserId;
 
 import java.util.Collection;
@@ -19,4 +17,8 @@ public interface UserClient {
     UserDto updateUserContactInfoByRequestUpdate(RequestUpdateDto request, UserDto requester);
 
     UserDto updateUserContactInfoByRequestCreate(RequestInputDto request, UserDto requester);
+
+    UserDto updateUserContactInfoByItemUpdate(ItemUpdateDto item, UserDto owner);
+
+    UserDto updateUserContactInfoByItemCreate(ItemRequestDto item, UserDto owner);
 }

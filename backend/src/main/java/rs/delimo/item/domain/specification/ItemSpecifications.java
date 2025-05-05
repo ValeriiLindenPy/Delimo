@@ -7,8 +7,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import rs.delimo.api.dto.ItemFilterDto;
+import rs.delimo.common.valueobject.UserId;
 import rs.delimo.item.domain.Item;
 import rs.delimo.item.domain.Item_;
+import rs.delimo.request.domain.ItemRequest_;
 import rs.delimo.user.domain.User;
 import rs.delimo.user.domain.User_;
 
@@ -22,20 +24,21 @@ public class ItemSpecifications {
 
         if (filter.getOwnerId() != null) {
             specification = specification.and((root, cq, cb)
-                    -> cb.equal(root.get(Item_.OWNER).get("value"), filter.getOwnerId()));
+                    -> cb.equal(root.get(Item_.OWNER), new UserId(filter.getOwnerId())));
         }
 
         if (StringUtils.hasText(filter.getCity())) {
             String city = filter.getCity();
-            specification = specification.and((root, cq, cb)
-                    -> {
+            specification = specification.and((root, cq, cb) -> {
                 Subquery<UUID> subquery = cq.subquery(UUID.class);
                 Root<User> userRoot = subquery.from(User.class);
                 subquery.select(userRoot.get(User_.id).get("value"))
                         .where(cb.equal(userRoot.get(User_.CITY), city));
 
-                return root.get(Item_.OWNER).in(subquery);
-
+                return root
+                        .get(Item_.OWNER)
+                        .get("value")
+                        .in(subquery);
             });
         }
 

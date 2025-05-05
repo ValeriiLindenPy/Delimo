@@ -36,5 +36,7 @@ logging:
       console: rs.delimo.config.JsonLogger
   level:
     rs.delimo: debug
-    org.springframework.web: debug
+  logback:
+    context-properties:
+      appName: ${spring.application.name}
 

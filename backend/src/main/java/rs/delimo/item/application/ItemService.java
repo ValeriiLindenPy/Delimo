@@ -16,7 +16,7 @@ public interface ItemService {
 
     ItemDto getByUserAndId(UUID id, User user);
 
-    ItemDto editOne(UUID itemId, ItemRequestDto item, User user, List<MultipartFile> images, String existingImagesJson);
+    ItemDto editOne(UUID itemId, ItemUpdateDto item, User user, List<MultipartFile> images, String existingImagesJson);
 
     void delete(UUID itemId, User user);
 
