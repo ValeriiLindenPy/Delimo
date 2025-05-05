@@ -1,14 +1,14 @@
 spring:
   docker:
     compose:
-      enabled: true
+      enabled: false
       file: compose.yml
 
   application:
     name: delimo-test
 
   datasource:
-    url: jdbc:postgresql://localhost:${LOCAL_PORT_5432:-5432}/delimo
+    url: jdbc:postgresql://${HOST_NAME:localhost}:5432/delimo
     username: dbuser
     password: 12345
 

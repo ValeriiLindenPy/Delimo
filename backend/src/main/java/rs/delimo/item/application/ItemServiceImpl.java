@@ -21,7 +21,6 @@ import rs.delimo.item.domain.service.ImageManager;
 import rs.delimo.item.infrastructure.mapper.ItemMapper;
 import rs.delimo.item.infrastructure.repository.ItemRepository;
 import rs.delimo.user.domain.User;
-import rs.delimo.user.infrastructure.repository.UserRepository;
 
 import static rs.delimo.item.domain.specification.ItemSpecifications.from;
 

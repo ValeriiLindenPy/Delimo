@@ -10,7 +10,6 @@ import rs.delimo.api.dto.ItemFilterDto;
 import rs.delimo.common.valueobject.UserId;
 import rs.delimo.item.domain.Item;
 import rs.delimo.item.domain.Item_;
-import rs.delimo.request.domain.ItemRequest_;
 import rs.delimo.user.domain.User;
 import rs.delimo.user.domain.User_;
 
