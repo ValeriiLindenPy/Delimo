@@ -154,6 +154,35 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /requests:
+    get:
+      tags:
+        - Item Requests
+      operationId: listRequests
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: All requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
   /requests/{id}:
     get:
       tags:
@@ -182,7 +211,7 @@ paths:
     post:
       tags:
         - Item Requests
-      operationId: listRequests
+      operationId: searchRequests
       security: [ ]
       requestBody:
         required: false
@@ -235,7 +264,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/ItemPageResponse'
+                $ref: '#/components/schemas/ItemPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -360,11 +389,41 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /items:
+    get:
+      tags:
+        - Items
+      operationId: listItems
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: all items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
   /items/search:
     post:
       tags:
         - Items
-      operationId: listItems
+      operationId: searchItems
       security: []
       requestBody:
         required: false
@@ -626,7 +685,28 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
-
+  /users/data:
+    get:
+      tags:
+        - Users
+      operationId: getUserData
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: User profile data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /emails/feedback:
     post:
       tags:

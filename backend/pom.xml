@@ -135,6 +135,14 @@
             <version>${spring-boot-docker-compose.version}</version>
         </dependency>
 
+        <!-- S3-->
+        <dependency>
+            <groupId>io.awspring.cloud</groupId>
+            <artifactId>spring-cloud-aws-starter-s3</artifactId>
+            <scope>compile</scope>
+            <version>3.3.0</version>
+        </dependency>
+
         <!-- Spring Modulith -->
         <dependency>
             <groupId>org.springframework.modulith</groupId>

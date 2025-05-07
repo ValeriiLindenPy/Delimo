@@ -292,6 +292,37 @@ public class ItemServiceImpl implements ItemService {
         );
     }
 
+    @Override
+    public ItemPageResponse listItems(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
+
+        Page<Item> items = itemRepository.findAll(pageable);
+
+        PageResponse pageResponse = new PageResponse()
+                .pageNumber(items.getNumber())
+                .pageSize(items.getSize())
+                .totalPages(items.getTotalPages())
+                .totalElements(items.getTotalElements())
+                .hasNext(items.hasNext());
+
+        Set<UserId> userIds = items.getContent().stream().map(Item::getOwner)
+                .collect(Collectors.toSet());
+
+        Map<UserId, UserDto> users = userClient.findByIds(userIds);
+
+        return new ItemPageResponse(
+                pageResponse,
+                items.getContent()
+                        .stream()
+                        .map(item -> {
+                            ItemDto dto = mapper.toDto(item);
+                            dto.setOwner(users.get(item.getOwner()));
+                            return dto;
+                        })
+                        .toList()
+        );
+    }
+
 
     /**
      * Creates a new item.

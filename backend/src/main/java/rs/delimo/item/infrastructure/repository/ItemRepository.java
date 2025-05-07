@@ -30,4 +30,9 @@ public interface ItemRepository extends JpaRepository<Item, ItemId>, JpaSpecific
 
     @EntityGraph(attributePaths = "images")
     Optional<Item> findOneByOwnerAndId(UserId userId, ItemId id);
+
+
+    @Override
+    @EntityGraph(attributePaths = "images")
+    Page<Item> findAll(Pageable pageable);
 }

@@ -21,7 +21,12 @@ public class RequestController implements ItemRequestsApi {
     }
 
     @Override
-    public ResponseEntity<RequestPageResponse> listRequests(Integer page, Integer size, RequestFilterDto requestFilterDto) {
+    public ResponseEntity<RequestPageResponse> listRequests(Integer page, Integer size) {
+        return ResponseEntity.ok(service.listRequests(page, size));
+    }
+
+    @Override
+    public ResponseEntity<RequestPageResponse> searchRequests(Integer page, Integer size, RequestFilterDto requestFilterDto) {
         return ResponseEntity.ok(service.search(page, size, requestFilterDto));
     }
 }

@@ -3,7 +3,10 @@
   <PopUpModal :is-active="isPopUp" @close="togglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
       <h1>Stvar je promenjena uspešno!</h1>
-      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="togglePopUp">
+      <button
+          class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
+          @click="togglePopUp"
+      >
         Hvala!
       </button>
     </div>
@@ -11,7 +14,10 @@
 
   <Loader v-if="isLoading" />
 
-  <div v-else class="flex justify-center mt-2 items-center md:container flex-col">
+  <div
+      v-else
+      class="flex justify-center mt-2 items-center md:container flex-col"
+  >
     <div class="flex flex-col w-full bg-st2 p-4 rounded-lg md:w-1/2">
       <h1 class="text-2xl font-bold mb-4">Izmeni stvar</h1>
 
@@ -40,7 +46,9 @@
 
           <!-- Maksimalni period (dani) -->
           <div class="mb-4">
-            <label for="maxDays" class="text-sm font-medium text-st5">Maksimalni period (dani)</label>
+            <label for="maxDays" class="text-sm font-medium text-st5"
+            >Maksimalni period (dani)</label
+            >
             <input
                 id="maxDays"
                 type="number"
@@ -84,12 +92,16 @@
                 class="mr-2 scale-125 accent-st5"
                 type="checkbox"
             />
-            <label for="available" class="text-sm font-medium text-st5">Dostupno</label>
+            <label for="available" class="text-sm font-medium text-st5"
+            >Dostupno</label
+            >
           </div>
 
           <!-- Telefon -->
-          <div>
-            <label for="phone" class="text-sm font-medium text-st5">Telefon</label>
+          <div class="mb-4">
+            <label for="phone" class="text-sm font-medium text-st5"
+            >Telefon</label
+            >
             <input
                 id="phone"
                 type="text"
@@ -101,7 +113,7 @@
           </div>
 
           <!-- Viber -->
-          <div>
+          <div class="mb-4">
             <label for="viber" class="text-sm font-medium text-st5">Viber</label>
             <input
                 id="viber"
@@ -113,7 +125,7 @@
           </div>
 
           <!-- Grad -->
-          <div>
+          <div class="mb-4">
             <label for="city" class="text-sm font-medium text-st5">Grad</label>
             <select
                 id="city"
@@ -128,7 +140,7 @@
           </div>
 
           <!-- Ulica -->
-          <div>
+          <div class="mb-4">
             <label for="street" class="text-sm font-medium text-st5">Ulica</label>
             <input
                 id="street"
@@ -142,7 +154,9 @@
 
           <!-- Fotografije -->
           <div class="mb-4">
-            <label class="text-sm font-medium text-st5">Fotografije (maks. 5)</label>
+            <label class="text-sm font-medium text-st5"
+            >Fotografije (maks. 5)</label
+            >
             <div
                 class="cursor-pointer bg-gray-400 p-3 rounded-lg mt-2 text-center hover:bg-st5 hover:text-white flex items-center justify-center"
             >
@@ -160,12 +174,10 @@
               </label>
             </div>
 
-            <!-- Вывод сообщения об ошибке -->
             <div v-if="imageError" class="text-red-500 mt-2">
               {{ imageError }}
             </div>
 
-            <!-- Просмотр фотографий -->
             <div class="flex flex-wrap gap-4 mt-2">
               <div
                   v-for="(image, index) in formData.images"
@@ -223,7 +235,7 @@ export default {
     return {
       store: useAuthStore(),
       cities,
-      id: Number(this.$route.params.id),
+      id: String(this.$route.params.id),
       isPopUp: false,
       isLoading: false,
       post: null,
@@ -288,12 +300,10 @@ export default {
           this.imageError = `Slika "${file.name}" nije podržana. Dozvoljeni formati: JPG, JPEG, PNG.`;
           return;
         }
-
         if (file.size > maxSize) {
           this.imageError = `Slika "${file.name}" je prevelika. Maksimalna veličina je 10MB.`;
           return;
         }
-
         validFiles.push(file);
       }
 
@@ -302,7 +312,7 @@ export default {
         reader.onload = (e) => {
           this.formData.images.push({
             preview: e.target.result,
-            file: file,
+            file,
           });
         };
         reader.readAsDataURL(file);
@@ -332,31 +342,34 @@ export default {
     async updatePost() {
       this.isLoading = true;
       try {
+        const item = {
+          title: this.formData.title,
+          description: this.formData.description,
+          pricePerDay: this.formData.isFree ? 0 : this.formData.pricePerDay,
+          available: this.formData.available,
+          maxPeriodDays: this.formData.maxPeriodDays,
+          phone: this.formData.phone,
+          viber: this.formData.viber,
+          city: this.formData.city,
+          street: this.formData.street,
+        };
+
         const formData = new FormData();
-
-        formData.append("title", this.formData.title || "");
-        formData.append("description", this.formData.description || "");
         formData.append(
-            "pricePerDay",
-            this.formData.isFree ? "0" : this.formData.pricePerDay || ""
+            "item",
+            new Blob([JSON.stringify(item)], { type: "application/json" })
         );
-        formData.append("available", this.formData.available ? "true" : "false");
-        formData.append("maxPeriodDays", this.formData.maxPeriodDays || "1");
-        formData.append("phone", this.formData.phone || "");
-        formData.append("viber", this.formData.viber || "");
-        formData.append("city", this.formData.city || "");
-        formData.append("street", this.formData.street || "");
-
-        this.formData.images.forEach((image) => {
-          if (image.file) {
-            formData.append("image", image.file);
-          }
-        });
 
         const existingImages = this.formData.images
             .filter((img) => !img.file)
             .map((img) => img.preview);
         formData.append("existingImages", JSON.stringify(existingImages));
+
+        this.formData.images.forEach((image) => {
+          if (image.file) {
+            formData.append("images", image.file);
+          }
+        });
 
         const response = await updateItem(this.id, formData);
         if (response.status === 200) {

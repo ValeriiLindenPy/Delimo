@@ -69,7 +69,7 @@ export default {
   },
   async created() {
     const route = useRoute()
-    const itemId = Number(route.params.id)
+    const itemId = String(route.params.id)
 
     try {
       this.item = (await getItem(itemId)).data

@@ -29,8 +29,12 @@ public class ItemController implements ItemsApi {
     }
 
     @Override
-    public ResponseEntity<ItemPageResponse> listItems(Integer page, Integer pageSize, ItemFilterDto itemFilterDto) {
-        return ResponseEntity.ok(service.search(page, pageSize, itemFilterDto));
+    public ResponseEntity<ItemPageResponse> listItems(Integer page, Integer size) {
+        return ResponseEntity.ok(service.listItems(page, size));
     }
 
+    @Override
+    public ResponseEntity<ItemPageResponse> searchItems(Integer page, Integer pageSize, ItemFilterDto itemFilterDto) {
+        return ResponseEntity.ok(service.search(page, pageSize, itemFilterDto));
+    }
 }

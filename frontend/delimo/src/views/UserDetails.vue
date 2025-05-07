@@ -48,11 +48,11 @@ export default {
   },
   methods: {
     goItems() {
-      const userId = Number(this.$route.params.id);
+      const userId = String(this.$route.params.id);
       this.$router.push("/users/" + userId + "/items");
     },
     goRequests() {
-      const userId = Number(this.$route.params.id);
+      const userId = String(this.$route.params.id);
       this.$router.push("/users/" + userId + "/requests");
     },
   }

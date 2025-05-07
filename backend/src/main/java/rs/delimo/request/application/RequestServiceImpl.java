@@ -75,6 +75,38 @@ public class RequestServiceImpl implements RequestService {
         );
     }
 
+    @Override
+    public RequestPageResponse listRequests(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
+
+        Page<ItemRequest> requests = requestRepository.findAll(pageable);
+
+        PageResponse pageResponse = new PageResponse()
+                .pageNumber(requests.getNumber())
+                .pageSize(requests.getSize())
+                .totalPages(requests.getTotalPages())
+                .totalElements(requests.getTotalElements())
+                .hasNext(requests.hasNext());
+
+        Map<UserId, UserDto> users = userClient.findByIds(
+                requests.getContent().stream()
+                        .map(ItemRequest::getRequester)
+                        .toList()
+        );
+
+        return new RequestPageResponse(
+                pageResponse,
+                requests.getContent()
+                        .stream()
+                        .map(r -> {
+                            RequestOutputDto dto = mapper.toOutputDto(r);
+                            dto.setRequester(users.get(r.getRequester()));
+                            return dto;
+                        })
+                        .toList()
+        );
+    }
+
     /**
      * Retrieves all item requests belonging to the specified owner.
      * The results are paginated.

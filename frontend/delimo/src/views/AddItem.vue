@@ -1,25 +1,40 @@
 <template>
-  <PopUpModal :is-active="isPopUp" @close="tooglePopUp">
+  <!-- Попап при успешном создании -->
+  <PopUpModal :is-active="isPopUp" @close="togglePopUp">
     <div class="flex flex-col items-center justify-center gap-2">
-      <h1>Strvar je kreirana uspesno!</h1>
-      <button class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition" @click="goItem">Hvala!</button>
+      <h1>Stvar je kreirana uspešno!</h1>
+      <button
+          class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
+          @click="goToItem"
+      >
+        Hvala!
+      </button>
     </div>
   </PopUpModal>
 
+  <!-- Форма добавления вещи -->
   <div class="flex justify-center mt-2 items-center md:container">
     <div class="bg-st2 md:rounded-lg w-full md:w-1/2 p-4 text-center">
       <h1 class="text-2xl mb-4">Dodaj stvar</h1>
+
+      <!-- Лоадер -->
       <div v-if="loading" class="flex items-center justify-center h-svh">
-        <Loader/>
+        <Loader />
       </div>
-      <form v-else @submit.prevent="submitForm" class="flex flex-col text-start space-y-4">
-        <!-- Name -->
+
+      <!-- Форма -->
+      <form
+          v-else
+          @submit.prevent="submitForm"
+          class="flex flex-col text-start space-y-4"
+      >
+        <!-- Title -->
         <div>
-          <label for="name" class="text-sm font-medium text-st5">Naslov</label>
+          <label for="title" class="text-sm font-medium text-st5">Naslov</label>
           <input
-              id="name"
-              type="text"
+              id="title"
               v-model="formData.title"
+              type="text"
               class="w-full mt-1 p-2 border rounded-md text-st5"
               placeholder="Unesite naslov stvari"
               required
@@ -33,47 +48,49 @@
               id="description"
               v-model="formData.description"
               class="w-full mt-1 p-2 border rounded-md text-st5"
-              placeholder="Unesite opis stvari"
               rows="4"
+              placeholder="Unesite opis stvari"
               required
           ></textarea>
         </div>
 
-        <!-- Max rent period -->
+        <!-- Max period -->
         <div>
-          <label for="maxDays" class="text-sm font-medium text-st5">Maksimalni period (dani)</label>
+          <label for="maxDays" class="text-sm font-medium text-st5"
+          >Maksimalni period (dani)</label
+          >
           <input
               id="maxDays"
+              v-model.number="formData.maxPeriodDays"
               type="number"
-              v-model="formData.maxPeriodDays"
-              class="w-full mt-1 p-2 border rounded-md text-st4"
               min="1"
+              class="w-full mt-1 p-2 border rounded-md text-st4"
               placeholder="Unesite maksimalni broj dana"
               required
           />
         </div>
 
-        <!-- Price -->
+        <!-- Price / Free -->
         <div class="flex flex-col">
           <label for="price" class="text-sm font-medium text-st5">Cena</label>
           <div class="flex items-center gap-4">
             <input
                 id="price"
-                type="number"
-                v-model="formData.pricePerDay"
+                v-model.number="formData.pricePerDay"
                 :disabled="isFree"
-                class="w-full mt-1 p-2 border rounded-md text-st5"
-                placeholder="100.00 RSD"
+                type="number"
                 min="0"
                 step="0.01"
+                class="w-full mt-1 p-2 border rounded-md text-st5"
+                placeholder="100.00 RSD"
                 required
             />
             <div class="flex items-center gap-1">
               <input
-                  class="accent-st5 scale-125"
-                  type="checkbox"
-                  v-model="isFree"
                   id="besplatno"
+                  v-model="isFree"
+                  type="checkbox"
+                  class="accent-st5 scale-125"
               />
               <p>besplatno</p>
             </div>
@@ -85,8 +102,8 @@
           <label for="phone" class="text-sm font-medium text-st5">Telefon</label>
           <input
               id="phone"
-              type="text"
               v-model="formData.phone"
+              type="text"
               class="w-full mt-1 p-2 border rounded-md text-st5"
               placeholder="+381 ..."
               required
@@ -98,21 +115,21 @@
           <label for="viber" class="text-sm font-medium text-st5">Viber</label>
           <input
               id="viber"
-              type="text"
               v-model="formData.viber"
+              type="text"
               class="w-full mt-1 p-2 border rounded-md text-st5"
               placeholder="+381 ..."
           />
         </div>
 
-        <!-- Location -->
-
+        <!-- City -->
         <div>
           <label for="city" class="text-sm font-medium text-st5">Grad</label>
           <select
               id="city"
               v-model="formData.city"
               class="w-full mt-1 p-2 border rounded-md text-st5"
+              required
           >
             <option value="" disabled>Izaberite grad</option>
             <option v-for="city in cities" :key="city.id" :value="city.name">
@@ -121,52 +138,52 @@
           </select>
         </div>
 
-
+        <!-- Street -->
         <div>
           <label for="street" class="text-sm font-medium text-st5">Ulica</label>
           <input
               id="street"
-              type="text"
               v-model="formData.street"
+              type="text"
               class="w-full mt-1 p-2 border rounded-md text-st5"
               placeholder="Unesite lokaciju (grad, adresa)"
               required
           />
         </div>
 
-        <!-- Upload photos -->
+        <!-- Photos upload -->
         <div>
           <label class="text-sm font-medium text-st5">Fotografije (maks. 5)</label>
           <div
               class="cursor-pointer bg-gray-400 p-3 rounded-lg mt-2 text-center hover:bg-st5 hover:text-white flex items-center justify-center"
           >
-            <label for="custom-file-input" class="w-full">
+            <label for="file-input" class="w-full">
               Kliknite da dodate fotografije
               <input
-                  id="custom-file-input"
+                  id="file-input"
                   type="file"
-                  @change="handleFileUpload"
-                  class="hidden"
                   accept="image/*"
                   multiple
+                  class="hidden"
+                  @change="handleFileUpload"
               />
             </label>
           </div>
           <ul class="mt-2">
             <li
-                v-for="(file, index) in uploadedFiles"
-                :key="index"
+                v-for="(file, i) in uploadedFiles"
+                :key="i"
                 class="text-sm text-st5"
             >
               {{ file.name }}
             </li>
           </ul>
-        </div>
-        <div v-if="imageError" class="text-red-500">
-          {{imageError}}
+          <div v-if="imageError" class="text-red-500 mt-1">
+            {{ imageError }}
+          </div>
         </div>
 
-        <!-- Submit button -->
+        <!-- Submit -->
         <button
             type="submit"
             class="bg-st3 text-white font-medium py-2 px-4 rounded-md hover:bg-st4 transition"
@@ -178,130 +195,114 @@
   </div>
 </template>
 
-
 <script>
-import {useAuthStore} from "@/stores/auth.js";
+import { useAuthStore } from "@/stores/auth.js";
 import PopUpModal from "@/components/UI/PopUpModal.vue";
-import { cities } from "@/assets/cities.js";
-import {createItem} from "@/services/itemService.js";
-import router from "@/router/index.js";
 import Loader from "@/components/UI/Loader.vue";
-
+import { cities } from "@/assets/cities.js";
+import { createItem } from "@/services/itemService.js";
+import router from "@/router/index.js";
 
 export default {
   name: "AddItem",
-  components: {Loader, PopUpModal },
+  components: { Loader, PopUpModal },
   data() {
-    const store = useAuthStore();
     return {
-      imageError: null,
-      itemId: null,
-      loading: false,
-      router,
-      store,
+      store: useAuthStore(),
       cities,
       isPopUp: false,
+      loading: false,
+      imageError: null,
       uploadedFiles: [],
+      itemId: null,
+      isFree: false,
       formData: {
         title: "",
         description: "",
-        maxPeriodDays: null,
+        maxPeriodDays: 1,
         street: "",
         city: "",
         pricePerDay: null,
         phone: "",
         viber: "",
       },
-      isFree: false,
     };
   },
   mounted() {
     if (this.store.profile) {
-      this.formData.phone = this.store.profile.phone || "";
-      this.formData.viber = this.store.profile.viber || "";
-      this.formData.street = this.store.profile.street || "";
-      this.formData.city = this.store.profile.city || "";
+      Object.assign(this.formData, {
+        phone: this.store.profile.phone || "",
+        viber: this.store.profile.viber || "",
+        street: this.store.profile.street || "",
+        city: this.store.profile.city || "",
+      });
     }
   },
   methods: {
-    tooglePopUp() {
+    togglePopUp() {
       this.isPopUp = !this.isPopUp;
     },
+    goToItem() {
+      this.togglePopUp();
+      if (this.itemId) {
+        router.push(`/items/${this.itemId}`);
+      }
+    },
     handleFileUpload(event) {
-      const maxSize = 10 * 1024 * 1024;
-      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+      const MAX_FILES = 5;
+      const MAX_SIZE = 10 * 1024 * 1024;
+      const ALLOWED = ["image/jpeg", "image/png", "image/jpg"];
       const files = Array.from(event.target.files);
-      let validFiles = [];
 
       for (const file of files) {
-        if (!allowedTypes.includes(file.type)) {
-          this.imageError = `Slika "${file.name}" nije podržana. Dozvoljeni formati: JPG, JPEG, PNG.`;
+        if (!ALLOWED.includes(file.type)) {
+          this.imageError = `Slika \"${file.name}\" nije podržana.`;
           return;
         }
-
-        if (file.size > maxSize) {
-          this.imageError = `Slika "${file.name}" je prevelika. Maksimalna veličina je 10MB.`;
+        if (file.size > MAX_SIZE) {
+          this.imageError = `Slika \"${file.name}\" je prevelika.`;
           return;
         }
-
-        validFiles.push(file);
       }
 
-      if (this.uploadedFiles.length + validFiles.length > 5) {
+      if (this.uploadedFiles.length + files.length > MAX_FILES) {
         this.imageError = "Možete dodati najviše 5 fotografija.";
         return;
       }
 
-      this.uploadedFiles = [...this.uploadedFiles, ...validFiles];
+      this.uploadedFiles.push(...files);
       this.imageError = null;
     },
-    goItem() {
-      this.tooglePopUp();
-      if (this.itemId) {
-        this.$router.push(`/items/${this.itemId}`);
-      }
-    },
     async submitForm() {
-
-      const formData = new FormData();
-      formData.append("title", this.formData.title);
-      formData.append("description", this.formData.description);
-      formData.append("maxPeriodDays", this.formData.maxPeriodDays);
-      formData.append("street", this.formData.street);
-      formData.append("city", this.formData.city);
-      formData.append("pricePerDay", this.isFree ? 0 : this.formData.pricePerDay);
-      formData.append("phone", this.formData.phone);
-      formData.append("viber", this.formData.viber);
-      this.uploadedFiles.forEach(file => formData.append("images", file));
-
       try {
         this.loading = true;
-        const response = await createItem(formData);
 
+        const itemPayload = {
+          title: this.formData.title,
+          description: this.formData.description,
+          pricePerDay: this.isFree ? 0 : this.formData.pricePerDay,
+          maxPeriodDays: this.formData.maxPeriodDays,
+          city: this.formData.city,
+          street: this.formData.street,
+          phone: this.formData.phone,
+          viber: this.formData.viber,
+        };
+        const formData = new FormData();
+        formData.append("item", new Blob([JSON.stringify(itemPayload)], {type: "application/json"}));
+
+        this.uploadedFiles.forEach(file => formData.append("images", file));
+
+        const response = await createItem(formData);
         if (response.status === 201) {
           this.itemId = response.data.id;
-          this.loading = false;
-          this.uploadedFiles = [];
-          this.formData = {
-            title: "",
-            description: "",
-            maxPeriodDays: 1,
-            street: this.store.profile.street || "",
-            city: this.store.profile.city || "",
-            pricePerDay: null,
-            phone: this.store.profile.phone || "",
-            viber: this.store.profile.viber || "",
-          };
-          this.isFree = false;
-          this.tooglePopUp();
+          this.togglePopUp();
         }
-
-      } catch (error) {
-        await this.router.push("/");
-        console.error("Error:", error);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.loading = false;
       }
     },
   },
 };
 </script>
-

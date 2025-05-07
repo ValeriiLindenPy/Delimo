@@ -20,4 +20,6 @@ public interface RequestService {
     RequestOutputDto getByUserAndId(UUID id, User user);
 
     RequestPageResponse search(Integer page, Integer size, RequestFilterDto requestFilterDto);
+
+    RequestPageResponse listRequests(Integer page, Integer size);
 }

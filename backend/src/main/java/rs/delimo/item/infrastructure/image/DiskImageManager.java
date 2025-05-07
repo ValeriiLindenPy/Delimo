@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-@Profile("test")
+@Profile("no-s3")
 public class DiskImageManager implements ImageManager {
     private final Path uploadDir;
 

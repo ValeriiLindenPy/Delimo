@@ -23,8 +23,9 @@ spring:
     hibernate:
       ddl-auto: update
   jackson:
+    serialization:
+      write-dates-as-timestamps: false
     time-zone: Europe/Belgrade
-    date-format: yyyy-MM-dd HH:mm:ss
   security:
     oauth2:
       client:

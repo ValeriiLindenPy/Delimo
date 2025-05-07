@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     goUser() {
-      const userId = Number(this.store.profile.id);
+      const userId = String(this.store.profile.id);
       this.$router.push("/users/"+ userId);
     },
     goLogin() {

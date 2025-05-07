@@ -25,4 +25,6 @@ public interface ItemService {
     ItemPageResponse search(Integer page, Integer pageSize, ItemFilterDto itemFilterDto);
 
     ItemPageResponse getAll(User user, Integer page, Integer size);
+
+    ItemPageResponse listItems(Integer page, Integer size);
 }
