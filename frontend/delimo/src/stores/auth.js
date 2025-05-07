@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import apiClient from "@/services/api.js";
+import {authenticateUser, registerUser, fetchUserData, forgotPasswordUser, passwordResetUser, verifyUser} from "@/services/userService.js"
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -8,59 +9,27 @@ export const useAuthStore = defineStore("auth", {
     }),
     actions: {
         async register(userData) {
-            try {
-                return await apiClient.post("/auth/register", userData, {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-            } catch (error) {
-                console.error("Error with registration:", error);
-                throw error;
-            }
+            return registerUser(userData);
         },
 
         async forgotPassword(email) {
-            try {
-                return await apiClient.post("/auth/forgot-password", {
-                    email: email,
-                });
-            }catch (error) {
-                throw error;
-            }
+           return forgotPasswordUser(email);
         },
 
         async passwordReset(token , password) {
-            try {
-                return await apiClient.post("/auth/reset-password", {
-                    token: token,
-                    newPassword: password,
-                });
-            }catch (error) {
-                throw error;
-            }
+            return passwordResetUser(token, password);
         },
 
         async verify(token) {
-            try {
-                return await apiClient.get("/auth/verify", {params: {token}});
-            }catch (error) {
-                throw error;
-            }
+            return verifyUser(token);
         },
 
         async login(credentials) {
-            try {
-                const { data } = await apiClient.post("/auth/authenticate", credentials);
-                this.token = data.token;
-                localStorage.setItem("token", data.token);
-                apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-                await this.fetchUser()
-            } catch (error) {
-                console.error("Ошибка при авторизации:", error);
-                throw error;
-            }
+            const { data } = await authenticateUser(credentials);
+            this.token = data.token;
+            localStorage.setItem("token", data.token);
+            apiClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+            await this.fetchUser()
         },
 
 
@@ -80,12 +49,8 @@ export const useAuthStore = defineStore("auth", {
 
         async fetchUser() {
             if (this.token) {
-                try {
-                    const { data } = await apiClient.get("/users/user-data");
-                    this.profile = data;
-                } catch (error) {
-                    console.error("Ошибка при получении данных пользователя:", error);
-                }
+                const { data } = await fetchUserData();
+                this.profile = data;
             }
         },
     },

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import rs.delimo.common.valueobject.UserId;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,10 +22,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @EmbeddedId
+    @Builder.Default
+    private UserId id = UserId.generate();
     @Email
     @Column(unique = true)
     private String email;
@@ -51,5 +53,12 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    @PrePersist
+    private void ensureId() {
+        if (this.id == null) {
+            this.id = new UserId(UUID.randomUUID());
+        }
     }
 }

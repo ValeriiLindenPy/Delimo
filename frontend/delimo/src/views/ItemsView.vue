@@ -32,7 +32,7 @@
 
 <script>
 import ItemList from '../components/ItemList.vue';
-import {getItems} from "@/services/itemService.js";
+import {getItemsSearch} from "@/services/itemService.js";
 import Pagination from "@/components/Pagination.vue";
 import {cities} from "@/assets/cities.js";
 
@@ -58,7 +58,10 @@ export default {
   methods: {
     async fetchItems(page) {
       // Передаём выбранный город в запрос
-      const {data} = await getItems(page, null, this.city);
+      const {data} = await getItemsSearch({
+        city: this.city,
+        page: page
+      });
       this.posts = data.content;
       this.pagination.page = data.page.number;
       this.pagination.totalPages = data.page.totalPages;

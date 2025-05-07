@@ -3,17 +3,20 @@ package rs.delimo.user.api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 import rs.delimo.api.controller.UsersApi;
 import rs.delimo.api.dto.*;
 import rs.delimo.user.application.AuthenticationService;
 import rs.delimo.user.application.UserService;
+import rs.delimo.user.domain.User;
 
 import java.util.UUID;
 
-@RestController
+
 @RequiredArgsConstructor
 @Slf4j
+@RestController
 public class UserController implements UsersApi {
     private final UserService service;
     private final AuthenticationService authService;
@@ -66,12 +69,22 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<UserDto> getUser(UUID id) {
+        log.info("Received request to get user with id: {}", id);
         return ResponseEntity.ok(service.getById(id));
+    }
+
+    @Override
+    public ResponseEntity<UserDto> getUserData() {
+        return ResponseEntity.ok(service.getById(getCurrentUser().getId().value()));
     }
 
     @Override
     public ResponseEntity<Void> updateUser(UUID id, UserDto userDto) {
         service.editById(id, userDto);
         return ResponseEntity.noContent().build();
+    }
+
+    private User getCurrentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

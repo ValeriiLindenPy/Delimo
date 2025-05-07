@@ -41,10 +41,13 @@ export const fetchRequests = async (page = 0, pageSize = 6, city = "") => {
     return await apiClient.get("/requests", { params });
 };
 
-export const fetchRequestsSearch = async (text, page = 0, pageSize = 6, city = "") => {
-    const params = { page, pageSize, text };
-    if (city && city.trim() !== "") {
-        params.city = city;
-    }
-    return await apiClient.get("/requests/search", { params });
+export const fetchRequestsSearch = async ({ text = "", city = "", requesterId = null, page = 0, size = 6 }) => {
+    const filter = {};
+    if (text.trim()) filter.text = text;
+    if (city.trim()) filter.city = city;
+    if (requesterId) filter.requesterId = requesterId;
+
+    return await apiClient.post("/requests/search", filter, {
+        params: { page, size },
+    });
 };

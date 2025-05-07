@@ -48,7 +48,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageRequestOutputDto'
+                $ref: '#/components/schemas/RequestPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -120,7 +120,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestInputDto'
+              $ref: '#/components/schemas/RequestUpdateDto'
       responses:
         '200':
           description: Updated your request
@@ -159,7 +159,6 @@ paths:
       tags:
         - Item Requests
       operationId: listRequests
-      security: []
       parameters:
         - name: page
           in: query
@@ -171,19 +170,19 @@ paths:
           schema:
             type: integer
             default: 6
-        - name: city
-          in: query
-          schema:
-            type: string
       responses:
         '200':
-          description: Public requests
+          description: All requests
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageRequestOutputDto'
+                $ref: '#/components/schemas/RequestPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
   /requests/{id}:
     get:
       tags:
@@ -209,34 +208,35 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /requests/search:
-    get:
+    post:
       tags:
         - Item Requests
       operationId: searchRequests
-      security: []
+      security: [ ]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestFilterDto'
       parameters:
-        - name: text
-          in: query
-          required: true
-          schema:
-            type: string
         - name: page
           in: query
           schema:
             type: integer
             default: 0
-        - name: pageSize
+        - name: size
           in: query
           schema:
             type: integer
             default: 6
       responses:
         '200':
-          description: Search results
+          description: Public items
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageRequestOutputDto'
+                $ref: '#/components/schemas/RequestPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
 
@@ -264,9 +264,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ItemPageResponse'
+                $ref: '#/components/schemas/ItemPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -349,7 +347,7 @@ paths:
               type: object
               properties:
                 item:
-                  $ref: '#/components/schemas/ItemRequestDto'
+                  $ref: '#/components/schemas/ItemUpdateDto'
                 existingImages:
                   type: string
                   description: JSON-encoded list of IDs of images to retain
@@ -396,7 +394,43 @@ paths:
       tags:
         - Items
       operationId: listItems
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: all items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /items/search:
+    post:
+      tags:
+        - Items
+      operationId: searchItems
       security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemFilterDto'
       parameters:
         - name: page
           in: query
@@ -408,19 +442,13 @@ paths:
           schema:
             type: integer
             default: 6
-        - name: city
-          in: query
-          schema:
-            type: string
       responses:
         '200':
           description: Public items
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ItemPageResponse'
+                $ref: '#/components/schemas/ItemPageResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
   /items/{id}:
@@ -473,43 +501,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ItemTitle'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-  /items/search:
-    get:
-      tags:
-        - Items
-      operationId: searchItems
-      security: []
-      parameters:
-        - name: text
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 0
-        - name: pageSize
-          in: query
-          schema:
-            type: integer
-            default: 6
-        - name: city
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Search results
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ItemDto'
         '400':
           $ref: '#/components/responses/BadRequest'
 
@@ -694,7 +685,28 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
-
+  /users/data:
+    get:
+      tags:
+        - Users
+      operationId: getUserData
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: User profile data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /emails/feedback:
     post:
       tags:
@@ -747,6 +759,28 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
 
   schemas:
+    ItemFilterDto:
+      type: object
+      nullable: false
+      properties:
+        ownerId:
+          type: string
+          format: uuid
+        city:
+          type: string
+        text:
+          type: string
+    RequestFilterDto:
+      type: object
+      nullable: false
+      properties:
+        requesterId:
+          type: string
+          format: uuid
+        city:
+          type: string
+        text:
+          type: string
     ItemPageResponse:
       type: object
       nullable: false
@@ -763,6 +797,22 @@ components:
           default: [ ]
           items:
             $ref: '#/components/schemas/ItemDto'
+    RequestPageResponse:
+      type: object
+      nullable: false
+      description: page of items
+      required:
+        - page
+        - content
+      properties:
+        page:
+          $ref: '#/components/schemas/PageResponse'
+        content:
+          type: array
+          nullable: false
+          default: [ ]
+          items:
+            $ref: '#/components/schemas/RequestOutputDto'
     PageResponse:
       type: object
       nullable: false
@@ -787,7 +837,6 @@ components:
           format: int64
         hasNext:
           type: boolean
-
     ErrorResponse:
       type: object
       properties:
@@ -822,6 +871,25 @@ components:
           type: string
         viber:
           type: string
+    RequestUpdateDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        city:
+          type: string
+        phone:
+          type: string
+        viber:
+          type: string
     RequestOutputDto:
       type: object
       properties:
@@ -843,21 +911,6 @@ components:
         created:
           type: string
           format: date-time
-    PageRequestOutputDto:
-      type: object
-      properties:
-        totalPages:
-          type: integer
-        totalElements:
-          type: integer
-        size:
-          type: integer
-        number:
-          type: integer
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/RequestOutputDto'
     ItemRequestDto:
       type: object
       required:
@@ -867,6 +920,29 @@ components:
         - maxPeriodDays
         - city
         - phone
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        available:
+          type: boolean
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        city:
+          type: string
+        street:
+          type: string
+        phone:
+          type: string
+        viber:
+          type: string
+    ItemUpdateDto:
+      type: object
       properties:
         title:
           type: string

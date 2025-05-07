@@ -51,7 +51,7 @@ export default {
       try {
         const {data} = await fetchMyItems(page);
         this.posts = data.content;
-        this.pagination.page = data.page.number;
+        this.pagination.page = data.page.pageNumber;
         this.pagination.totalPages = data.page.totalPages;
       } catch (error) {
         console.log(error);
