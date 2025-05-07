@@ -5,6 +5,7 @@
         :src="images[currentIndex] || defaultImage"
         alt="Carousel image"
         class="w-full h-full object-cover rounded shadow"
+        @click="emit('image-clicked', images[currentIndex] || defaultImage)"
     />
 
     <!-- Navigation Buttons -->
@@ -36,6 +37,8 @@
 
 <script setup>
 import { ref } from 'vue'
+
+const emit = defineEmits(['image-clicked']);
 
 // Props
 const props = defineProps({
