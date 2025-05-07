@@ -198,15 +198,19 @@ public class ItemServiceImpl implements ItemService {
         UserDto owner = userClient.findByEmail(user.getEmail());
 
         Item oldItem = itemRepository.findById(new ItemId(itemId))
-                .orElseThrow(() -> {
-                    log.error("Item with id {} not found", itemId);
-                    return new NotFoundException("Item with id - %s not found".formatted(itemId));
-                });
+                .orElseThrow(() -> new NotFoundException("Item with id - %s not found".formatted(itemId)));
 
         if (!Objects.equals(oldItem.getOwner().value(), owner.getId())) {
-            log.error("Owner mismatch: item id {} does not belong to user id {}", itemId, owner.getId());
             throw new OwnerException("Item with id %s does not belong to user with id %s"
                     .formatted(itemId, owner.getId()));
+        }
+
+        List<String> urls = oldItem.getImages();
+        try {
+            imageManager.deleteImages(urls);
+            log.info("Deleted {} images from S3", urls.size());
+        } catch (Exception e) {
+            log.warn("Failed to delete some images from S3: {}", e.getMessage());
         }
 
         itemRepository.deleteById(new ItemId(itemId));

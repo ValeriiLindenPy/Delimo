@@ -12,6 +12,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -62,8 +63,27 @@ public class S3ImageManager implements ImageManager {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteImages(List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.isEmpty()) return;
+        for (String url : imageUrls) {
+            String key = extractKeyFromUrl(url);
+            s3.deleteObject(b -> b.bucket(bucket).key(key));
+        }
+    }
+
     private String getExt(String name) {
         return (name != null && name.contains("."))
                 ? name.substring(name.lastIndexOf(".")) : "";
+    }
+
+    private String extractKeyFromUrl(String url) {
+        URI uri = URI.create(url);
+        String path = uri.getPath();
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        String[] parts = path.split("/", 2);
+        return parts.length > 1 ? parts[1] : parts[0];
     }
 }

@@ -45,6 +45,11 @@ public class DiskImageManager implements ImageManager {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteImages(List<String> imageUrls) {
+        //TODO
+    }
+
     private String storeAndGetUrl(MultipartFile file) {
         String ext = "";
         var original = file.getOriginalFilename();
