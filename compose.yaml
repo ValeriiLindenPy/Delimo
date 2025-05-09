@@ -13,9 +13,7 @@ services:
   traefik:
     image: traefik:v3.1
     command:
-      - "--api.insecure=true"
-      - "--api.dashboard=true"
-      - "--log.level=DEBUG"
+      - "--log.level=WARN"
       - "--accesslog=true"
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
@@ -45,10 +43,7 @@ services:
   backend:
     image: valeriilinden/delimo-backend:prod
     env_file:
-      - ./backend/.env
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/delimo
-      - APP_FRONTEND_URL=https://delimo.rs
+      - .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`delimo.rs`) && PathPrefix(`/api`)"
@@ -62,12 +57,11 @@ services:
       - "traefik.http.services.oauth.loadbalancer.server.port=8080"
     depends_on:
       - db
+      - minio
     restart: always
 
   frontend:
     image: valeriilinden/delimo-frontend:prod
-    env_file:
-      - ./frontend/delimo/.env
     environment:
       - VITE_API_URL=https://delimo.rs/api
     labels:
@@ -82,7 +76,7 @@ services:
   db:
     image: postgres:latest
     env_file:
-      - ./db/.env
+      - .env
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
@@ -92,6 +86,32 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: always
+
+  minio:
+    image: quay.io/minio/minio:latest
+    env_file:
+      - .env
+    volumes:
+      - /srv/minio/data:/data
+      - /srv/minio/certs:/root/.minio/certs
+    command: server /data --console-address ":9001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.minio.rule=Host(`s3.delimo.rs`)"
+      - "traefik.http.routers.minio.entrypoints=websecure"
+      - "traefik.http.routers.minio.tls=true"
+      - "traefik.http.services.minio.loadbalancer.server.port=9000"
+      - "traefik.http.routers.minio-console.rule=Host(`console.s3.delimo.rs`)"
+      - "traefik.http.routers.minio-console.entrypoints=websecure"
+      - "traefik.http.routers.minio-console.tls=true"
+      - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://127.0.0.1:9000/minio/health/live || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     restart: always
 
 volumes:

@@ -15,7 +15,6 @@ services:
       - AWS_SECRET_ACCESS_KEY=minioadmin
       - AWS_S3_BUCKET=delimo-images
       - JWT_SECRET=Y2B7y+7pKiUVuZW8xB2mM8E5Om3z3yTCghHVcWpkKHk=
-      - HOST_NAME=db
     ports:
       - "8080:8080"
 
