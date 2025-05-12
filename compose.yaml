@@ -67,8 +67,8 @@ services:
 
   frontend:
     image: valeriilinden/delimo-frontend:prod
-    environment:
-      - VITE_API_URL=https://delimo.rs/api
+    env_file:
+      - .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`delimo.rs`) || Host(`www.delimo.rs`)"
