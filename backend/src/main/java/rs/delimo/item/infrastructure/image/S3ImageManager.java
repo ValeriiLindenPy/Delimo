@@ -2,7 +2,6 @@ package rs.delimo.item.infrastructure.image;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import rs.delimo.common.exception.ImageUploadException;
