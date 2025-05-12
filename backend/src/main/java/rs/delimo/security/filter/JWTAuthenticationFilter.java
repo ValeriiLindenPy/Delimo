@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import rs.delimo.security.auth.AuthUserDetails;
 import rs.delimo.security.service.JwtService;
 import rs.delimo.user.domain.User;
 import rs.delimo.user.infrastructure.repository.UserRepository;
@@ -38,9 +39,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             if (userOpt.isPresent()) {
                 User user = userOpt.get();
 
+                AuthUserDetails principal = AuthUserDetails.builder()
+                        .id(user.getId().value())
+                        .email(user.getEmail())
+                        .authorities(user.getAuthorities())
+                        .enabled(user.getEnabled())
+                        .build();
+
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                user,
+                                principal,
                                 null,
                                 user.getAuthorities()
                         );

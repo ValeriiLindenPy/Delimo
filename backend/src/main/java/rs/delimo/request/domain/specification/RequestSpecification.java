@@ -1,23 +1,24 @@
 package rs.delimo.request.domain.specification;
 
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import rs.delimo.api.dto.RequestFilterDto;
+import rs.delimo.common.client.UserClient;
 import rs.delimo.common.valueobject.UserId;
 import rs.delimo.request.domain.ItemRequest;
 import rs.delimo.request.domain.ItemRequest_;
-import rs.delimo.user.domain.User;
-import rs.delimo.user.domain.User_;
-import java.util.UUID;
+import java.util.Set;
+
 
 @Component
+@RequiredArgsConstructor
 public class RequestSpecification {
+    private final UserClient userClient;
 
-    public static Specification<ItemRequest> from(RequestFilterDto filter) {
+    public Specification<ItemRequest> from(RequestFilterDto filter) {
         Specification<ItemRequest> specification = Specification.where(null);
 
         if (filter.getRequesterId() != null ) {
@@ -26,18 +27,14 @@ public class RequestSpecification {
         }
 
         if (StringUtils.hasText(filter.getCity())) {
-            String city = filter.getCity();
-            specification = specification.and((root, cq, cb) -> {
-                Subquery<UUID> subquery = cq.subquery(UUID.class);
-                Root<User> userRoot = subquery.from(User.class);
-                subquery.select(userRoot.get(User_.id).get("value"))
-                        .where(cb.equal(userRoot.get(User_.CITY), city));
+            Set<UserId> requesters = userClient.findIdsByCity(filter.getCity().trim());
 
-                return root
-                        .get(ItemRequest_.REQUESTER)
-                        .get("value")
-                        .in(subquery);
-            });
+            if (requesters.isEmpty()) {
+                return (root, cq, cb) -> cb.disjunction();
+            }
+            specification = specification
+                    .and((root, cq, cb) ->
+                            root.get(ItemRequest_.REQUESTER).in(requesters));
         }
 
 

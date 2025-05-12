@@ -20,9 +20,8 @@ import rs.delimo.item.domain.Item;
 import rs.delimo.item.domain.service.ImageManager;
 import rs.delimo.item.infrastructure.mapper.ItemMapper;
 import rs.delimo.item.infrastructure.repository.ItemRepository;
-import rs.delimo.user.domain.User;
 
-import static rs.delimo.item.domain.specification.ItemSpecifications.from;
+import rs.delimo.item.domain.specification.ItemSpecifications;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,6 +44,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserClient userClient;
     private final ImageManager imageManager;
     private final ObjectMapper objectMapper;
+    private final ItemSpecifications specifications;
 
 
     /**
@@ -74,16 +74,15 @@ public class ItemServiceImpl implements ItemService {
      * Retrieves an item by its ID for a specific user.
      *
      * @param id   the ID of the item to retrieve
-     * @param user the user who owns the item
      * @return the {@link ItemDto} for the specified item owned by the user
      * @throws NotFoundException if the user or item is not found
      */
     @Override
     @Transactional(readOnly = true)
-    public ItemDto getByUserAndId(UUID id, User user) {
-        log.info("Fetching item with id: {} for user: {}", id, user.getEmail());
+    public ItemDto getByUserAndId(UUID id, UserId userId) {
+        log.info("Fetching item with id: {} for user: {}", id, userId.value());
 
-        UserDto owner = userClient.findByEmail(user.getEmail());
+        UserDto owner = userClient.findById(userId);
 
         ItemDto itemDto = itemRepository.findOneByOwnerAndId(new UserId(owner.getId()), new ItemId(id))
                 .map(mapper::toDto)
@@ -105,7 +104,6 @@ public class ItemServiceImpl implements ItemService {
      *
      * @param itemId             the ID of the item to be updated
      * @param item               the updated item data as {@link ItemRequestDto}
-     * @param user               the user attempting the update
      * @param images             the new images to be uploaded for the item
      * @param existingImagesJson a JSON string representing the list of existing image URLs
      * @return the updated {@link ItemDto}
@@ -114,10 +112,10 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     @Transactional
-    public ItemDto editOne(UUID itemId, ItemUpdateDto item, User user, List<MultipartFile> images, String existingImagesJson) {
-        log.info("User {} is editing item with id {}", user.getEmail(), itemId);
+    public ItemDto editOne(UUID itemId, ItemUpdateDto item, UserId userId, List<MultipartFile> images, String existingImagesJson) {
+        log.info("User {} is editing item with id {}", userId.value(), itemId);
 
-        UserDto owner = userClient.findByEmail(user.getEmail());
+        UserDto owner = userClient.findById(userId);
 
         Item oldItem = itemRepository.findById(new ItemId(itemId))
                 .orElseThrow(() -> {
@@ -186,16 +184,15 @@ public class ItemServiceImpl implements ItemService {
      * Deletes an item.
      *
      * @param itemId the ID of the item to delete
-     * @param user   the user requesting deletion
      * @throws NotFoundException if the user or item is not found
      * @throws OwnerException    if the item does not belong to the user
      */
     @Override
     @Transactional
-    public void delete(UUID itemId, User user) {
-        log.info("User {} requested deletion of item with id {}", user.getEmail(), itemId);
+    public void delete(UUID itemId, UserId userId) {
+        log.info("User {} requested deletion of item with id {}", userId.value(), itemId);
 
-        UserDto owner = userClient.findByEmail(user.getEmail());
+        UserDto owner = userClient.findById(userId);
 
         Item oldItem = itemRepository.findById(new ItemId(itemId))
                 .orElseThrow(() -> new NotFoundException("Item with id - %s not found".formatted(itemId)));
@@ -238,7 +235,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemPageResponse search(Integer page, Integer size, ItemFilterDto filter) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
 
-        Page<Item> items = itemRepository.findAll(from(filter), pageable);
+        Page<Item> items = itemRepository.findAll(specifications.from(filter), pageable);
 
         PageResponse pageResponse = new PageResponse()
                 .pageNumber(items.getNumber())
@@ -266,10 +263,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemPageResponse getAll(User user, Integer page, Integer size) {
+    public ItemPageResponse getAll(UserId userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
 
-        Page<Item> items = itemRepository.findAllByOwner(user.getId(), pageable);
+        Page<Item> items = itemRepository.findAllByOwner(userId, pageable);
 
         PageResponse pageResponse = new PageResponse()
                 .pageNumber(items.getNumber())
@@ -336,17 +333,16 @@ public class ItemServiceImpl implements ItemService {
      * </p>
      *
      * @param item   the item data as {@link ItemRequestDto}
-     * @param user   the user creating the item
      * @param images the images to be uploaded for the item
      * @return the created {@link ItemDto}
      * @throws NotFoundException if the user is not found
      */
     @Override
     @Transactional
-    public ItemDto create(ItemRequestDto item, User user, List<MultipartFile> images) {
-        log.info("User {} is creating a new item", user.getEmail());
+    public ItemDto create(ItemRequestDto item, UserId userId, List<MultipartFile> images) {
+        log.info("User {} is creating a new item", userId.value());
 
-        UserDto owner = userClient.findByEmail(user.getEmail());
+        UserDto owner = userClient.findById(userId);
 
         owner = userClient.updateUserContactInfoByItemCreate(item, owner);
 
