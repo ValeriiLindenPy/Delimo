@@ -57,14 +57,13 @@ export default {
   },
   methods: {
     async fetchItems(page) {
-      // Передаём выбранный город в запрос
       const {data} = await getItemsSearch({
         city: this.city,
         page: page
       });
       this.posts = data.content;
-      this.pagination.page = data.page.number;
-      this.pagination.totalPages = data.page.totalPages;
+      this.pagination.page = data.page.pageNumber;
+      this.pagination.totalPages = data.page.totalElements;
     },
   },
 };
