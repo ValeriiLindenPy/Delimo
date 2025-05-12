@@ -104,7 +104,7 @@ export default {
       this.togglePopUp();
       // For debugging; remove alert in production.
 
-      this.requestDeleteId = Number(id);
+      this.requestDeleteId = String(id);
     },
     async confirmDelete() {
       try {

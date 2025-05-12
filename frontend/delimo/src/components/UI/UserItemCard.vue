@@ -117,7 +117,6 @@ export default {
       this.isPopUp = !this.isPopUp;
     },
     onEdit() {
-      console.log("Edit", this.post.id);
       this.$router.push(`/items/${this.post.id}/edit`);
     },
     goItem() {
@@ -128,9 +127,8 @@ export default {
     },
     async handleDeleteItem(id) {
       this.togglePopUp();
-      // For debugging; remove alert in production.
 
-      this.itemDeleteId = Number(id);
+      this.itemDeleteId = String(id);
     },
     async confirmDelete() {
       try {
