@@ -66,18 +66,17 @@ export default {
           size: 6
         });
         this.posts = res.data.content;
-        this.totalPages = res.data.totalPages;
+        this.totalPages = res.data.page.totalElements;
+        this.currentPage = res.data.page.pageNumber;
       } catch (error) {
         this.$router.push('/server-error');
         console.error("Error fetching requests:", error);
       }
     },
     async onPageChanged(page) {
-      this.currentPage = page;
       await this.loadRequests();
     },
     async onCityChanged() {
-      this.currentPage = 0;
       await this.loadRequests();
     },
   },
