@@ -18,7 +18,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-@Profile("test")
 public class S3ImageManager implements ImageManager {
 
     private final S3Client s3;
