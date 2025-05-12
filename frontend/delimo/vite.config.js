@@ -9,7 +9,7 @@ export default defineConfig({
     vue(),
     // vueDevTools(),
   ],
-  envPrefix: 'DELIMO_',
+  envPrefix: 'VITE_',
   server: {
     // host: '192.168.0.18',
     port: 5174,
