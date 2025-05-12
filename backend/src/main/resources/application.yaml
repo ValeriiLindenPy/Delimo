@@ -56,7 +56,7 @@ spring:
 
 logging:
   level:
-    root: debug
+    root: info
 
 app:
   frontend-url: https://delimo.rs
