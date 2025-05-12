@@ -46,6 +46,11 @@ public class UserClientImpl implements UserClient {
     }
 
     @Override
+    public Set<UserId> findIdsByCity(String city) {
+        return Set.of();
+    }
+
+    @Override
     public UserDto updateUserContactInfoByRequestUpdate(RequestUpdateDto request, UserDto dto) {
         User requester = repository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));

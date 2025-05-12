@@ -14,7 +14,7 @@ import rs.delimo.api.dto.RegisterRequest;
 import rs.delimo.common.exception.DuplicatingEmailException;
 import rs.delimo.common.exception.NotFoundException;
 import rs.delimo.email.application.EmailService;
-import rs.delimo.security.service.JwtService;
+import rs.delimo.common.client.TokenClient;
 import rs.delimo.user.domain.Role;
 import rs.delimo.user.domain.User;
 import rs.delimo.user.infrastructure.repository.UserRepository;
@@ -35,7 +35,7 @@ import java.util.Optional;
 @Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
-    private final JwtService jwtService;
+    private final TokenClient tokens;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
@@ -71,7 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
         userRepository.save(newUser);
 
-        String verificationToken = jwtService.generateVerificationToken(newUser);
+        String verificationToken = tokens.generateVerificationToken(newUser.getId().value(), newUser.getEmail());
         emailService.sendVerificationEmail(newUser.getEmail(), verificationToken);
     }
 
@@ -98,7 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 () -> new NotFoundException("User not found")
         );
 
-        String token = jwtService.generateToken(user);
+        String token = tokens.generateToken(user.getId().value(), user.getEmail(), user.getRole().toString());
         return new AuthenticationResponse().token(token);
     }
 
@@ -117,11 +117,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public void verifyUser(String token) {
-        if (!jwtService.validateToken(token)) {
+        if (!tokens.validateToken(token)) {
             throw new RuntimeException("Invalid or expired token");
         }
 
-        Claims claims = jwtService.getDataFromToken(token);
+        Claims claims = tokens.getDataFromToken(token);
 
         Boolean isVerificationToken = claims.get("verification", Boolean.class);
         if (isVerificationToken == null || !isVerificationToken) {
@@ -156,7 +156,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        String resetToken = jwtService.generateResetToken(user);
+        String resetToken = tokens.resetToken(user.getId().value(), user.getEmail());
         emailService.sendResetPasswordEmail(user.getEmail(), resetToken);
 
         return "Password reset link has been sent to your email.";
@@ -177,11 +177,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public String resetPassword(String token, String newPassword) {
-        if (!jwtService.validateToken(token)) {
+        if (!tokens.validateToken(token)) {
             throw new RuntimeException("Invalid or expired reset token");
         }
 
-        Claims claims = jwtService.getDataFromToken(token);
+        Claims claims = tokens.getDataFromToken(token);
 
         boolean reset = Optional.ofNullable(claims.get("reset", Boolean.class)).orElse(false);
         boolean auth = Optional.ofNullable(claims.get("auth", Boolean.class)).orElse(false);

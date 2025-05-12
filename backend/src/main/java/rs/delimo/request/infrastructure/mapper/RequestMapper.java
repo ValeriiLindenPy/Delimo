@@ -9,7 +9,7 @@ import rs.delimo.request.domain.ItemRequest;
 import rs.delimo.user.infrastructure.mapper.UserMapper;
 
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, VoMapper.class})
+@Mapper(componentModel = "spring", uses = VoMapper.class)
 public interface RequestMapper {
     @Mapping(source = "id.value", target = "id")
     @Mapping(source = "requester.value", target = "requester.id")

@@ -1,23 +1,22 @@
 package rs.delimo.request.application;
 
 import rs.delimo.api.dto.*;
-import rs.delimo.user.domain.User;
-
+import rs.delimo.common.valueobject.UserId;
 import java.util.UUID;
 
 
 public interface RequestService {
-    RequestOutputDto create(RequestInputDto request, User user);
+    RequestOutputDto create(RequestInputDto request, UserId userId);
 
-    RequestOutputDto edit(UUID requestID, RequestUpdateDto request, User user);
+    RequestOutputDto edit(UUID requestID, RequestUpdateDto request, UserId userId);
 
     RequestOutputDto getById(UUID requestId);
 
-    void delete(UUID requestID, User user);
+    void delete(UUID requestID, UserId userId);
 
-    RequestPageResponse getAllByOwner(int page, int pageSize, User user);
+    RequestPageResponse getAllByOwner(int page, int pageSize, UserId userId);
 
-    RequestOutputDto getByUserAndId(UUID id, User user);
+    RequestOutputDto getByUserAndId(UUID id, UserId userId);
 
     RequestPageResponse search(Integer page, Integer size, RequestFilterDto requestFilterDto);
 

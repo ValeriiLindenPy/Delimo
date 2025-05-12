@@ -31,7 +31,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        String token = jwtService.generateToken(user);
+        String token = jwtService.generateToken(user.getId().value(), user.getEmail(), user.getRole().toString());
 
         response.sendRedirect(frontendUrl + "/?token=" + token);
     }

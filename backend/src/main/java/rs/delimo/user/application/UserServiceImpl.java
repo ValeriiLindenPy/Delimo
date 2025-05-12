@@ -6,10 +6,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.delimo.api.dto.UserDto;
+import rs.delimo.common.client.ItemClient;
+import rs.delimo.common.client.RequestClient;
 import rs.delimo.common.exception.DuplicatingEmailException;
 import rs.delimo.common.exception.NotFoundException;
 import rs.delimo.common.valueobject.UserId;
-import rs.delimo.item.infrastructure.repository.ItemRepository;
 import rs.delimo.request.infrastructure.repository.RequestRepository;
 import rs.delimo.user.domain.User;
 import rs.delimo.user.infrastructure.mapper.UserMapper;
@@ -22,7 +23,7 @@ import java.util.UUID;
  * Implementation of the {@link rs.delimo.user.application.UserService} interface providing user-related operations.
  * <p>
  * This service is responsible for fetching, editing, and deleting users as well as loading users by username.
- * It uses {@link UserRepository} for user persistence, {@link ItemRepository} for managing user-owned items,
+ * It uses {@link UserRepository} for user persistence, {@link ItemClient} for managing user-owned items,
  * and {@link RequestRepository} for handling user-related requests.
  * </p>
  */
@@ -33,8 +34,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper mapper;
-    private final ItemRepository itemRepository;
-    private final RequestRepository requestRepository;
+    private final ItemClient itemClient;
+    private final RequestClient requestClient;
 
     /**
      * Retrieves a {@link UserDto} by the given user id.
@@ -135,9 +136,9 @@ public class UserServiceImpl implements UserService {
                     return new NotFoundException("User not found");
                 });
         log.debug("Deleting items for user id: {}", userId);
-        itemRepository.deleteByOwner(id);
+        itemClient.deleteByOwner(id);
         log.debug("Deleting requests for user id: {}", userId);
-        requestRepository.deleteByRequester(id);
+        requestClient.deleteByRequester(id);
         userRepository.deleteById(id);
         log.info("User with id {} deleted successfully", userId);
     }
