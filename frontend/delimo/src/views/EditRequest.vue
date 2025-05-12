@@ -146,7 +146,7 @@ export default {
   data() {
     return {
       cities,
-      id: Number(this.$route.params.id),
+      id: String(this.$route.params.id),
       isPopUp: false,
       post: null,
       formData: {

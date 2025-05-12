@@ -1,0 +1,1093 @@
+openapi: 3.0.3
+info:
+  title: Delimo API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+    description: Local server
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: My Item Requests
+    description: Authenticated users manage their own item requests
+  - name: Item Requests
+    description: Public read-only access to item requests
+  - name: My Items
+    description: Authenticated users manage their own items
+  - name: Items
+    description: Public read-only access to items
+  - name: Users
+    description: Operations on users
+  - name: Feedback
+    description: Send feedback emails
+
+paths:
+  /my-requests:
+    get:
+      tags:
+        - My Item Requests
+      operationId: listMyRequests
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: Your requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - My Item Requests
+      operationId: createMyRequest
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestInputDto'
+      responses:
+        '201':
+          description: Created your request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestOutputDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /my-requests/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - My Item Requests
+      operationId: getMyRequest
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Your request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestOutputDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - My Item Requests
+      operationId: updateMyRequest
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUpdateDto'
+      responses:
+        '200':
+          description: Updated your request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestOutputDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - My Item Requests
+      operationId: deleteMyRequest
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /requests:
+    get:
+      tags:
+        - Item Requests
+      operationId: listRequests
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: All requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /requests/{id}:
+    get:
+      tags:
+        - Item Requests
+      operationId: getRequest
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestOutputDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /requests/search:
+    post:
+      tags:
+        - Item Requests
+      operationId: searchRequests
+      security: [ ]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestFilterDto'
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: Public items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /my-items:
+    get:
+      tags:
+        - My Items
+      operationId: listMyItems
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: Your items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - My Items
+      operationId: createMyItem
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                item:
+                  $ref: '#/components/schemas/ItemRequestDto'
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Created item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /my-items/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - My Items
+      operationId: getMyItem
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - My Items
+      operationId: updateMyItem
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                item:
+                  $ref: '#/components/schemas/ItemUpdateDto'
+                existingImages:
+                  type: string
+                  description: JSON-encoded list of IDs of images to retain
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Updated item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - My Items
+      operationId: deleteMyItem
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /items:
+    get:
+      tags:
+        - Items
+      operationId: listItems
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: all items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /items/search:
+    post:
+      tags:
+        - Items
+      operationId: searchItems
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemFilterDto'
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 6
+      responses:
+        '200':
+          description: Public items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemPageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /items/{id}:
+    get:
+      tags:
+        - Items
+      operationId: getItem
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /items/titles:
+    get:
+      tags:
+        - Items
+      operationId: listItemTitles
+      security: []
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+      responses:
+        '200':
+          description: Matching titles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemTitle'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /users/auth/register:
+    post:
+      tags:
+        - Users
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registered
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /users/auth/authenticate:
+    post:
+      tags:
+        - Users
+      operationId: authenticate
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+      responses:
+        '200':
+          description: JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /users/auth/forgot-password:
+    post:
+      tags:
+        - Users
+      operationId: forgotPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        '200':
+          description: Email sent
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /users/auth/reset-password:
+    post:
+      tags:
+        - Users
+      operationId: resetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Password reset
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /users/auth/verify:
+    get:
+      tags:
+        - Users
+      operationId: verifyUser
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - type: string
+                  - $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - Users
+      operationId: getUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - Users
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '200':
+          description: Updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - Users
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /users/data:
+    get:
+      tags:
+        - Users
+      operationId: getUserData
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: User profile data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /emails/feedback:
+    post:
+      tags:
+        - Feedback
+      operationId: sendFeedback
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackDto'
+      responses:
+        '200':
+          description: Email sent
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ItemFilterDto:
+      type: object
+      nullable: false
+      properties:
+        ownerId:
+          type: string
+          format: uuid
+        city:
+          type: string
+        text:
+          type: string
+    RequestFilterDto:
+      type: object
+      nullable: false
+      properties:
+        requesterId:
+          type: string
+          format: uuid
+        city:
+          type: string
+        text:
+          type: string
+    ItemPageResponse:
+      type: object
+      nullable: false
+      description: page of items
+      required:
+        - page
+        - content
+      properties:
+        page:
+          $ref: '#/components/schemas/PageResponse'
+        content:
+          type: array
+          nullable: false
+          default: [ ]
+          items:
+            $ref: '#/components/schemas/ItemDto'
+    RequestPageResponse:
+      type: object
+      nullable: false
+      description: page of items
+      required:
+        - page
+        - content
+      properties:
+        page:
+          $ref: '#/components/schemas/PageResponse'
+        content:
+          type: array
+          nullable: false
+          default: [ ]
+          items:
+            $ref: '#/components/schemas/RequestOutputDto'
+    PageResponse:
+      type: object
+      nullable: false
+      description: Page info
+      required:
+        - page
+        - size
+        - totalPages
+        - totalElements
+      properties:
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        hasNext:
+          type: boolean
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+    RequestInputDto:
+      type: object
+      required:
+        - title
+        - description
+        - pricePerDay
+        - maxPeriodDays
+        - city
+        - phone
+      properties:
+        title:
+          type: string
+          example: Book "Nosferatu"
+        description:
+          type: string
+          example: Book about Dracula
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        city:
+          type: string
+          example: Novi Sad
+        phone:
+          type: string
+        viber:
+          type: string
+    RequestUpdateDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        city:
+          type: string
+        phone:
+          type: string
+        viber:
+          type: string
+    RequestOutputDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        requester:
+          $ref: '#/components/schemas/UserDto'
+        created:
+          type: string
+          format: date-time
+    ItemRequestDto:
+      type: object
+      required:
+        - title
+        - description
+        - pricePerDay
+        - maxPeriodDays
+        - city
+        - phone
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        available:
+          type: boolean
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        city:
+          type: string
+        street:
+          type: string
+        phone:
+          type: string
+        viber:
+          type: string
+    ItemUpdateDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        available:
+          type: boolean
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        city:
+          type: string
+        street:
+          type: string
+        phone:
+          type: string
+        viber:
+          type: string
+    ItemDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        available:
+          type: boolean
+        pricePerDay:
+          type: integer
+          format: int32
+        maxPeriodDays:
+          type: integer
+          format: int32
+        images:
+          type: array
+          items:
+            type: string
+        owner:
+          $ref: '#/components/schemas/UserDto'
+        created:
+          type: string
+          format: date-time
+    ItemTitle:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        phone:
+          type: string
+        viber:
+          type: string
+        enabled:
+          type: boolean
+    RegisterRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        phone:
+          type: string
+        viber:
+          type: string
+    AuthenticationRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    AuthenticationResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    ForgotPasswordRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+    ResetPasswordRequest:
+      type: object
+      required:
+        - token
+        - newPassword
+      properties:
+        token:
+          type: string
+        newPassword:
+          type: string
+    FeedbackDto:
+      type: object
+      required:
+        - name
+        - email
+        - subject
+        - description
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        subject:
+          type: string
+        description:
+          type: string

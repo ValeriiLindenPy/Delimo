@@ -34,18 +34,18 @@ export const getItem = async (id) => await apiClient.get(`/items/${id}`);
 
 export const getItems = async (page = 0, pageSize = 6, city = "") => {
     const params = { page, pageSize };
-    if (city && city.trim() !== "") {
-        params.city = city;
-    }
     return await apiClient.get("/items", { params });
 };
 
-export const getItemsSearch = async (text, page = 0, pageSize = 6, city = "") => {
-    const params = { page, pageSize, text };
-    if (city && city.trim() !== "") {
-        params.city = city;
-    }
-    return await apiClient.get("/items/search", { params });
+export const getItemsSearch = async ({ text = "", city = "", ownerId = null, page = 0, pageSize = 6 }) => {
+    const filter = {};
+    if (text.trim()) filter.text = text;
+    if (city.trim()) filter.city = city;
+    if (ownerId) filter.ownerId = ownerId;
+
+    return await apiClient.post("/items/search", filter, {
+        params: { page, pageSize },
+    });
 };
 
 export const getItemsTitleSearch = async (q, limit = 3) => await apiClient.get("/items/titles",

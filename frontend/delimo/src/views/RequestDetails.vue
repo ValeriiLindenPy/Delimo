@@ -52,7 +52,7 @@ export default {
   },
   setup() {
     const route = useRoute();
-    const itemId = parseInt(route.params.id, 10);
+    const itemId = String(route.params.id);
     const item = ref(null);
 
     onMounted(async () => {

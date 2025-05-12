@@ -4,19 +4,23 @@
       <!-- Images and contacts -->
       <div class="flex flex-col justify-center">
         <div class="images-carousel m-3">
-          <Carousel v-if="item" :images="item.images" :defaultImage="defaultImage" />
+          <Carousel v-if="item"
+                    :images="item.images"
+                    :defaultImage="defaultImage"
+                    @image-clicked="openModal"
+          />
         </div>
-        <NameUI v-if="item" :name="item.title" />
-        <PriceUI v-if="item" :price="item.pricePerDay" />
+        <NameUI v-if="item" :name="item.title"/>
+        <PriceUI v-if="item" :price="item.pricePerDay"/>
       </div>
 
       <!-- Info -->
       <div>
 
-        <DescriptionUI v-if="item" :description="item.description" />
-        <AvailableUI v-if="item" :available="item.available" />
-        <MaxPeriodUI v-if="item" :max-period-days="item.maxPeriodDays" />
-        <AddressUI v-if="item" :address="getAddress" />
+        <DescriptionUI v-if="item" :description="item.description"/>
+        <AvailableUI v-if="item" :available="item.available"/>
+        <MaxPeriodUI v-if="item" :max-period-days="item.maxPeriodDays"/>
+        <AddressUI v-if="item" :address="getAddress"/>
         <ContactsUI
             v-if="item && item.available"
             :name="item.title"
@@ -26,10 +30,18 @@
       </div>
     </div>
   </div>
+
+  <PopUpModal :isActive="showModal" @close="closeModal">
+    <img
+        :src="modalImage"
+        alt="Large view"
+        class="max-h-[80vh] object-contain"
+    />
+  </PopUpModal>
 </template>
 
 <script>
-import { useRoute } from 'vue-router'
+import {useRoute} from 'vue-router'
 import Carousel from '@/components/UI/Carousel.vue'
 import NameUI from '@/components/UI/NameUI.vue'
 import DescriptionUI from '@/components/UI/DescriptionUI.vue'
@@ -40,11 +52,13 @@ import ContactsUI from '@/components/UI/ContactsUI.vue'
 import defaultImage from '@/assets/default-image.jpg'
 import {getItem} from "@/services/itemService.js";
 import PriceUI from "@/components/UI/PriceUI.vue";
+import PopUpModal from '@/components/UI/PopUpModal.vue'
 
 export default {
   name: 'ItemDetails',
   components: {
     ContactsUI,
+    PopUpModal,
     AddressUI,
     MaxPeriodUI,
     AvailableUI,
@@ -55,8 +69,20 @@ export default {
   },
   data() {
     return {
-      defaultImage, // Path to the default image
-      item: null, // Item details
+      defaultImage,
+      item: null,
+      showModal: false,
+      modalImage: '',
+    }
+  },
+  methods: {
+    openModal(image) {
+      this.modalImage = image
+      this.showModal = true
+    },
+
+    closeModal() {
+      this.showModal = false
     }
   },
   computed: {
@@ -69,7 +95,7 @@ export default {
   },
   async created() {
     const route = useRoute()
-    const itemId = Number(route.params.id)
+    const itemId = String(route.params.id)
 
     try {
       this.item = (await getItem(itemId)).data

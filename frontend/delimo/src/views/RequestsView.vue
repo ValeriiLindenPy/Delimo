@@ -36,7 +36,7 @@
 <script>
 import RequestList from "@/components/RequestList.vue";
 import Pagination from "@/components/Pagination.vue";
-import { fetchRequests } from "@/services/requestService.js";
+import { fetchRequestsSearch } from "@/services/requestService.js";
 import { cities } from "@/assets/cities.js";
 
 export default {
@@ -60,20 +60,23 @@ export default {
   methods: {
     async loadRequests() {
       try {
-        const res = await fetchRequests(this.currentPage, 6, this.city);
+        const res = await fetchRequestsSearch({
+          city: this.city,
+          page: this.currentPage,
+          size: 6
+        });
         this.posts = res.data.content;
-        this.totalPages = res.data.totalPages;
+        this.totalPages = res.data.page.totalElements;
+        this.currentPage = res.data.page.pageNumber;
       } catch (error) {
         this.$router.push('/server-error');
         console.error("Error fetching requests:", error);
       }
     },
     async onPageChanged(page) {
-      this.currentPage = page;
       await this.loadRequests();
     },
     async onCityChanged() {
-      this.currentPage = 0;
       await this.loadRequests();
     },
   },

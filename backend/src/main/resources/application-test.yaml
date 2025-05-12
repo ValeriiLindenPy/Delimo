@@ -1,0 +1,54 @@
+spring:
+  autoconfigure:
+    exclude:
+      - io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
+  docker:
+    compose:
+      enabled: false
+      file: compose.yml
+
+  application:
+    name: delimo-test
+
+  datasource:
+    url: jdbc:postgresql://${HOST_NAME:localhost}:5432/delimo
+    username: dbuser
+    password: 12345
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+management:
+  health:
+    mail:
+      enabled: false
+
+app:
+  upload:
+    dir: uploads
+
+logging:
+#  structured:
+#    format:
+#      console: rs.delimo.config.JsonLogger
+  level:
+    rs.delimo: debug
+  logback:
+    context-properties:
+      appName: ${spring.application.name}
+
+aws:
+  s3:
+    endpoint: ${AWS_S3_ENDPOINT:http://localhost:9000}
+    region:   ${AWS_S3_REGION:us-east-1}
+    access-key: ${AWS_ACCESS_KEY_ID:minioadmin}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:minioadmin}
+    bucket:   ${AWS_S3_BUCKET:delimo-images}
+
+
