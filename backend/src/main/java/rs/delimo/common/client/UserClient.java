@@ -5,6 +5,7 @@ import rs.delimo.common.valueobject.UserId;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public interface UserClient {
 
@@ -13,6 +14,8 @@ public interface UserClient {
     UserDto findById(UserId id);
 
     UserDto findByEmail(String email);
+
+    Set<UserId> findIdsByCity(String city);
 
     UserDto updateUserContactInfoByRequestUpdate(RequestUpdateDto request, UserDto requester);
 

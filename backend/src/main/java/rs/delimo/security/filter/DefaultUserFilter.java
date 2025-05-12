@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import rs.delimo.security.auth.AuthUserDetails;
 import rs.delimo.security.service.JwtService;
 import rs.delimo.user.domain.Role;
 import rs.delimo.user.domain.User;
@@ -47,10 +48,17 @@ public class DefaultUserFilter implements Filter, CommandLineRunner {
                 return user;
             });
 
-            String jwtToken = jwtService.generateToken(defaultUser);
+            String jwtToken = jwtService.generateToken(defaultUser.getId().value(), defaultUser.getEmail(), defaultUser.getRole().toString());
+
+            AuthUserDetails principal = AuthUserDetails.builder()
+                    .id(defaultUser.getId().value())
+                    .email(defaultUser.getEmail())
+                    .authorities(defaultUser.getAuthorities())
+                    .enabled(defaultUser.getEnabled())
+                    .build();
 
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(defaultUser, null, defaultUser.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(principal, null, defaultUser.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;

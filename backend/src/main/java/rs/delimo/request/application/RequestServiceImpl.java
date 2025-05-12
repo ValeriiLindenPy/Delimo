@@ -14,11 +14,10 @@ import rs.delimo.common.exception.OwnerException;
 import rs.delimo.common.valueobject.RequestId;
 import rs.delimo.common.valueobject.UserId;
 import rs.delimo.request.domain.ItemRequest;
+import rs.delimo.request.domain.specification.RequestSpecification;
 import rs.delimo.request.infrastructure.mapper.RequestMapper;
 import rs.delimo.request.infrastructure.repository.RequestRepository;
-import rs.delimo.user.domain.User;
 import rs.delimo.user.infrastructure.repository.UserRepository;
-import static rs.delimo.request.domain.specification.RequestSpecification.from;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -36,6 +35,7 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final RequestMapper mapper;
     private final UserClient userClient;
+    private final RequestSpecification specification;
 
     /**
      * Searches for item requests based on a text query and an optional city filter.
@@ -47,7 +47,7 @@ public class RequestServiceImpl implements RequestService {
     public RequestPageResponse search(Integer page, Integer size, RequestFilterDto filter) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("created").descending());
 
-        Page<ItemRequest> requests = requestRepository.findAll(from(filter), pageable);
+        Page<ItemRequest> requests = requestRepository.findAll(specification.from(filter), pageable);
 
         PageResponse pageResponse = new PageResponse()
                 .pageNumber(requests.getNumber())
@@ -113,15 +113,14 @@ public class RequestServiceImpl implements RequestService {
      *
      * @param page     the page number to retrieve
      * @param pageSize the size of the page
-     * @param user     the owner of the requests
      * @return a page of {@link RequestOutputDto} representing the owner's item requests
      * @throws NotFoundException if the user is not found
      */
     @Override
-    public RequestPageResponse getAllByOwner(int page, int pageSize, User user) {
+    public RequestPageResponse getAllByOwner(int page, int pageSize, UserId userId) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("created").descending());
 
-        UserDto requester = userClient.findByEmail(user.getEmail());
+        UserDto requester = userClient.findById(userId);
 
         Page<ItemRequest> requests = requestRepository.findAllByRequester(new UserId(requester.getId()), pageable);
 
@@ -149,13 +148,12 @@ public class RequestServiceImpl implements RequestService {
      * Retrieves an item request by its ID for a specific user.
      *
      * @param id   the ID of the item request
-     * @param user the user who owns the request
      * @return the {@link RequestOutputDto} representing the item request
      * @throws NotFoundException if the user or the request is not found
      */
     @Override
-    public RequestOutputDto getByUserAndId(UUID id, User user) {
-        UserDto requester = userClient.findByEmail(user.getEmail());
+    public RequestOutputDto getByUserAndId(UUID id, UserId userId) {
+        UserDto requester = userClient.findById(userId);
         RequestId requestId = new RequestId(id);
         ItemRequest request = requestRepository.findByIdAndRequester(requestId, new UserId(requester.getId())).orElseThrow(
                 () -> new NotFoundException("Request with id - %s not found".formatted(id))
@@ -172,14 +170,13 @@ public class RequestServiceImpl implements RequestService {
      * If the user's contact information is incomplete, it is updated with data from the request.
      *
      * @param request the input data for creating the request
-     * @param user    the user creating the request
      * @return the created {@link RequestOutputDto} representing the new item request
      * @throws NotFoundException if the user is not found
      */
     @Override
     @Transactional
-    public RequestOutputDto create(RequestInputDto request, User user) {
-        UserDto requester = userClient.findByEmail(user.getEmail());
+    public RequestOutputDto create(RequestInputDto request, UserId userId) {
+        UserDto requester = userClient.findById(userId);
 
         requester = userClient.updateUserContactInfoByRequestCreate(request, requester);
 
@@ -205,16 +202,15 @@ public class RequestServiceImpl implements RequestService {
      *
      * @param requestID the ID of the request to edit
      * @param request   the new input data for the request
-     * @param user      the user attempting to edit the request
      * @return the updated {@link RequestOutputDto} representing the edited request
      * @throws NotFoundException if the user or the request is not found
      * @throws OwnerException    if the request does not belong to the user
      */
     @Override
     @Transactional
-    public RequestOutputDto edit(UUID requestID, RequestUpdateDto request, User user) {
+    public RequestOutputDto edit(UUID requestID, RequestUpdateDto request, UserId userId) {
         RequestId id = new RequestId(requestID);
-        UserDto requester = userClient.findByEmail(user.getEmail());
+        UserDto requester = userClient.findById(userId);
 
         ItemRequest oldItemRequest = requestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestID)));
@@ -268,13 +264,12 @@ public class RequestServiceImpl implements RequestService {
      * Only the owner of the request is allowed to delete it.
      *
      * @param requestId the ID of the request to delete
-     * @param user      the user attempting to delete the request
      * @throws NotFoundException if the user or the request is not found
      * @throws OwnerException    if the request does not belong to the user
      */
     @Override
-    public void delete(UUID requestId, User user) {
-        UserDto requester = userClient.findByEmail(user.getEmail());
+    public void delete(UUID requestId, UserId userId) {
+        UserDto requester = userClient.findById(userId);
 
         ItemRequest request = requestRepository.findById(new RequestId(requestId))
                 .orElseThrow(() -> new NotFoundException("Request with id - %s not found".formatted(requestId)));

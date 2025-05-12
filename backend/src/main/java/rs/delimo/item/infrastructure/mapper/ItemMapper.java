@@ -8,11 +8,9 @@ import rs.delimo.api.dto.ItemRequestDto;
 import rs.delimo.api.dto.ItemTitle;
 import rs.delimo.common.mapper.VoMapper;
 import rs.delimo.item.domain.Item;
-import rs.delimo.user.infrastructure.mapper.UserMapper;
 
 
-
-@Mapper(componentModel = "spring", uses = {UserMapper.class, VoMapper.class})
+@Mapper(componentModel = "spring", uses = VoMapper.class)
 public interface ItemMapper {
     @Mapping(source = "id.value", target = "id")
     ItemDto toDto(Item item);
