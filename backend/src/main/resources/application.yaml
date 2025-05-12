@@ -4,6 +4,9 @@ server:
     context-path: /api
 
 spring:
+  autoconfigure:
+    exclude:
+      - io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
   docker:
     compose:
       enabled: false
