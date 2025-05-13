@@ -13,16 +13,17 @@ services:
   traefik:
     image: traefik:v3.1
     command:
-      - "--log.level=WARN"
+      - "--log.level=DEBUG"
       - "--accesslog=true"
-      - "--providers.docker"
+      - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
       - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
       - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
       - "--entryPoints.websecure.address=:443"
       - "--entryPoints.websecure.http.tls.certResolver=myresolver"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.myresolver.acme.email=info@delimo.rs"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
@@ -95,6 +96,9 @@ services:
 
   minio:
     image: quay.io/minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     env_file:
       - .env
     volumes:
@@ -103,13 +107,17 @@ services:
     command: server /data --console-address ":9001"
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=delimo_default"
       - "traefik.http.routers.minio.rule=Host(`s3.delimo.rs`)"
       - "traefik.http.routers.minio.entrypoints=websecure"
       - "traefik.http.routers.minio.tls=true"
+      - "traefik.http.routers.minio.service=minio"
       - "traefik.http.services.minio.loadbalancer.server.port=9000"
       - "traefik.http.routers.minio-console.rule=Host(`console.s3.delimo.rs`)"
       - "traefik.http.routers.minio-console.entrypoints=websecure"
       - "traefik.http.routers.minio-console.tls=true"
+      - "traefik.http.routers.minio.tls.certresolver=myresolver"
+      - "traefik.http.routers.minio-console.service=minio-console"
       - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://127.0.0.1:9000/minio/health/live || exit 1" ]
