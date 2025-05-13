@@ -17,7 +17,7 @@ spring:
   main:
     banner-mode: off
   datasource:
-    url: jdbc:postgresql://db:5432/delimo
+    url: jdbc:postgresql://${HOST_NAME}:5432/delimo
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -36,7 +36,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: https://delimo.rs/api/login/oauth2/code/google
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
   mail:
     host: mailcluster.loopia.se
     port: 587
@@ -56,10 +56,10 @@ spring:
 
 logging:
   level:
-    root: debug
+    root: info
 
 app:
-  frontend-url: https://delimo.rs
+  frontend-url: ${UI_URL}
   jwt:
     secret: ${JWT_SECRET}
 
