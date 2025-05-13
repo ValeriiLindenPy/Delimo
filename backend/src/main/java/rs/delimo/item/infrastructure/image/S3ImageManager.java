@@ -21,6 +21,9 @@ public class S3ImageManager implements ImageManager {
 
     private final S3Client s3;
     private final String bucket;
+    @Value("${aws.s3.public-url}")
+    private String publicUrl;
+
 
     public S3ImageManager(S3Client s3, @Value("${aws.s3.bucket}") String bucket) {
         this.s3 = s3;
@@ -54,9 +57,7 @@ public class S3ImageManager implements ImageManager {
                     } catch (IOException e) {
                         throw new ImageUploadException("S3 upload failed: " + e.getMessage());
                     }
-                    return s3.utilities()
-                            .getUrl(b -> b.bucket(bucket).key(key))
-                            .toString();
+                    return publicUrl + "/" + bucket + "/" + key;
                 })
                 .collect(Collectors.toList());
     }
