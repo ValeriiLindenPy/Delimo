@@ -139,7 +139,6 @@ export default {
     },
     handleGoogleLogin() {
       try {
-        console.log(import.meta.env.VITE_API_URL)
         window.location.href = `https://delimo.rs/api/oauth2/authorization/google`;
       } catch (error) {
         console.log(error);
