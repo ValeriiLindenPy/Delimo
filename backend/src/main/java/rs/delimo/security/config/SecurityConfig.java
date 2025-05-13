@@ -98,7 +98,7 @@ public class SecurityConfig {
     @Profile("!test")
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://delimo.rs", "https://www.delimo.rs"));
+        configuration.setAllowedOrigins(List.of("https://delimo.rs", "https://www.delimo.rs", frontendUrl));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
