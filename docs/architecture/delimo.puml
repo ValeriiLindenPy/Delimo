@@ -1,0 +1,38 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+LAYOUT_WITH_LEGEND()
+
+Person(user, "Final User")
+
+System(system, "Delimo Application", "Spring Boot Modulith")
+
+Container(system_app, "Backend (Spring Boot 3.4)", "Java 21, Spring Modulith", "API for front-end and modules")
+ContainerDb(db, "PostgreSQL", "Relational DB", "User, request and item data")
+Container(minio, "MinIO", "S3 storage", "Image objects")
+Container(frontend, "Frontend (Vue 3 + Vite)", "JavaScript, Vue.js", "SPA (served via Nginx)")
+
+Rel(user,     frontend,    "HTTPS")
+Rel(frontend, system_app,  "REST/JSON • WebSocket")
+
+Rel(system_app, db,    "JDBC (Spring Data)")
+Rel(system_app, minio, "S3 API")
+
+Container_Boundary(modules_boundary, "App Modules") {
+    Component(email, "Email Module",    "Spring", "Sends verification e-mails & feedbacks")
+    Component(userM, "User Module",     "Spring", "Authentication & profile data")
+    Component(sec,   "Security Module", "Spring Security", "JWT & OAuth2")
+    Component(req,   "Request Module",  "Spring", "Borrow requests workflow")
+    Component(item,  "Item Module",     "Spring", "Item CRUD & metadata")
+}
+
+Rel(email, db,  "JPA")
+Rel(userM, db,  "JPA")
+Rel(sec,   userM,"Rights check")
+Rel(req,   db,  "JPA")
+Rel(item,  db,  "JPA")
+Rel(item,  minio,"S3 API")
+
+SHOW_LEGEND()
+@enduml
