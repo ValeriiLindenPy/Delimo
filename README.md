@@ -5,11 +5,11 @@
 <br/>
 
 <p align="center">
-  <i><b>Delimo</b> je aplikacija otvorenog koda za razmenu stvari. Pronađite korisnika za razmenu u svom gradu i oživite predmete koje više ne koristite!</i>
+  <i><b>Delimo</b> is an application for sharing and exchanging items. Find someone to trade with in your city and give new life to things you no longer use!</i>
   <br/>
-  Link aplikacije: <a href="https://delimo.rs">https://delimo.rs</a>
+  Link app: <a href="https://delimo.rs">https://delimo.rs</a>
   <br/><br/>
-  <b><a href="https://delimo.rs">Sajt</a></b> | <b><a href="https://t.me/DelimoApp">Javni Kanal</a></b> | <b><a href="https://t.me/DelimoApp">Chat</a></b>
+  <b><a href="https://delimo.rs">Website </a></b> | <b><a href="https://t.me/DelimoApp">Public Channel</a></b> | <b><a href="https://t.me/DelimoApp">Chat</a></b>
   <br/><br/>
   <a href="https://jdk.java.net/archive/">
     <img src="https://img.shields.io/badge/Java_Version-21-blue?style=for-the-badge&logo=hackthebox&logoColor=fff" alt="JavaVersion"/>
@@ -21,58 +21,72 @@
   <br/><br/>
 </p>
 
-## O Delimo
+## Content
+- [About](#about-delimo)
+- [Architecture](#architecture)
+- [Technologies](#technologies)
+- [Features](#features)
+- [How It Works](#how-it-works)
+- [Getting Started](#getting-started)
+- [How to Contribute](#how-to-contribute)
+
+## About Delimo
 
 <p class="text-gray-700 leading-relaxed mb-2">
-  Delimo je platforma stvorena za povezivanje korisnika koji žele „pozajmiti” neku stvar za kratkoročnu ličnu upotrebu i onih koji su spremni da te stvari ustupe uz naknadu ili besplatno.
+  Delimo is a platform created to connect people who want to "borrow" an item for short-term personal use with those willing to lend those items either for free or for a small fee.
 </p>
 <p class="text-gray-700 leading-relaxed mb-2">
-  Naš projekat nudi alternativu uobičajenoj kupovini, stavljajući akcenat na razmenu stvari. Ovo je posebno korisno za predmete koji su potrebni samo na kratko vreme. Ovakav pristup doprinosi svesnoj potrošnji, produžava životni ciklus stvari i pomaže u smanjenju broja nepotrebnih predmeta koji bi mogli završiti na deponijama.
+  Our project offers an alternative to traditional purchasing, focusing on sharing items. This is especially useful for things that are only needed for a short time. This approach encourages conscious consumption, extends the life cycle of items, and helps reduce the number of unnecessary objects that might otherwise end up in landfills.
 </p>
 <p class="text-gray-700 leading-relaxed mb-2">
-  Misija Delimo jeste podrška ekološkoj ravnoteži i pažljivom odnosu prema prirodnim resursima. Verujemo da je razmena stvari umesto njihovog nekontrolisanog gomilanja važan korak ka odgovornom odnosu prema životnoj sredini.
+  Delimo's mission is to support ecological balance and mindful use of natural resources. We believe that sharing instead of hoarding is a vital step toward a responsible relationship with the environment.
 </p>
 <p class="text-gray-700 leading-relaxed mb-2">
-  Delimo je neprofitna inicijativa koja ima za cilj stvaranje praktične i dostupne platforme za kratkoročno korišćenje stvari. Postavljanje oglasa na sajtu je besplatno, čime ističemo našu posvećenost principima društveno odgovorne potrošnje i jednakog pristupa stvarima za sve korisnike.
+  Delimo is a non-profit initiative aimed at creating a practical and accessible platform for short-term use of items. Posting on the website is free, highlighting our commitment to socially responsible consumption and equal access to resources for all users.
 </p>
 <p class="font-bold text-st3 mt-3">
-  Pridružite se Delimo i delite stvari svesno!
+  <b>Join Delimo and share consciously!</b>
 </p>
 
-## Sadržaj
-- [Karakteristike](#karakteristike)
-- [Kako funkcioniše](#kako-funkcioniše)
-- [Kako početi](#kako-početi)
-- [Naša filozofija](#naša-filozofija)
-- [Kako doprineti](#kako-doprineti)
-- [Licenca](#licenca)
+## Architecture
 
-## Karakteristike
-- **Jednostavno.** Kreirajte razmenu brzo i lako.
-- **Lokalno.** Pronađite korisnike u svom regionu.
-- **Besplatno.** Aplikacija je potpuno besplatna za korišćenje.
-- **Otvoreni kod.** Vaš doprinos je dobrodošao.
-- **Sigurnost.** Komunicirajte i razmenjujte sa poverenjem.
+<img width="700"  alt="Delimo architecture" src="docs/architecture/delimo.png"/>
 
-## Kako funkcioniše
-1. Napravite nalog i unesite informacije o predmetima koje želite da razmenite.
-2. Pretražujte predmete drugih korisnika u vašoj blizini.
-3. Pošaljite zahtev za razmenu i dogovorite se o detaljima.
-4. Uživajte u novim predmetima!
+## Technologies
 
-## Kako početi
-1. Posetite naš <a href="https://delimo.rs">sajt</a>.
-2. Kreirajte svoj nalog.
-3. Postavite oglase sa predmetima koje želite da razmenite.
-4. Pronađite ili ponudite zamenu u vašoj zajednici.
+<p>
+The backend of Delimo is built with <b>Java 21</b> using <b>Spring Boot 3</b> and follows the <b>Spring Modulith</b> architecture. 
+It includes modular components for authentication, user profiles, item management, request handling, and email communication. 
+The application uses <b>Spring Security</b> with <b>JWT</b> and <b>OAuth2</b> for secure access control.
+</p>
 
-## Naša filozofija
-Verujemo u održivu potrošnju i deljenje resursa. Delimo podstiče odgovoran pristup upotrebi stvari i doprinosi očuvanju životne sredine.
+<p>
+Data is stored in a <b>PostgreSQL</b> relational database, while item images are stored in <b>MinIO</b> using the <b>S3 API</b>. 
+The frontend is developed with <b>Vue 3</b> and <b>Vite</b>, providing a modern single-page application (SPA) served through Nginx. 
+Communication between frontend and backend is handled via <b>REST/JSON</b> and WebSocket protocols.
+</p>
 
-## Kako doprineti
-- **Fork** repozitorijuma.
-- Kreirajte svoju granu za razvoj.
-- Napravite izmene i pošaljite **Pull Request**.
-- Podelite svoje ideje i predloge na našem [chatu](https://t.me/DelimoApp).
+## Features
+- **Simple.** Quickly and easily create exchanges.
+- **Local.** Find users in your region.
+- **Free.** The app is completely free to use.
+- **Safe.** Communicate and exchange with confidence.
+
+## How It Works
+1. Create an account and enter information about the items you'd like to share.
+2. Browse items from other users in your area.
+3. Enjoy your newly borrowed item!
+
+## Getting Started
+1. Visit our website: <a href="https://delimo.rs">link</a>.
+2. Create your account.
+3. Post listings for items you'd like to share.
+4. Find or offer exchanges in your community.
+
+## How to Contribute
+- Fork the repository.
+- Create your own development branch.
+- Make changes and submit a Pull Request.
+- Share your ideas and suggestions in our chat: [chat-link](https://t.me/DelimoApp).
 
 
