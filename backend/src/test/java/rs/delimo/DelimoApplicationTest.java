@@ -20,6 +20,8 @@ class DelimoApplicationTest {
                 )
         ).verify();
 
+        modules.forEach(System.out::println);
+
         new Documenter(modules)
                 .writeModulesAsPlantUml()
                 .writeIndividualModulesAsPlantUml();

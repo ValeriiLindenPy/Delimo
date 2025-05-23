@@ -4,35 +4,28 @@
 !includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 LAYOUT_WITH_LEGEND()
 
-Person(user, "Final User")
-
+Person(user, "Конечный пользователь")
 System(system, "Delimo Application", "Spring Boot Modulith")
 
-Container(system_app, "Backend (Spring Boot 3.4)", "Java 21, Spring Modulith", "API for front-end and modules")
-ContainerDb(db, "PostgreSQL", "Relational DB", "User, request and item data")
-Container(minio, "MinIO", "S3 storage", "Image objects")
-Container(frontend, "Frontend (Vue 3 + Vite)", "JavaScript, Vue.js", "SPA (served via Nginx)")
+Container(system_app, "Backend (Spring Boot)", "Java 21, Spring Modulith", "API для фронтенда и модулей")
+Container_Db(db, "PostgreSQL", "Реляционная БД", "Данные пользователей, заявок, предметов")
+Container_MinIO(minio, "MinIO", "Объектное хранилище", "Хранение изображений")
 
-Rel(user,     frontend,    "HTTPS")
-Rel(frontend, system_app,  "REST/JSON • WebSocket")
+Rel(user, system_app, "HTTP/HTTPS")
+Rel(system_app, db,       "JDBC")
+Rel(system_app, minio,    "S3 API")
 
-Rel(system_app, db,    "JDBC (Spring Data)")
-Rel(system_app, minio, "S3 API")
-
-Container_Boundary(modules_boundary, "App Modules") {
-    Component(email, "Email Module",    "Spring", "Sends verification e-mails & feedbacks")
-    Component(userM, "User Module",     "Spring", "Authentication & profile data")
-    Component(sec,   "Security Module", "Spring Security", "JWT & OAuth2")
-    Component(req,   "Request Module",  "Spring", "Borrow requests workflow")
-    Component(item,  "Item Module",     "Spring", "Item CRUD & metadata")
+Container_Boundary(system_app, "Модули приложения") {
+  Component(email, "Email Module",    "Уведомления и фидбэк")
+  Component(userM, "User Module",     "Регистрация и профиль")
+  Component(sec,   "Security Module", "JWT, OAuth2, Spring Security")
+  Component(req,   "Request Module",  "Управление заявками")
+  Component(item,  "Item Module",     "CRUD предметов, картинки")
 }
 
 Rel(email, db,  "JPA")
 Rel(userM, db,  "JPA")
-Rel(sec,   userM,"Rights check")
+Rel(sec,   userM,"Проверка прав")
 Rel(req,   db,  "JPA")
-Rel(item,  db,  "JPA")
-Rel(item,  minio,"S3 API")
-
-SHOW_LEGEND()
+Rel(item,  minio, "S3 API / локальное хранение")
 @enduml
